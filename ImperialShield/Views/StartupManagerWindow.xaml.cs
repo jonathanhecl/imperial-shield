@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media;
 using Microsoft.Win32;
 using ImperialShield.Services;
 
@@ -20,137 +21,182 @@ namespace ImperialShield.Views
         {
             var items = new List<StartupItem>();
 
-            // 1. Registry - User
-            try
+            // --- Lógica del Registro ---
+            void ScanRegistry(RegistryKey hive, string subKeyPath, string typeName)
             {
-                using var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run");
-                if (key != null)
+                try
                 {
-                    foreach (var name in key.GetValueNames())
+                    using var key = hive.OpenSubKey(subKeyPath);
+                    if (key != null)
                     {
-                        items.Add(new StartupItem { 
-                            Name = name, 
-                            Command = key.GetValue(name)?.ToString() ?? "", 
-                            Type = "Registro (U)",
-                            Path = @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run"
-                        });
+                        foreach (var name in key.GetValueNames())
+                        {
+                            items.Add(new StartupItem { 
+                                Name = name, 
+                                Command = key.GetValue(name)?.ToString() ?? "", 
+                                Type = typeName,
+                                Path = $@"{hive.Name}\{subKeyPath}",
+                                IsEnabled = true,
+                                Origin = StartupOrigin.Registry
+                            });
+                        }
+                    }
+
+                    // Buscar deshabilitados (nuestra convención: subclave 'Disabled')
+                    using var disabledKey = hive.OpenSubKey(subKeyPath + @"\ImperialShield_Disabled");
+                    if (disabledKey != null)
+                    {
+                        foreach (var name in disabledKey.GetValueNames())
+                        {
+                            items.Add(new StartupItem { 
+                                Name = name, 
+                                Command = disabledKey.GetValue(name)?.ToString() ?? "", 
+                                Type = typeName,
+                                Path = $@"{hive.Name}\{subKeyPath}",
+                                IsEnabled = false,
+                                Origin = StartupOrigin.Registry
+                            });
+                        }
                     }
                 }
-            } catch { }
+                catch { }
+            }
 
-            // 2. Registry - Machine
-            try
+            ScanRegistry(Registry.CurrentUser, @"Software\Microsoft\Windows\CurrentVersion\Run", "Registro (Usuario)");
+            ScanRegistry(Registry.LocalMachine, @"Software\Microsoft\Windows\CurrentVersion\Run", "Registro (Sistema)");
+
+            // --- Lógica de Carpetas ---
+            void ScanFolder(string folderPath, string typeName)
             {
-                using var key = Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run");
-                if (key != null)
+                try
                 {
-                    foreach (var name in key.GetValueNames())
+                    if (Directory.Exists(folderPath))
                     {
-                        items.Add(new StartupItem { 
-                            Name = name, 
-                            Command = key.GetValue(name)?.ToString() ?? "", 
-                            Type = "Registro (M)",
-                            Path = @"HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run"
-                        });
+                        // Activos
+                        foreach (var file in Directory.GetFiles(folderPath))
+                        {
+                            if (Path.GetExtension(file).ToLower() == ".disabled") continue;
+                            
+                            items.Add(new StartupItem { 
+                                Name = Path.GetFileNameWithoutExtension(file), 
+                                Command = file, 
+                                Type = typeName,
+                                Path = file,
+                                IsEnabled = true,
+                                Origin = StartupOrigin.Folder
+                            });
+                        }
+
+                        // Deshabilitados (.disabled)
+                        foreach (var file in Directory.GetFiles(folderPath, "*.disabled"))
+                        {
+                            items.Add(new StartupItem { 
+                                Name = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(file)), // Quitar .disabled y luego la extensión original
+                                Command = file, 
+                                Type = typeName,
+                                Path = file,
+                                IsEnabled = false,
+                                Origin = StartupOrigin.Folder
+                            });
+                        }
                     }
                 }
-            } catch { }
+                catch { }
+            }
 
-            // 3. Startup Folder - User
-            try
-            {
-                var startupFolder = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
-                if (Directory.Exists(startupFolder))
-                {
-                    foreach (var file in Directory.GetFiles(startupFolder))
-                    {
-                        items.Add(new StartupItem { 
-                            Name = Path.GetFileName(file), 
-                            Command = file, 
-                            Type = "Carpeta (U)",
-                            Path = file
-                        });
-                    }
-                }
-            } catch { }
+            ScanFolder(Environment.GetFolderPath(Environment.SpecialFolder.Startup), "Carpeta (Usuario)");
+            ScanFolder(Environment.GetFolderPath(Environment.SpecialFolder.CommonStartup), "Carpeta (Sistema)");
 
-            // 4. Startup Folder - All Users (Common)
-            try
-            {
-                var commonStartupFolder = Environment.GetFolderPath(Environment.SpecialFolder.CommonStartup);
-                if (Directory.Exists(commonStartupFolder))
-                {
-                    foreach (var file in Directory.GetFiles(commonStartupFolder))
-                    {
-                        items.Add(new StartupItem { 
-                            Name = Path.GetFileName(file), 
-                            Command = file, 
-                            Type = "Carpeta (S)",
-                            Path = file
-                        });
-                    }
-                }
-            } catch { }
-
-            StartupGrid.ItemsSource = items;
+            StartupGrid.ItemsSource = items.OrderBy(i => i.Name).ToList();
+            AppCountText.Text = $"{items.Count} apps";
+            LastUpdatedText.Text = $"Última actualización: {DateTime.Now:HH:mm:ss}";
         }
 
-        private void Remove_Click(object sender, RoutedEventArgs e)
+        private void Toggle_Click(object sender, RoutedEventArgs e)
         {
             if (sender is FrameworkElement element && element.DataContext is StartupItem item)
             {
-                var result = MessageBox.Show($"¿Estás seguro de que deseas eliminar '{item.Name}' del inicio?\n\nEsta acción no se puede deshacer.", 
-                    "Confirmar Eliminación", MessageBoxButton.YesNo, MessageBoxImage.Warning);
-
-                if (result == MessageBoxResult.Yes)
+                try
                 {
-                    bool success = false;
-                    try
+                    if (item.IsEnabled)
                     {
-                        if (item.Type.Contains("Registro"))
-                        {
-                            var hive = item.Path.StartsWith("HKEY_CURRENT_USER") ? Registry.CurrentUser : Registry.LocalMachine;
-                            var subKeyPath = item.Path.Substring(item.Path.IndexOf('\\') + 1);
-                            using var key = hive.OpenSubKey(subKeyPath, true);
-                            if (key != null)
-                            {
-                                key.DeleteValue(item.Name, false);
-                                success = true;
-                            }
-                        }
-                        else if (item.Type.Contains("Carpeta"))
-                        {
-                            if (File.Exists(item.Path))
-                            {
-                                File.Delete(item.Path);
-                                success = true;
-                            }
-                        }
-
-                        if (success)
-                        {
-                            Logger.Log($"User manually removed startup item: {item.Name} ({item.Type})");
-                            LoadStartupItems();
-                        }
+                        // DESHABILITAR
+                        DisableItem(item);
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        MessageBox.Show($"Error al eliminar el item: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        // HABILITAR
+                        EnableItem(item);
                     }
+                    LoadStartupItems(); // Recargar todo
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al cambiar estado: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }
 
-        private void Refresh_Click(object sender, RoutedEventArgs e)
+        private void DisableItem(StartupItem item)
         {
-            LoadStartupItems();
+            if (item.Origin == StartupOrigin.Registry)
+            {
+                // Mover a subclave 'ImperialShield_Disabled'
+                var hive = item.Path.StartsWith("HKEY_CURRENT_USER") ? Registry.CurrentUser : Registry.LocalMachine;
+                var subKeyPath = item.Path.Substring(item.Path.IndexOf('\\') + 1);
+                
+                using var currentKey = hive.OpenSubKey(subKeyPath, true);
+                using var disabledKey = hive.CreateSubKey(subKeyPath + @"\ImperialShield_Disabled", true);
+                
+                var value = currentKey?.GetValue(item.Name);
+                if (value != null)
+                {
+                    disabledKey?.SetValue(item.Name, value);
+                    currentKey?.DeleteValue(item.Name);
+                }
+            }
+            else
+            {
+                // Renombrar archivo a .disabled
+                var newPath = item.Path + ".disabled";
+                if (File.Exists(item.Path)) File.Move(item.Path, newPath);
+            }
         }
 
-        private void Close_Click(object sender, RoutedEventArgs e)
+        private void EnableItem(StartupItem item)
         {
-            this.Close();
+             if (item.Origin == StartupOrigin.Registry)
+            {
+                // Mover desde subclave 'ImperialShield_Disabled' a raíz
+                var hive = item.Path.StartsWith("HKEY_CURRENT_USER") ? Registry.CurrentUser : Registry.LocalMachine;
+                var subKeyPath = item.Path.Substring(item.Path.IndexOf('\\') + 1);
+                
+                using var currentKey = hive.OpenSubKey(subKeyPath, true);
+                using var disabledKey = hive.OpenSubKey(subKeyPath + @"\ImperialShield_Disabled", true);
+                
+                var value = disabledKey?.GetValue(item.Name);
+                if (value != null)
+                {
+                    currentKey?.SetValue(item.Name, value);
+                    disabledKey?.DeleteValue(item.Name);
+                }
+            }
+            else
+            {
+                // Quitar .disabled
+                if (item.Path.EndsWith(".disabled"))
+                {
+                    var newPath = item.Path.Substring(0, item.Path.Length - 9); // Remove .disabled
+                    if (File.Exists(item.Path)) File.Move(item.Path, newPath);
+                }
+            }
         }
+
+        private void Refresh_Click(object sender, RoutedEventArgs e) => LoadStartupItems();
+        private void Close_Click(object sender, RoutedEventArgs e) => this.Close();
     }
+
+    public enum StartupOrigin { Registry, Folder }
 
     public class StartupItem
     {
@@ -158,5 +204,15 @@ namespace ImperialShield.Views
         public required string Command { get; set; }
         public required string Type { get; set; }
         public required string Path { get; set; }
+        public bool IsEnabled { get; set; }
+        public StartupOrigin Origin { get; set; }
+
+
+        // Propiedades Visuales (MVVM simple)
+        public string Status => IsEnabled ? "Activo" : "Deshabilitado";
+        public Brush StatusColor => IsEnabled ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#27AE60")) : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#94A3B8"));
+        
+        public string ActionText => IsEnabled ? "Deshabilitar" : "Habilitar";
+        public Brush ActionColor => IsEnabled ? new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E74C3C")) : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#27AE60"));
     }
 }
