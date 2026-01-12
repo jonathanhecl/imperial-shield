@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -13,6 +14,13 @@ public partial class SplashWindow : Window
     public SplashWindow()
     {
         InitializeComponent();
+        
+        // Mostrar versión del ensamblado
+        var version = Assembly.GetExecutingAssembly().GetName().Version;
+        if (version != null)
+        {
+            VersionText.Text = $"v{version.Major}.{version.Minor}.{version.Build}";
+        }
         
         // Timer para cerrar automáticamente después de 2.5 segundos
         _closeTimer = new DispatcherTimer
@@ -40,5 +48,11 @@ public partial class SplashWindow : Window
     {
         _closeTimer.Stop();
         Close();
+    }
+    
+    public static string GetVersionString()
+    {
+        var version = Assembly.GetExecutingAssembly().GetName().Version;
+        return $"v{version?.Major}.{version?.Minor}.{version?.Build}.{version?.Revision}";
     }
 }

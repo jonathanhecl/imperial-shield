@@ -60,9 +60,11 @@
             
             <!-- Version -->
             <TextBlock Grid.Row="3" 
-                       Text="v1.0.0" 
-                       FontSize="10" 
-                       Foreground="#64748B" 
+                       x:Name="VersionText"
+                       Text="v1.0.0.0" 
+                       FontSize="12" 
+                       FontWeight="SemiBold"
+                       Foreground="#4DA8DA" 
                        HorizontalAlignment="Center" 
                        VerticalAlignment="Center"/>
         </Grid>

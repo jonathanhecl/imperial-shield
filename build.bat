@@ -1,12 +1,17 @@
 @echo off
 title Imperial Shield - Build
-cd /d "%~dp0ImperialShield"
+cd /d "%~dp0"
 
 echo.
 echo ========================================
 echo   Imperial Shield - Compilacion
 echo ========================================
 echo.
+
+:: Incrementar version patch automaticamente
+powershell -ExecutionPolicy Bypass -File "increment_version.ps1"
+
+cd ImperialShield
 
 echo [1/2] Restaurando dependencias...
 dotnet restore

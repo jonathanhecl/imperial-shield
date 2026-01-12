@@ -10,9 +10,8 @@
                 <ResourceDictionary Source="Themes/DarkTheme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             
-            <!-- Taskbar Icon -->
+            <!-- Taskbar Icon - IconSource se configura en code-behind -->
             <tb:TaskbarIcon x:Key="NotifyIcon"
-                            IconSource="/Resources/shield.ico"
                             ToolTipText="Imperial Shield - Sistema de Seguridad">
                 <tb:TaskbarIcon.ContextMenu>
                     <ContextMenu>

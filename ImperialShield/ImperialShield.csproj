@@ -7,11 +7,19 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Resources\shield.ico</ApplicationIcon>
-    <Version>1.0.0</Version>
+    
+    <!-- Versionado: Major.Minor.Patch -->
+    <Version>1.0.1</Version>
+    <AssemblyVersion>1.0.1.0</AssemblyVersion>
+    <FileVersion>1.0.1.0</FileVersion>
+    <InformationalVersion>1.0.1</InformationalVersion>
+    
     <AssemblyName>ImperialShield</AssemblyName>
     <RootNamespace>ImperialShield</RootNamespace>
     <Authors>Imperial Shield Security</Authors>
+    <Product>Imperial Shield</Product>
     <Description>Sistema de monitoreo de seguridad para Windows</Description>
+    <Copyright>© 2024 Imperial Shield</Copyright>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 

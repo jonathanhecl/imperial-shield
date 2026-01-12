@@ -80,6 +80,20 @@ public partial class App : Application
         {
             _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
             _notifyIcon.TrayMouseDoubleClick += (s, e) => ShowDashboard();
+            
+            // Cargar icono programáticamente
+            try
+            {
+                var iconUri = new Uri("pack://application:,,,/Resources/shield.ico", UriKind.Absolute);
+                _notifyIcon.IconSource = new System.Windows.Media.Imaging.BitmapImage(iconUri);
+                Logger.Log("Icon loaded from resources");
+            }
+            catch (Exception iconEx)
+            {
+                Logger.LogException(iconEx, "Icon loading - using default");
+                // Sin icono, pero la app sigue funcionando
+            }
+            
             Logger.Log("TaskbarIcon configured successfully");
         }
         catch (Exception ex)
