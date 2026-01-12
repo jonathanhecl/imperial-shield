@@ -37,6 +37,8 @@
   <ItemGroup>
     <Resource Include="Resources\shield.ico" />
     <Resource Include="Resources\shield_alert_icon.ico" />
+    <Resource Include="Resources\shield.png" />
+    <Resource Include="Resources\shield_alert_icon.png" />
   </ItemGroup>
 
 </Project>

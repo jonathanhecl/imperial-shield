@@ -315,35 +315,25 @@ public partial class App : Application
 
     private void Settings_Click(object sender, RoutedEventArgs e)
     {
-        // Usar BeginInvoke para que el MessageBox aparezca después de que el menú se cierre
+        // Abrir ventana de configuración premium
         Dispatcher.BeginInvoke(new Action(() =>
         {
-            var startupEnabled = StartupManager.IsStartupEnabled();
-            var logPath = Logger.GetLogDirectory();
-            
-            var result = MessageBox.Show(
-                $"=== Configuración de Imperial Shield ===\n\n" +
-                $"Inicio con Windows: {(startupEnabled ? "Activado" : "Desactivado")}\n\n" +
-                $"Logs: {logPath}\n\n" +
-                $"¿Deseas {(startupEnabled ? "desactivar" : "activar")} el inicio automático con Windows?",
-                "Configuración",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
+            var settingsWin = new Views.SettingsWindow();
+            settingsWin.ShowDialog();
 
-            if (result == MessageBoxResult.Yes)
+            if (settingsWin.SettingsChanged)
             {
-                if (StartupManager.ToggleStartup())
-                {
-                    var newState = StartupManager.IsStartupEnabled();
-                    MessageBox.Show(
-                        $"Inicio automático {(newState ? "activado" : "desactivado")} correctamente.",
-                        "Configuración", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Error al modificar la configuración de inicio.",
-                        "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                Logger.Log("Settings changed, restarting monitors with new interval...");
+                
+                // Reiniciar DefenderMonitor con el nuevo tiempo
+                _defenderMonitor?.Stop();
+                _defenderMonitor?.Start();
+
+                // Reiniciar HostsMonitor con el nuevo tiempo
+                _hostsMonitor?.Stop();
+                _hostsMonitor?.Start();
+
+                AlertWindow.Show("Configuración guardada. Los monitores se han reiniciado con el nuevo intervalo.");
             }
         }), System.Windows.Threading.DispatcherPriority.Background);
     }

@@ -21,8 +21,10 @@ public class DefenderMonitor : IDisposable
         _lastKnownStatus = IsDefenderEnabled();
         _knownExclusions = GetCurrentExclusions();
 
-        // Iniciar el timer de polling (con delay inicial de 5 segundos para no interferir con UI)
-        _timer = new Timer(CheckDefenderStatus, null, 5000, _pollingIntervalMs);
+        // Iniciar el timer de polling con intervalo configurado
+        int interval = SettingsManager.Current.PollingIntervalMs;
+        _timer = new Timer(CheckDefenderStatus, null, 5000, interval);
+        Logger.Log($"DefenderMonitor started with interval: {interval}ms");
     }
 
     private void CheckDefenderStatus(object? state)
