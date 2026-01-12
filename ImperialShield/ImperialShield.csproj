@@ -27,4 +27,9 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Resource Include="Resources\shield.ico" />
+    <Resource Include="Resources\shield_alert_icon.ico" />
+  </ItemGroup>
+
 </Project>
