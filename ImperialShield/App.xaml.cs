@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
+using System.Windows.Threading;
 using Hardcodet.Wpf.TaskbarNotification;
 using ImperialShield.Services;
 using ImperialShield.Views;
@@ -17,55 +18,184 @@ public partial class App : Application
     private HostsFileMonitor? _hostsMonitor;
     private DefenderMonitor? _defenderMonitor;
     private DashboardWindow? _dashboardWindow;
+    private SplashWindow? _splashWindow;
+
+    public App()
+    {
+        // Configurar manejadores de excepciones globales
+        DispatcherUnhandledException += OnDispatcherUnhandledException;
+        AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+        TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+    }
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {
-        // Verificar si ya hay una instancia corriendo
-        if (!SingleInstanceManager.TryAcquireLock())
+        Logger.Log("=== Imperial Shield Starting ===");
+        
+        try
         {
-            MessageBox.Show("Imperial Shield ya está en ejecución.", "Imperial Shield",
-                MessageBoxButton.OK, MessageBoxImage.Information);
-            Shutdown();
-            return;
-        }
+            // Verificar si ya hay una instancia corriendo
+            if (!SingleInstanceManager.TryAcquireLock())
+            {
+                Logger.Log("Another instance is already running");
+                MessageBox.Show("Imperial Shield ya está en ejecución.", "Imperial Shield",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                Shutdown();
+                return;
+            }
 
-        InitializeApplication(e.Args);
+            // Mostrar splash screen
+            _splashWindow = new SplashWindow();
+            _splashWindow.Show();
+            _splashWindow.UpdateStatus("Inicializando...");
+
+            // Inicializar en background para no bloquear la splash
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                try
+                {
+                    InitializeApplication(e.Args);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogException(ex, "InitializeApplication");
+                    HandleFatalError(ex);
+                }
+            }), DispatcherPriority.Background);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogCrash(ex);
+            HandleFatalError(ex);
+        }
     }
 
     private void InitializeApplication(string[] args)
     {
-        // Configurar el icono del systray
-        _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
-        _notifyIcon.TrayMouseDoubleClick += (s, e) => ShowDashboard();
-
-        // Inicializar los monitores de seguridad
-        _hostsMonitor = new HostsFileMonitor();
-        _hostsMonitor.HostsFileChanged += OnHostsFileChanged;
-        _hostsMonitor.Start();
-
-        _defenderMonitor = new DefenderMonitor();
-        _defenderMonitor.DefenderStatusChanged += OnDefenderStatusChanged;
-        _defenderMonitor.ExclusionAdded += OnExclusionAdded;
-        _defenderMonitor.Start();
-
-        // Verificar si se debe iniciar en modo silencioso
-        bool startSilent = args.Contains("--silent") || args.Contains("-s");
-
-        if (!startSilent)
+        Logger.Log("Initializing application...");
+        
+        // Paso 1: Configurar el icono del systray
+        _splashWindow?.UpdateStatus("Configurando systray...");
+        try
         {
-            ShowDashboard();
+            _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
+            _notifyIcon.TrayMouseDoubleClick += (s, e) => ShowDashboard();
+            Logger.Log("TaskbarIcon configured successfully");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "TaskbarIcon setup");
+            throw;
         }
 
-        // Mostrar notificación de inicio
-        ShowToastNotification("Imperial Shield Activo",
-            "El sistema de seguridad está monitoreando tu equipo.",
-            ToastNotificationType.Info);
+        // Paso 2: Inicializar monitor de HOSTS
+        _splashWindow?.UpdateStatus("Iniciando monitor de HOSTS...");
+        try
+        {
+            _hostsMonitor = new HostsFileMonitor();
+            _hostsMonitor.HostsFileChanged += OnHostsFileChanged;
+            _hostsMonitor.Start();
+            Logger.Log("HostsFileMonitor started");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "HostsFileMonitor");
+            // No es fatal, continuar
+        }
+
+        // Paso 3: Inicializar monitor de Defender
+        _splashWindow?.UpdateStatus("Iniciando monitor de Defender...");
+        try
+        {
+            _defenderMonitor = new DefenderMonitor();
+            _defenderMonitor.DefenderStatusChanged += OnDefenderStatusChanged;
+            _defenderMonitor.ExclusionAdded += OnExclusionAdded;
+            _defenderMonitor.Start();
+            Logger.Log("DefenderMonitor started");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "DefenderMonitor");
+            // No es fatal, continuar
+        }
+
+        // Paso 4: Cerrar splash y mostrar systray
+        _splashWindow?.UpdateStatus("¡Listo!");
+        Logger.Log("Initialization complete");
+
+        // Esperar un momento para que se vea el mensaje "Listo!"
+        var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(1500) };
+        timer.Tick += (s, e) =>
+        {
+            timer.Stop();
+            _splashWindow?.Close();
+            _splashWindow = null;
+
+            // Verificar si se debe iniciar en modo silencioso
+            bool startSilent = args.Contains("--silent") || args.Contains("-s");
+            if (!startSilent)
+            {
+                ShowDashboard();
+            }
+
+            // Mostrar notificación de inicio
+            ShowToastNotification("Imperial Shield Activo",
+                "El sistema de seguridad está monitoreando tu equipo.",
+                ToastNotificationType.Info);
+        };
+        timer.Start();
     }
+
+    private void HandleFatalError(Exception ex)
+    {
+        Logger.LogCrash(ex);
+        
+        var logPath = Logger.GetLogDirectory();
+        MessageBox.Show(
+            $"Error fatal al iniciar Imperial Shield:\n\n{ex.Message}\n\n" +
+            $"Los logs se encuentran en:\n{logPath}",
+            "Error Fatal",
+            MessageBoxButton.OK,
+            MessageBoxImage.Error);
+        
+        Shutdown(1);
+    }
+
+    #region Exception Handlers
+
+    private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+    {
+        Logger.LogCrash(e.Exception);
+        e.Handled = true;
+        
+        MessageBox.Show(
+            $"Error inesperado:\n{e.Exception.Message}\n\nLa aplicación continuará funcionando.",
+            "Error",
+            MessageBoxButton.OK,
+            MessageBoxImage.Warning);
+    }
+
+    private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        if (e.ExceptionObject is Exception ex)
+        {
+            Logger.LogCrash(ex);
+        }
+    }
+
+    private void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+    {
+        Logger.LogException(e.Exception, "UnobservedTaskException");
+        e.SetObserved();
+    }
+
+    #endregion
 
     #region Event Handlers
 
     private void OnHostsFileChanged(object? sender, HostsFileChangedEventArgs e)
     {
+        Logger.Log("HOSTS file changed detected");
         Dispatcher.Invoke(() =>
         {
             ShowToastNotification("⚠️ Alerta de Seguridad",
@@ -76,6 +206,7 @@ public partial class App : Application
 
     private void OnDefenderStatusChanged(object? sender, DefenderStatusEventArgs e)
     {
+        Logger.Log($"Defender status changed: {e.IsEnabled}");
         Dispatcher.Invoke(() =>
         {
             var type = e.IsEnabled ? ToastNotificationType.Success : ToastNotificationType.Danger;
@@ -89,6 +220,7 @@ public partial class App : Application
 
     private void OnExclusionAdded(object? sender, ExclusionAddedEventArgs e)
     {
+        Logger.Log($"New Defender exclusion detected: {e.ExclusionPath}");
         Dispatcher.Invoke(() =>
         {
             ShowToastNotification("🚨 Nueva Exclusión Detectada",
@@ -132,6 +264,7 @@ public partial class App : Application
         }
         catch (Exception ex)
         {
+            Logger.LogException(ex, "ViewHosts");
             MessageBox.Show($"Error al abrir el archivo HOSTS: {ex.Message}",
                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
@@ -165,10 +298,12 @@ public partial class App : Application
     private void Settings_Click(object sender, RoutedEventArgs e)
     {
         var startupEnabled = StartupManager.IsStartupEnabled();
+        var logPath = Logger.GetLogDirectory();
         
         var result = MessageBox.Show(
             $"=== Configuración de Imperial Shield ===\n\n" +
             $"Inicio con Windows: {(startupEnabled ? "Activado" : "Desactivado")}\n\n" +
+            $"Logs: {logPath}\n\n" +
             $"¿Deseas {(startupEnabled ? "desactivar" : "activar")} el inicio automático con Windows?",
             "Configuración",
             MessageBoxButton.YesNo,
@@ -193,6 +328,8 @@ public partial class App : Application
 
     private void Exit_Click(object sender, RoutedEventArgs e)
     {
+        Logger.Log("Exit requested by user");
+        
         var result = MessageBox.Show(
             "¿Estás seguro de que deseas cerrar Imperial Shield?\n\n" +
             "El sistema dejará de monitorear cambios en:\n" +
@@ -205,6 +342,7 @@ public partial class App : Application
 
         if (result == MessageBoxResult.Yes)
         {
+            Logger.Log("User confirmed exit");
             Shutdown();
         }
     }
@@ -244,7 +382,7 @@ public partial class App : Application
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Error al mostrar notificación: {ex.Message}");
+            Logger.LogException(ex, "ShowToastNotification");
         }
     }
 
@@ -252,6 +390,8 @@ public partial class App : Application
 
     protected override void OnExit(ExitEventArgs e)
     {
+        Logger.Log("Application exiting...");
+        
         _hostsMonitor?.Stop();
         _hostsMonitor?.Dispose();
         _defenderMonitor?.Stop();
@@ -259,6 +399,7 @@ public partial class App : Application
         _notifyIcon?.Dispose();
         SingleInstanceManager.ReleaseLock();
 
+        Logger.Log("=== Imperial Shield Stopped ===");
         base.OnExit(e);
     }
 }
