@@ -1,0 +1,177 @@
+<Window x:Class="ImperialShield.Views.NetworkViewerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="🌐 Imperial Shield - Monitor de Conexiones" 
+        Height="700" Width="1200"
+        WindowStartupLocation="CenterScreen"
+        Style="{StaticResource ModernWindow}">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Style="{StaticResource CardBorder}" Margin="0,0,0,20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel>
+                    <TextBlock Text="🌐 Monitor de Conexiones de Red" 
+                               FontSize="24" FontWeight="Bold" 
+                               Foreground="{StaticResource TextPrimaryBrush}"/>
+                    <TextBlock Text="Análisis de conexiones TCP activas con detección de reverse shells y comunicaciones sospechosas" 
+                               Foreground="{StaticResource TextSecondaryBrush}" 
+                               Margin="0,5,0,0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="🔄 Actualizar" Style="{StaticResource ModernButton}" 
+                            Click="RefreshButton_Click" Margin="0,0,10,0"/>
+                    <Button x:Name="FilterButton" Content="🔍 Solo Sospechosas" 
+                            Style="{StaticResource ModernButton}" Click="FilterButton_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Statistics -->
+        <Border Grid.Row="1" Style="{StaticResource CardBorder}" Margin="0,0,0,20" Padding="15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                    <TextBlock x:Name="TotalConnectionsText" Text="0" FontSize="28" FontWeight="Bold" 
+                               HorizontalAlignment="Center" Foreground="{StaticResource AccentBrush}"/>
+                    <TextBlock Text="Total Conexiones" Foreground="{StaticResource TextSecondaryBrush}" 
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                    <TextBlock x:Name="EstablishedText" Text="0" FontSize="28" FontWeight="Bold" 
+                               HorizontalAlignment="Center" Foreground="{StaticResource SuccessBrush}"/>
+                    <TextBlock Text="Establecidas" Foreground="{StaticResource TextSecondaryBrush}" 
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                    <TextBlock x:Name="ListeningText" Text="0" FontSize="28" FontWeight="Bold" 
+                               HorizontalAlignment="Center" Foreground="{StaticResource WarningBrush}"/>
+                    <TextBlock Text="Escuchando" Foreground="{StaticResource TextSecondaryBrush}" 
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="3" HorizontalAlignment="Center">
+                    <TextBlock x:Name="SuspiciousText" Text="0" FontSize="28" FontWeight="Bold" 
+                               HorizontalAlignment="Center" Foreground="{StaticResource DangerBrush}"/>
+                    <TextBlock Text="Sospechosas" Foreground="{StaticResource TextSecondaryBrush}" 
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="4" HorizontalAlignment="Center">
+                    <TextBlock x:Name="ExternalText" Text="0" FontSize="28" FontWeight="Bold" 
+                               HorizontalAlignment="Center" Foreground="#9B59B6"/>
+                    <TextBlock Text="Externas" Foreground="{StaticResource TextSecondaryBrush}" 
+                               HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Connection List -->
+        <Border Grid.Row="2" Style="{StaticResource CardBorder}" Padding="0">
+            <DataGrid x:Name="ConnectionGrid" 
+                      ItemsSource="{Binding Connections}"
+                      SelectedItem="{Binding SelectedConnection}">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="⚠️" Binding="{Binding ThreatLevelIcon}" Width="50">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Setter Property="FontSize" Value="18"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Proceso" Binding="{Binding ProcessName}" Width="120"/>
+                    <DataGridTextColumn Header="PID" Binding="{Binding ProcessId}" Width="60"/>
+                    <DataGridTextColumn Header="Dirección Local" Binding="{Binding LocalEndpoint}" Width="160"/>
+                    <DataGridTextColumn Header="Dirección Remota" Binding="{Binding RemoteEndpoint}" Width="160"/>
+                    <DataGridTextColumn Header="Estado" Binding="{Binding State}" Width="100"/>
+                    <DataGridTextColumn Header="Descripción" Binding="{Binding ThreatDescription}" Width="*"/>
+                </DataGrid.Columns>
+
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ThreatLevel}" Value="Critical">
+                                <Setter Property="Background" Value="#4DE74C3C"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ThreatLevel}" Value="High">
+                                <Setter Property="Background" Value="#4DE67E22"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ThreatLevel}" Value="Medium">
+                                <Setter Property="Background" Value="#4DF39C12"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="🔍 Ver Proceso" Click="ViewProcess_Click"/>
+                        <MenuItem Header="📋 Copiar IP Remota" Click="CopyRemoteIP_Click"/>
+                        <MenuItem Header="🌐 Buscar IP en Web" Click="SearchIP_Click"/>
+                        <Separator/>
+                        <MenuItem Header="❌ Terminar Proceso" Click="KillProcess_Click" 
+                                  Foreground="#E74C3C" FontWeight="Bold"/>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
+            </DataGrid>
+        </Border>
+
+        <!-- Alert Box for Critical Connections -->
+        <Border x:Name="AlertBox" Grid.Row="3" Margin="0,20,0,0" Padding="15" 
+                Background="#4DE74C3C" CornerRadius="8" Visibility="Collapsed">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Text="🚨" FontSize="32" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                <StackPanel Grid.Column="1">
+                    <TextBlock x:Name="AlertTitle" Text="ALERTA: Conexiones Críticas Detectadas" 
+                               FontSize="16" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock x:Name="AlertDescription" TextWrapping="Wrap" 
+                               Foreground="#FFB4B4" Margin="0,5,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Status Bar (shown when no alerts) -->
+        <Border x:Name="StatusBar" Grid.Row="3" Margin="0,20,0,0" Padding="10" 
+                Background="{StaticResource SurfaceBrush}" CornerRadius="8">
+            <Grid>
+                <TextBlock x:Name="StatusText" Text="Listo" 
+                           Foreground="{StaticResource TextSecondaryBrush}" 
+                           VerticalAlignment="Center"/>
+                <TextBlock x:Name="LastUpdateText" Text="Última actualización: --:--:--" 
+                           Foreground="{StaticResource TextSecondaryBrush}" 
+                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

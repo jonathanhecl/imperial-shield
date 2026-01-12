@@ -1,0 +1,220 @@
+<Window x:Class="ImperialShield.Views.DashboardWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="🛡️ Imperial Shield - Dashboard de Seguridad" 
+        Height="800" Width="1000"
+        WindowStartupLocation="CenterScreen"
+        Style="{StaticResource ModernWindow}">
+
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="{StaticResource HeaderGradient}" 
+                CornerRadius="16" Padding="30" Margin="0,0,0,25">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="🛡️" FontSize="48" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock Text="Imperial Shield" FontSize="32" FontWeight="Bold" 
+                               Foreground="White"/>
+                    <TextBlock Text="Sistema de Monitoreo de Seguridad para Windows" 
+                               FontSize="14" Foreground="#94A3B8" Margin="0,5,0,0"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border x:Name="StatusBadge" CornerRadius="20" Padding="15,8" 
+                            Background="{StaticResource SuccessBrush}">
+                        <TextBlock x:Name="StatusText" Text="🟢 Sistema Protegido" 
+                                   Foreground="White" FontWeight="SemiBold"/>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Quick Stats -->
+        <Grid Grid.Row="1" Margin="0,0,0,25">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Defender Status -->
+            <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,10,0">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock x:Name="DefenderIcon" Text="🛡️" FontSize="36" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Windows Defender" HorizontalAlignment="Center" 
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,10,0,5"/>
+                    <TextBlock x:Name="DefenderStatus" Text="Verificando..." 
+                               FontWeight="Bold" HorizontalAlignment="Center"
+                               Foreground="{StaticResource SuccessBrush}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Hosts File Status -->
+            <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="5,0">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock x:Name="HostsIcon" Text="📄" FontSize="36" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Archivo HOSTS" HorizontalAlignment="Center" 
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,10,0,5"/>
+                    <TextBlock x:Name="HostsStatus" Text="Sin modificar" 
+                               FontWeight="Bold" HorizontalAlignment="Center"
+                               Foreground="{StaticResource SuccessBrush}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Exclusions Count -->
+            <Border Grid.Column="2" Style="{StaticResource CardBorder}" Margin="5,0">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock x:Name="ExclusionsCount" Text="0" FontSize="36" 
+                               HorizontalAlignment="Center" Foreground="{StaticResource AccentBrush}"/>
+                    <TextBlock Text="Exclusiones AV" HorizontalAlignment="Center" 
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,10,0,5"/>
+                    <TextBlock x:Name="ExclusionsStatus" Text="Normal" 
+                               FontWeight="Bold" HorizontalAlignment="Center"
+                               Foreground="{StaticResource SuccessBrush}"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Active Connections -->
+            <Border Grid.Column="3" Style="{StaticResource CardBorder}" Margin="10,0,0,0">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock x:Name="ConnectionsCount" Text="0" FontSize="36" 
+                               HorizontalAlignment="Center" Foreground="{StaticResource AccentBrush}"/>
+                    <TextBlock Text="Conexiones Activas" HorizontalAlignment="Center" 
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,10,0,5"/>
+                    <TextBlock x:Name="ConnectionsStatus" Text="Verificando..." 
+                               FontWeight="Bold" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Main Actions -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Tools Panel -->
+            <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,12,0">
+                <StackPanel>
+                    <TextBlock Text="🔧 Herramientas de Investigación" FontSize="18" FontWeight="Bold" 
+                               Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,20"/>
+
+                    <Button Content="🔍 Visor de Procesos" Style="{StaticResource ModernButton}" 
+                            Click="ProcessViewer_Click" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
+                    
+                    <Button Content="🌐 Monitor de Conexiones" Style="{StaticResource ModernButton}" 
+                            Click="NetworkViewer_Click" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
+                    
+                    <Button Content="📄 Ver Archivo HOSTS" Style="{StaticResource ModernButton}" 
+                            Click="ViewHosts_Click" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
+                    
+                    <Button Content="🛡️ Ver Exclusiones Defender" Style="{StaticResource ModernButton}" 
+                            Click="ViewExclusions_Click" HorizontalAlignment="Stretch"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Defender Info -->
+            <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="12,0,0,0">
+                <StackPanel>
+                    <TextBlock Text="🛡️ Estado de Windows Defender" FontSize="18" FontWeight="Bold" 
+                               Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,20"/>
+
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Protección en Tiempo Real" 
+                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+                        <TextBlock x:Name="RealTimeStatus" Grid.Column="1" Text="--" FontWeight="Bold"/>
+                    </Grid>
+
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Monitor de Comportamiento" 
+                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+                        <TextBlock x:Name="BehaviorStatus" Grid.Column="1" Text="--" FontWeight="Bold"/>
+                    </Grid>
+
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Versión de Firmas" 
+                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+                        <TextBlock x:Name="SignatureVersion" Grid.Column="1" Text="--" FontWeight="Bold"
+                                   Foreground="{StaticResource TextPrimaryBrush}"/>
+                    </Grid>
+
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Antigüedad de Firmas" 
+                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+                        <TextBlock x:Name="SignatureAge" Grid.Column="1" Text="--" FontWeight="Bold"/>
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Último Escaneo Completo" 
+                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+                        <TextBlock x:Name="LastScan" Grid.Column="1" Text="--" FontWeight="Bold"
+                                   Foreground="{StaticResource TextPrimaryBrush}"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Footer -->
+        <Border Grid.Row="3" Margin="0,25,0,0" Padding="15" 
+                Background="{StaticResource SurfaceBrush}" CornerRadius="8">
+            <Grid>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Imperial Shield v1.0" 
+                               Foreground="{StaticResource TextSecondaryBrush}"/>
+                    <TextBlock Text=" • Monitoreo activo" 
+                               Foreground="{StaticResource SuccessBrush}" Margin="10,0,0,0"/>
+                </StackPanel>
+                
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="⚙️ Configuración" Background="Transparent" 
+                            Foreground="{StaticResource TextSecondaryBrush}" 
+                            BorderThickness="0" Cursor="Hand" Margin="0,0,15,0"
+                            Click="Settings_Click"/>
+                    <Button Content="❌ Minimizar al Systray" Background="Transparent" 
+                            Foreground="{StaticResource TextSecondaryBrush}" 
+                            BorderThickness="0" Cursor="Hand"
+                            Click="MinimizeToTray_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
