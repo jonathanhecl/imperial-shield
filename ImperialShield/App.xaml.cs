@@ -352,23 +352,29 @@ public partial class App : Application
     {
         Logger.Log("Exit requested by user");
         
-        // Usar BeginInvoke para que el MessageBox aparezca después de que el menú se cierre
+        // Usar ventana personalizada en lugar de MessageBox que desaparece
         Dispatcher.BeginInvoke(new Action(() =>
         {
-            var result = MessageBox.Show(
-                "¿Estás seguro de que deseas cerrar Imperial Shield?\n\n" +
-                "El sistema dejará de monitorear cambios en:\n" +
-                "• Archivo HOSTS\n" +
-                "• Exclusiones de Windows Defender\n" +
-                "• Estado del antivirus",
-                "Confirmar Salida",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
-
-            if (result == MessageBoxResult.Yes)
+            try
             {
-                Logger.Log("User confirmed exit");
-                Shutdown();
+                var confirmWin = new Views.ConfirmExitWindow();
+                confirmWin.ShowDialog();
+
+                if (confirmWin.Confirmed)
+                {
+                    Logger.Log("User confirmed exit through custom dialog");
+                    Shutdown();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex, "Custom exit dialog");
+                // Fallback de emergencia si la ventana falla
+                if (MessageBox.Show("¿Deseas cerrar Imperial Shield?", "Salir", 
+                    MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                {
+                    Shutdown();
+                }
             }
         }), System.Windows.Threading.DispatcherPriority.Background);
     }
