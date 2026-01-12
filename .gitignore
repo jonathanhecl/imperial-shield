@@ -92,3 +92,6 @@ TestResults/
 coverage/
 *.coverage
 *.coveragexml
+
+# Build error
+build_err.txt

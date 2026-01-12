@@ -1,7 +1,3 @@
-using System.Management;
-using System.Management.Automation;
-using System.Collections.ObjectModel;
-
 namespace ImperialShield.Services;
 
 /// <summary>
@@ -67,30 +63,46 @@ public class DefenderMonitor : IDisposable
     }
 
     /// <summary>
-    /// Verifica si Windows Defender está activo usando PowerShell
+    /// Verifica si Windows Defender está activo usando PowerShell externo
     /// </summary>
     public bool IsDefenderEnabled()
     {
-        // Usar PowerShell directamente - es más confiable que WMI
-        return IsDefenderEnabledViaPowerShell();
-    }
-
-    private bool IsDefenderEnabledViaPowerShell()
-    {
         try
         {
-            using var ps = PowerShell.Create();
-            ps.AddScript("(Get-MpComputerStatus).RealTimeProtectionEnabled");
-            var results = ps.Invoke();
-            
-            if (results.Count > 0 && results[0]?.BaseObject is bool enabled)
+            // Usar proceso externo de PowerShell - más confiable que el SDK
+            var startInfo = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "powershell.exe",
+                Arguments = "-NoProfile -ExecutionPolicy Bypass -Command \"(Get-MpComputerStatus).RealTimeProtectionEnabled\"",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = System.Diagnostics.Process.Start(startInfo);
+            if (process == null) return true;
+
+            var output = process.StandardOutput.ReadToEnd().Trim();
+            var error = process.StandardError.ReadToEnd();
+            process.WaitForExit(5000);
+
+            Logger.Log($"Defender check output: '{output}', error: '{error}'");
+
+            if (bool.TryParse(output, out bool enabled))
             {
                 return enabled;
             }
+
+            // Interpretar respuesta textual
+            if (output.Equals("True", StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (output.Equals("False", StringComparison.OrdinalIgnoreCase))
+                return false;
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error PowerShell: {ex.Message}");
+            Logger.LogException(ex, "IsDefenderEnabled");
         }
 
         return true; // Asumir habilitado si no podemos verificar
@@ -105,28 +117,40 @@ public class DefenderMonitor : IDisposable
 
         try
         {
-            using var ps = PowerShell.Create();
-            ps.AddScript(@"
-                $prefs = Get-MpPreference
-                @{
-                    Paths = $prefs.ExclusionPath
-                    Extensions = $prefs.ExclusionExtension
-                    Processes = $prefs.ExclusionProcess
-                }
-            ");
-            
-            var results = ps.Invoke();
-            
-            if (results.Count > 0 && results[0]?.BaseObject is System.Collections.Hashtable ht)
+            var startInfo = new System.Diagnostics.ProcessStartInfo
             {
-                AddToSet(exclusions, ht["Paths"]);
-                AddToSet(exclusions, ht["Extensions"], prefix: "*."); 
-                AddToSet(exclusions, ht["Processes"], prefix: "[Proceso] ");
+                FileName = "powershell.exe",
+                Arguments = "-NoProfile -ExecutionPolicy Bypass -Command \"$p = Get-MpPreference; if($p.ExclusionPath){$p.ExclusionPath | ForEach-Object { Write-Output \\\"PATH:$_\\\" }}; if($p.ExclusionExtension){$p.ExclusionExtension | ForEach-Object { Write-Output \\\"EXT:$_\\\" }}; if($p.ExclusionProcess){$p.ExclusionProcess | ForEach-Object { Write-Output \\\"PROC:$_\\\" }}\"",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = System.Diagnostics.Process.Start(startInfo);
+            if (process != null)
+            {
+                var output = process.StandardOutput.ReadToEnd();
+                var error = process.StandardError.ReadToEnd();
+                process.WaitForExit(10000);
+
+                Logger.Log($"Exclusions output length: {output.Length}, error: '{error}'");
+
+                foreach (var line in output.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    var trimmed = line.Trim();
+                    if (trimmed.StartsWith("PATH:"))
+                        exclusions.Add(trimmed.Substring(5));
+                    else if (trimmed.StartsWith("EXT:"))
+                        exclusions.Add("*." + trimmed.Substring(4));
+                    else if (trimmed.StartsWith("PROC:"))
+                        exclusions.Add("[Proceso] " + trimmed.Substring(5));
+                }
             }
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error al obtener exclusiones: {ex.Message}");
+            Logger.LogException(ex, "GetCurrentExclusions");
         }
 
         return exclusions;
@@ -155,17 +179,28 @@ public class DefenderMonitor : IDisposable
     {
         try
         {
-            using var ps = PowerShell.Create();
-            ps.AddScript($"Remove-MpPreference -ExclusionPath '{path}'");
-            ps.Invoke();
-            
-            if (ps.HadErrors)
+            var escapedPath = path.Replace("'", "''");
+            var startInfo = new System.Diagnostics.ProcessStartInfo
             {
-                foreach (var error in ps.Streams.Error)
+                FileName = "powershell.exe",
+                Arguments = $"-NoProfile -ExecutionPolicy Bypass -Command \"Remove-MpPreference -ExclusionPath '{escapedPath}'\"",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = System.Diagnostics.Process.Start(startInfo);
+            if (process != null)
+            {
+                var error = process.StandardError.ReadToEnd();
+                process.WaitForExit(10000);
+                
+                if (process.ExitCode != 0 || !string.IsNullOrWhiteSpace(error))
                 {
-                    System.Diagnostics.Debug.WriteLine($"Error al eliminar exclusión: {error}");
+                    Logger.Log($"Error removing exclusion: {error}");
+                    return false;
                 }
-                return false;
             }
             
             _knownExclusions.Remove(path);
@@ -173,7 +208,7 @@ public class DefenderMonitor : IDisposable
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}");
+            Logger.LogException(ex, "RemoveExclusion");
             return false;
         }
     }
@@ -187,42 +222,70 @@ public class DefenderMonitor : IDisposable
 
         try
         {
-            using var ps = PowerShell.Create();
-            ps.AddScript(@"
-                $status = Get-MpComputerStatus
-                @{
-                    RealTimeEnabled = $status.RealTimeProtectionEnabled
-                    BehaviorMonitor = $status.BehaviorMonitorEnabled
-                    OnAccessProtection = $status.OnAccessProtectionEnabled
-                    IoavProtection = $status.IoavProtectionEnabled
-                    AntivirusEnabled = $status.AntivirusEnabled
-                    SignatureVersion = $status.AntivirusSignatureVersion
-                    SignatureAge = $status.AntivirusSignatureAge
-                    LastScan = $status.FullScanEndTime
-                    QuickScanAge = $status.QuickScanAge
-                }
-            ");
+            var script = @"
+$status = Get-MpComputerStatus
+Write-Output ""RealTimeEnabled=$($status.RealTimeProtectionEnabled)""
+Write-Output ""BehaviorMonitor=$($status.BehaviorMonitorEnabled)""
+Write-Output ""SignatureVersion=$($status.AntivirusSignatureVersion)""
+Write-Output ""SignatureAge=$($status.AntivirusSignatureAge)""
+Write-Output ""QuickScanAge=$($status.QuickScanAge)""
+Write-Output ""LastScan=$($status.FullScanEndTime)""
+";
             
-            var results = ps.Invoke();
-            
-            if (results.Count > 0 && results[0]?.BaseObject is System.Collections.Hashtable ht)
+            var startInfo = new System.Diagnostics.ProcessStartInfo
             {
-                info.RealTimeProtectionEnabled = GetBool(ht["RealTimeEnabled"]);
-                info.BehaviorMonitorEnabled = GetBool(ht["BehaviorMonitor"]);
-                info.OnAccessProtectionEnabled = GetBool(ht["OnAccessProtection"]);
-                info.IoavProtectionEnabled = GetBool(ht["IoavProtection"]);
-                info.AntivirusEnabled = GetBool(ht["AntivirusEnabled"]);
-                info.SignatureVersion = ht["SignatureVersion"]?.ToString() ?? "Unknown";
-                info.SignatureAgeDays = GetInt(ht["SignatureAge"]);
-                info.QuickScanAgeDays = GetInt(ht["QuickScanAge"]);
-                
-                if (ht["LastScan"] is DateTime lastScan)
-                    info.LastFullScan = lastScan;
+                FileName = "powershell.exe",
+                Arguments = $"-NoProfile -ExecutionPolicy Bypass -Command \"{script.Replace("\"", "\\\"").Replace("\n", " ")}\"",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var process = System.Diagnostics.Process.Start(startInfo);
+            if (process != null)
+            {
+                var output = process.StandardOutput.ReadToEnd();
+                process.WaitForExit(10000);
+
+                foreach (var line in output.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+                {
+                    var parts = line.Trim().Split('=', 2);
+                    if (parts.Length != 2) continue;
+
+                    var key = parts[0];
+                    var value = parts[1];
+
+                    switch (key)
+                    {
+                        case "RealTimeEnabled":
+                            info.RealTimeProtectionEnabled = value.Equals("True", StringComparison.OrdinalIgnoreCase);
+                            break;
+                        case "BehaviorMonitor":
+                            info.BehaviorMonitorEnabled = value.Equals("True", StringComparison.OrdinalIgnoreCase);
+                            break;
+                        case "SignatureVersion":
+                            info.SignatureVersion = value;
+                            break;
+                        case "SignatureAge":
+                            if (int.TryParse(value, out int sigAge))
+                                info.SignatureAgeDays = sigAge;
+                            break;
+                        case "QuickScanAge":
+                            if (int.TryParse(value, out int scanAge))
+                                info.QuickScanAgeDays = scanAge;
+                            break;
+                        case "LastScan":
+                            if (DateTime.TryParse(value, out DateTime lastScan))
+                                info.LastFullScan = lastScan;
+                            break;
+                    }
+                }
             }
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"Error al obtener info de Defender: {ex.Message}");
+            Logger.LogException(ex, "GetDefenderInfo");
         }
 
         info.ExclusionCount = _knownExclusions.Count;

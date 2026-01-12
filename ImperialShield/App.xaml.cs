@@ -286,79 +286,91 @@ public partial class App : Application
 
     private void ViewDefender_Click(object sender, RoutedEventArgs e)
     {
-        if (_defenderMonitor == null) return;
+        // Usar BeginInvoke para que el MessageBox aparezca después de que el menú se cierre
+        Dispatcher.BeginInvoke(new Action(() =>
+        {
+            if (_defenderMonitor == null) return;
 
-        var info = _defenderMonitor.GetDefenderInfo();
-        var exclusions = _defenderMonitor.GetCurrentExclusions();
+            var info = _defenderMonitor.GetDefenderInfo();
+            var exclusions = _defenderMonitor.GetCurrentExclusions();
 
-        var message = $"=== Estado de Windows Defender ===\n\n" +
-                     $"Protección en Tiempo Real: {(info.RealTimeProtectionEnabled ? "✅ Activo" : "❌ Inactivo")}\n" +
-                     $"Monitor de Comportamiento: {(info.BehaviorMonitorEnabled ? "✅ Activo" : "❌ Inactivo")}\n" +
-                     $"Versión de Firmas: {info.SignatureVersion}\n" +
-                     $"Antigüedad de Firmas: {info.SignatureAgeDays} día(s)\n" +
-                     $"Último Escaneo: {info.LastFullScan?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca"}\n\n" +
-                     $"=== Exclusiones ({exclusions.Count}) ===\n" +
-                     (exclusions.Count > 0
-                         ? string.Join("\n", exclusions.Take(10).Select(ex => $"• {ex}"))
-                         : "No hay exclusiones configuradas");
+            var message = $"=== Estado de Windows Defender ===\n\n" +
+                         $"Protección en Tiempo Real: {(info.RealTimeProtectionEnabled ? "✅ Activo" : "❌ Inactivo")}\n" +
+                         $"Monitor de Comportamiento: {(info.BehaviorMonitorEnabled ? "✅ Activo" : "❌ Inactivo")}\n" +
+                         $"Versión de Firmas: {info.SignatureVersion}\n" +
+                         $"Antigüedad de Firmas: {info.SignatureAgeDays} día(s)\n" +
+                         $"Último Escaneo: {info.LastFullScan?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca"}\n\n" +
+                         $"=== Exclusiones ({exclusions.Count}) ===\n" +
+                         (exclusions.Count > 0
+                             ? string.Join("\n", exclusions.Take(10).Select(ex => $"• {ex}"))
+                             : "No hay exclusiones configuradas");
 
-        if (exclusions.Count > 10)
-            message += $"\n... y {exclusions.Count - 10} más";
+            if (exclusions.Count > 10)
+                message += $"\n... y {exclusions.Count - 10} más";
 
-        MessageBox.Show(message, "Estado de Windows Defender",
-            MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(message, "Estado de Windows Defender",
+                MessageBoxButton.OK, MessageBoxImage.Information);
+        }), System.Windows.Threading.DispatcherPriority.Background);
     }
 
     private void Settings_Click(object sender, RoutedEventArgs e)
     {
-        var startupEnabled = StartupManager.IsStartupEnabled();
-        var logPath = Logger.GetLogDirectory();
-        
-        var result = MessageBox.Show(
-            $"=== Configuración de Imperial Shield ===\n\n" +
-            $"Inicio con Windows: {(startupEnabled ? "Activado" : "Desactivado")}\n\n" +
-            $"Logs: {logPath}\n\n" +
-            $"¿Deseas {(startupEnabled ? "desactivar" : "activar")} el inicio automático con Windows?",
-            "Configuración",
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Question);
-
-        if (result == MessageBoxResult.Yes)
+        // Usar BeginInvoke para que el MessageBox aparezca después de que el menú se cierre
+        Dispatcher.BeginInvoke(new Action(() =>
         {
-            if (StartupManager.ToggleStartup())
+            var startupEnabled = StartupManager.IsStartupEnabled();
+            var logPath = Logger.GetLogDirectory();
+            
+            var result = MessageBox.Show(
+                $"=== Configuración de Imperial Shield ===\n\n" +
+                $"Inicio con Windows: {(startupEnabled ? "Activado" : "Desactivado")}\n\n" +
+                $"Logs: {logPath}\n\n" +
+                $"¿Deseas {(startupEnabled ? "desactivar" : "activar")} el inicio automático con Windows?",
+                "Configuración",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
             {
-                var newState = StartupManager.IsStartupEnabled();
-                MessageBox.Show(
-                    $"Inicio automático {(newState ? "activado" : "desactivado")} correctamente.",
-                    "Configuración", MessageBoxButton.OK, MessageBoxImage.Information);
+                if (StartupManager.ToggleStartup())
+                {
+                    var newState = StartupManager.IsStartupEnabled();
+                    MessageBox.Show(
+                        $"Inicio automático {(newState ? "activado" : "desactivado")} correctamente.",
+                        "Configuración", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Error al modificar la configuración de inicio.",
+                        "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
-            else
-            {
-                MessageBox.Show("Error al modificar la configuración de inicio.",
-                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
+        }), System.Windows.Threading.DispatcherPriority.Background);
     }
 
     private void Exit_Click(object sender, RoutedEventArgs e)
     {
         Logger.Log("Exit requested by user");
         
-        var result = MessageBox.Show(
-            "¿Estás seguro de que deseas cerrar Imperial Shield?\n\n" +
-            "El sistema dejará de monitorear cambios en:\n" +
-            "• Archivo HOSTS\n" +
-            "• Exclusiones de Windows Defender\n" +
-            "• Estado del antivirus",
-            "Confirmar Salida",
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Warning);
-
-        if (result == MessageBoxResult.Yes)
+        // Usar BeginInvoke para que el MessageBox aparezca después de que el menú se cierre
+        Dispatcher.BeginInvoke(new Action(() =>
         {
-            Logger.Log("User confirmed exit");
-            Shutdown();
-        }
+            var result = MessageBox.Show(
+                "¿Estás seguro de que deseas cerrar Imperial Shield?\n\n" +
+                "El sistema dejará de monitorear cambios en:\n" +
+                "• Archivo HOSTS\n" +
+                "• Exclusiones de Windows Defender\n" +
+                "• Estado del antivirus",
+                "Confirmar Salida",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                Logger.Log("User confirmed exit");
+                Shutdown();
+            }
+        }), System.Windows.Threading.DispatcherPriority.Background);
     }
 
     #endregion
