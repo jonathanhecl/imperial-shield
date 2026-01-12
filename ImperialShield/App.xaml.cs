@@ -1,10 +1,9 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
-using Hardcodet.NotifyIcon.Wpf;
+using Hardcodet.Wpf.TaskbarNotification;
 using ImperialShield.Services;
 using ImperialShield.Views;
-using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace ImperialShield;
 
@@ -230,15 +229,18 @@ public partial class App : Application
     {
         try
         {
-            var builder = new ToastContentBuilder()
-                .AddText(title)
-                .AddText(message)
-                .AddAttributionText("Imperial Shield Security");
-
-            builder.Show(toast =>
+            if (_notifyIcon != null)
             {
-                toast.ExpirationTime = DateTime.Now.AddMinutes(5);
-            });
+                var icon = type switch
+                {
+                    ToastNotificationType.Danger => BalloonIcon.Error,
+                    ToastNotificationType.Warning => BalloonIcon.Warning,
+                    ToastNotificationType.Success => BalloonIcon.Info,
+                    _ => BalloonIcon.Info
+                };
+
+                _notifyIcon.ShowBalloonTip(title, message, icon);
+            }
         }
         catch (Exception ex)
         {
@@ -256,9 +258,6 @@ public partial class App : Application
         _defenderMonitor?.Dispose();
         _notifyIcon?.Dispose();
         SingleInstanceManager.ReleaseLock();
-
-        // Limpiar notificaciones
-        ToastNotificationManagerCompat.Uninstall();
 
         base.OnExit(e);
     }

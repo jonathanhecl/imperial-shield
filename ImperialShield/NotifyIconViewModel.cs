@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
-using Hardcodet.NotifyIcon.Wpf;
+using Hardcodet.Wpf.TaskbarNotification;
 using ImperialShield.Services;
 using ImperialShield.Views;
 
