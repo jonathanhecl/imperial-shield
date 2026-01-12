@@ -12,6 +12,7 @@
             
             <!-- Taskbar Icon -->
             <tb:TaskbarIcon x:Key="NotifyIcon"
+                            IconSource="/Resources/shield.ico"
                             ToolTipText="Imperial Shield - Sistema de Seguridad">
                 <tb:TaskbarIcon.ContextMenu>
                     <ContextMenu>

@@ -25,8 +25,8 @@ public class DefenderMonitor : IDisposable
         _lastKnownStatus = IsDefenderEnabled();
         _knownExclusions = GetCurrentExclusions();
 
-        // Iniciar el timer de polling
-        _timer = new Timer(CheckDefenderStatus, null, 0, _pollingIntervalMs);
+        // Iniciar el timer de polling (con delay inicial de 5 segundos para no interferir con UI)
+        _timer = new Timer(CheckDefenderStatus, null, 5000, _pollingIntervalMs);
     }
 
     private void CheckDefenderStatus(object? state)
@@ -67,34 +67,11 @@ public class DefenderMonitor : IDisposable
     }
 
     /// <summary>
-    /// Verifica si Windows Defender está activo usando WMI
+    /// Verifica si Windows Defender está activo usando PowerShell
     /// </summary>
     public bool IsDefenderEnabled()
     {
-        try
-        {
-            // Usar WMI para verificar el estado de Windows Defender
-            using var searcher = new ManagementObjectSearcher(
-                @"root\SecurityCenter2",
-                "SELECT * FROM AntiVirusProduct WHERE displayName LIKE '%Defender%'");
-
-            foreach (ManagementObject obj in searcher.Get())
-            {
-                var state = (uint)obj["productState"];
-                // El bit 12-15 indica si está habilitado (0x1000 = habilitado)
-                var isEnabled = ((state >> 12) & 0xF) == 1;
-                // El bit 4-7 indica si está actualizado
-                var isUpToDate = ((state >> 4) & 0xF) == 0;
-                
-                return isEnabled;
-            }
-        }
-        catch (ManagementException ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Error WMI: {ex.Message}");
-        }
-
-        // Método alternativo usando PowerShell
+        // Usar PowerShell directamente - es más confiable que WMI
         return IsDefenderEnabledViaPowerShell();
     }
 
