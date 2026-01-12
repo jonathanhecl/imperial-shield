@@ -337,8 +337,6 @@ public partial class App : Application
                 // Reiniciar StartupMonitor con el nuevo tiempo
                 _startupMonitor?.Stop();
                 _startupMonitor?.Start();
-
-                AlertWindow.Show("Configuración guardada. Los monitores se han reiniciado con el nuevo intervalo.");
             }
         }), System.Windows.Threading.DispatcherPriority.Background);
     }

@@ -238,8 +238,7 @@ public partial class DashboardWindow : Window
         
         if (settingsWin.SettingsChanged)
         {
-            RefreshDashboardAsync().ConfigureAwait(false);
-            AlertWindow.Show("Configuración guardada.");
+            _ = RefreshDashboardAsync();
         }
     }
 
