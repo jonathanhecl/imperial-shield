@@ -21,6 +21,10 @@ public partial class DashboardWindow : Window
         _defenderMonitor = new DefenderMonitor();
         _networkMonitor = new NetworkMonitor();
         
+        // Establecer versión
+        var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+        VersionText.Text = $"Imperial Shield v{version?.Major}.{version?.Minor}.{version?.Build}";
+
         Loaded += async (s, e) => await RefreshDashboardAsync();
         
         // Refrescar cada 30 segundos
@@ -229,8 +233,14 @@ public partial class DashboardWindow : Window
 
     private void Settings_Click(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show("Configuración próximamente...", 
-            "Configuración", MessageBoxButton.OK, MessageBoxImage.Information);
+        var settingsWin = new SettingsWindow();
+        settingsWin.ShowDialog();
+        
+        if (settingsWin.SettingsChanged)
+        {
+            RefreshDashboardAsync().ConfigureAwait(false);
+            AlertWindow.Show("Configuración guardada.");
+        }
     }
 
     private void MinimizeToTray_Click(object sender, RoutedEventArgs e)

@@ -100,13 +100,8 @@ public class NotifyIconViewModel
 
     public void Settings_Click(object sender, RoutedEventArgs e)
     {
-        MessageBox.Show("Configuración próximamente disponible.\n\n" +
-                       "Opciones planificadas:\n" +
-                       "• Iniciar con Windows\n" +
-                       "• Intervalo de escaneo\n" +
-                       "• Notificaciones\n" +
-                       "• Whitelist de exclusiones",
-            "Configuración", MessageBoxButton.OK, MessageBoxImage.Information);
+        var settingsWin = new SettingsWindow();
+        settingsWin.ShowDialog();
     }
 
     public void Exit_Click(object sender, RoutedEventArgs e)

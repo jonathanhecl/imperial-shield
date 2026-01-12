@@ -198,7 +198,7 @@
                 Background="{StaticResource SurfaceBrush}" CornerRadius="8">
             <Grid>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Imperial Shield v1.0" 
+                    <TextBlock x:Name="VersionText" Text="Imperial Shield" 
                                Foreground="{StaticResource TextSecondaryBrush}"/>
                     <TextBlock Text=" • Monitoreo activo" 
                                Foreground="{StaticResource SuccessBrush}" Margin="10,0,0,0"/>

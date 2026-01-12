@@ -210,37 +210,32 @@ public partial class App : Application
     private void OnHostsFileChanged(object? sender, HostsFileChangedEventArgs e)
     {
         Logger.Log("HOSTS file changed detected");
-        Dispatcher.Invoke(() =>
-        {
-            ShowToastNotification("⚠️ Alerta de Seguridad",
-                $"El archivo HOSTS ha sido modificado.\n{e.ChangeDescription}",
-                ToastNotificationType.Warning);
-        });
+        Views.AlertWindow.Show(
+            "¡ATENCIÓN! Se han detectado cambios en el archivo HOSTS del sistema.\n\n" +
+            $"{e.ChangeDescription}\n\n" +
+            "¿Autorizas estos cambios?");
     }
 
     private void OnDefenderStatusChanged(object? sender, DefenderStatusEventArgs e)
     {
-        Logger.Log($"Defender status changed: {e.IsEnabled}");
-        Dispatcher.Invoke(() =>
+        Logger.Log($"Defender status changed: {(e.IsEnabled ? "Enabled" : "DISABLED")}");
+        
+        if (!e.IsEnabled)
         {
-            var type = e.IsEnabled ? ToastNotificationType.Success : ToastNotificationType.Danger;
-            var message = e.IsEnabled
-                ? "Windows Defender está activo y protegiendo tu sistema."
-                : "⚠️ Windows Defender ha sido DESACTIVADO. Tu sistema está en riesgo.";
-
-            ShowToastNotification("Estado de Windows Defender", message, type);
-        });
+            Views.AlertWindow.Show(
+                "¡ATENCIÓN! La Protección en Tiempo Real de Windows Defender ha sido DESACTIVADA.\n\n" +
+                "Su equipo se encuentra vulnerable a amenazas externas.");
+        }
     }
 
     private void OnExclusionAdded(object? sender, ExclusionAddedEventArgs e)
     {
-        Logger.Log($"New Defender exclusion detected: {e.ExclusionPath}");
-        Dispatcher.Invoke(() =>
-        {
-            ShowToastNotification("🚨 Nueva Exclusión Detectada",
-                $"Se ha añadido una nueva exclusión al antivirus:\n{e.ExclusionPath}\n\n¿Autorizas este cambio?",
-                ToastNotificationType.Danger);
-        });
+        Logger.Log($"New exclusion detected: {e.ExclusionPath}");
+        
+        Views.AlertWindow.Show(
+            "Se ha detectado una NUEVA EXCLUSIÓN en Windows Defender:\n\n" +
+            $"• {e.ExclusionPath}\n\n" +
+            "Esto podría permitir que archivos maliciosos se ejecuten sin ser detectados.");
     }
 
     #endregion

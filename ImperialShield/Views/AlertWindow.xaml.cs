@@ -1,6 +1,5 @@
 using System;
 using System.Windows;
-using System.Windows.Threading;
 
 namespace ImperialShield.Views
 {
@@ -11,15 +10,8 @@ namespace ImperialShield.Views
             InitializeComponent();
             MessageText.Text = message;
             
-            // Posicionar en la esquina inferior derecha (estilo notificación)
-            var desktopWorkingArea = SystemParameters.WorkArea;
-            this.Left = desktopWorkingArea.Right - this.Width - 10;
-            this.Top = desktopWorkingArea.Bottom - this.Height - 10;
-
-            // Auto-cerrar después de 10 segundos
-            var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(10) };
-            timer.Tick += (s, e) => { timer.Stop(); this.Close(); };
-            timer.Start();
+            // Sonido de parada crítica (más impactante que la exclamación)
+            System.Media.SystemSounds.Hand.Play();
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)
@@ -32,7 +24,9 @@ namespace ImperialShield.Views
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var alert = new AlertWindow(message);
-                alert.Show();
+                // Aseguramos que se vea por encima de todo
+                alert.Topmost = true;
+                alert.ShowDialog();
             });
         }
     }
