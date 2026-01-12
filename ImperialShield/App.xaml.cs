@@ -17,6 +17,7 @@ public partial class App : Application
     private TaskbarIcon? _notifyIcon;
     private HostsFileMonitor? _hostsMonitor;
     private DefenderMonitor? _defenderMonitor;
+    private StartupMonitor? _startupMonitor;
     private DashboardWindow? _dashboardWindow;
     private SplashWindow? _splashWindow;
 
@@ -134,7 +135,12 @@ public partial class App : Application
         }
 
         // Paso 4: Cerrar splash y mostrar systray
-        _splashWindow?.UpdateStatus("¡Listo!");
+        _splashWindow?.UpdateStatus("Monitoreando inicio automático...");
+        _startupMonitor = new StartupMonitor();
+        _startupMonitor.NewStartupAppDetected += OnNewStartupAppDetected;
+        _startupMonitor.Start();
+
+        _splashWindow?.UpdateStatus("Listo.");
         Logger.Log("Initialization complete");
 
         // Esperar un momento para que se vea el mensaje "Listo!"
@@ -328,6 +334,10 @@ public partial class App : Application
                 _hostsMonitor?.Stop();
                 _hostsMonitor?.Start();
 
+                // Reiniciar StartupMonitor con el nuevo tiempo
+                _startupMonitor?.Stop();
+                _startupMonitor?.Start();
+
                 AlertWindow.Show("Configuración guardada. Los monitores se han reiniciado con el nuevo intervalo.");
             }
         }), System.Windows.Threading.DispatcherPriority.Background);
@@ -403,6 +413,16 @@ public partial class App : Application
         }
     }
 
+    private void OnNewStartupAppDetected(object? sender, string app)
+    {
+        Logger.Log($"NEW STARTUP APP: {app}");
+        Views.AlertWindow.Show(
+            "¡ADVERTENCIA DE SEGURIDAD!\n\n" +
+            "Se ha detectado que una nueva aplicación intenta iniciarse automáticamente con Windows:\n\n" +
+            $"• {app}\n\n" +
+            "Muchos virus y troyanos usan este método para persistir en el sistema. ¿Reconoces esta aplicación?");
+    }
+
     #endregion
 
     protected override void OnExit(ExitEventArgs e)
@@ -413,6 +433,7 @@ public partial class App : Application
         _hostsMonitor?.Dispose();
         _defenderMonitor?.Stop();
         _defenderMonitor?.Dispose();
+        _startupMonitor?.Stop();
         _notifyIcon?.Dispose();
         SingleInstanceManager.ReleaseLock();
 
