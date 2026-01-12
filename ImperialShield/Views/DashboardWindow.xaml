@@ -123,6 +123,9 @@
                     
                     <Button Content="🌐 Monitor de Conexiones" Style="{StaticResource ModernButton}" 
                             Click="NetworkViewer_Click" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
+
+                    <Button Content="🚀 Gestor de Inicio" Style="{StaticResource ModernButton}" 
+                            Click="StartupManager_Click" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
                     
                     <Button Content="📄 Ver Archivo HOSTS" Style="{StaticResource ModernButton}" 
                             Click="ViewHosts_Click" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>

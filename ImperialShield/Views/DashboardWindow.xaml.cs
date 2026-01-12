@@ -168,6 +168,12 @@ public partial class DashboardWindow : Window
         window.Show();
     }
 
+    private void StartupManager_Click(object sender, RoutedEventArgs e)
+    {
+        var window = new StartupManagerWindow();
+        window.Show();
+    }
+
     private void ViewHosts_Click(object sender, RoutedEventArgs e)
     {
         try

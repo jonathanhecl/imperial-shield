@@ -31,35 +31,6 @@ namespace ImperialShield.Views
             StartupCheckBox.IsChecked = StartupManager.IsStartupEnabled();
         }
 
-        private void ViewStartupApps_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                // Obtener apps de inicio vía PowerShell para mayor control
-                var script = "Get-ItemProperty 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run', 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -ErrorAction SilentlyContinue | Select-Object -Property PSChildName, (Get-ItemProperty $_.PSPath) | Format-List";
-                
-                var startInfo = new System.Diagnostics.ProcessStartInfo
-                {
-                    FileName = "powershell.exe",
-                    Arguments = "-NoProfile -ExecutionPolicy Bypass -Command \"Get-ItemProperty 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' | Get-Member -MemberType NoteProperty | ForEach-Object { Write-Output \\\"$($_.Name): $((Get-ItemProperty 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run').$($_.Name))\\\" }; Get-ItemProperty 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' | Get-Member -MemberType NoteProperty | ForEach-Object { Write-Output \\\"$($_.Name): $((Get-ItemProperty 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run').$($_.Name))\\\" }\"",
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-                using var process = System.Diagnostics.Process.Start(startInfo);
-                var output = process?.StandardOutput.ReadToEnd() ?? "Error al obtener lista.";
-                process?.WaitForExit();
-
-                MessageBox.Show(string.IsNullOrWhiteSpace(output) ? "No se encontraron aplicaciones en el registro de inicio." : output, 
-                    "Aplicaciones de Inicio (Registro)", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogException(ex, "ViewStartupApps");
-            }
-        }
-
         private void TestAlert_Click(object sender, RoutedEventArgs e)
         {
             AlertWindow.Show("¡Prueba de Seguridad! Se ha detectado un cambio simulado en el sistema.");
