@@ -283,30 +283,19 @@ public partial class App : Application
     {
         Dispatcher.BeginInvoke(() =>
         {
-            string deviceName = e.App.Device == DeviceType.Camera ? "CÁMARA" : "MICRÓFONO";
-            string appName = e.App.ApplicationName;
+            Logger.Log($"NEW PRIVACY APP: {e.App.ApplicationName} accessed {e.App.Device}");
             
-            Logger.Log($"NEW PRIVACY APP: {appName} accessed {deviceName}");
-            
-            var result = MessageBox.Show(
-                $"¡NUEVA APLICACIÓN CON ACCESO A TU {deviceName}!\n\n" +
-                $"Aplicación: {appName}\n\n" +
-                $"Esta es la primera vez que Imperial Shield detecta que esta aplicación " +
-                $"solicita acceso a tu {deviceName.ToLower()}.\n\n" +
-                $"¿Deseas REVOCAR el permiso de esta aplicación?",
-                "⚠️ Nueva App de Privacidad Detectada",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
+            var alert = new PrivacyAlertWindow(e.App);
+            alert.ShowDialog();
 
-            if (result == MessageBoxResult.Yes)
+            if (alert.Result == PrivacyAlertResult.Revoke)
             {
                 _privacyMonitor?.RevokePermission(e.App.ApplicationPath, e.App.IsNonPackaged, e.App.Device);
-                MessageBox.Show(
-                    $"Permiso de {deviceName.ToLower()} revocado para '{appName}'.\n\n" +
-                    "La aplicación ya no podrá acceder a este dispositivo.",
-                    "Permiso Revocado",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                
+                string deviceName = e.App.Device == DeviceType.Camera ? "cámara" : "micrófono";
+                ShowToastNotification("Permiso Revocado", 
+                    $"Se bloqueó el acceso a {deviceName} para '{e.App.ApplicationName}'.",
+                    ToastNotificationType.Success);
             }
         });
     }
