@@ -61,18 +61,41 @@
                                HorizontalAlignment="Center"/>
                 </StackPanel>
 
-                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                <StackPanel Grid.Column="1" HorizontalAlignment="Center" Cursor="Help">
+                    <StackPanel.ToolTip>
+                        <ToolTip Background="#0A0F1E" Foreground="White" BorderBrush="#E11D48" BorderThickness="1">
+                            <StackPanel Margin="5">
+                                <TextBlock Text="Procesos Críticos" FontWeight="Bold" Margin="0,0,0,5" Foreground="#E74C3C"/>
+                                <TextBlock Text="• Ejecutables sin firma en carpetas temporales." FontSize="11"/>
+                                <TextBlock Text="• Comportamiento identificado como malware." FontSize="11"/>
+                                <TextBlock Text="• Inyección de código detectada." FontSize="11"/>
+                            </StackPanel>
+                        </ToolTip>
+                    </StackPanel.ToolTip>
                     <TextBlock x:Name="CriticalText" Text="0" FontSize="28" FontWeight="Bold" 
                                HorizontalAlignment="Center" Foreground="{StaticResource DangerBrush}"/>
-                    <TextBlock Text="Críticos" Foreground="{StaticResource TextSecondaryBrush}" 
-                               HorizontalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="Críticos" Foreground="{StaticResource TextSecondaryBrush}"/>
+                        <TextBlock Text=" ⓘ" Foreground="#4DA8DA" FontSize="12" VerticalAlignment="Center"/>
+                    </StackPanel>
                 </StackPanel>
 
-                <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                <StackPanel Grid.Column="2" HorizontalAlignment="Center" Cursor="Help">
+                    <StackPanel.ToolTip>
+                        <ToolTip Background="#0A0F1E" Foreground="White" BorderBrush="#E11D48" BorderThickness="1">
+                            <StackPanel Margin="5">
+                                <TextBlock Text="Alto Riesgo" FontWeight="Bold" Margin="0,0,0,5" Foreground="#E67E22"/>
+                                <TextBlock Text="• Procesos desconocidos con red activa." FontSize="11"/>
+                                <TextBlock Text="• Firma digital inválida o de editor incierto." FontSize="11"/>
+                            </StackPanel>
+                        </ToolTip>
+                    </StackPanel.ToolTip>
                     <TextBlock x:Name="HighText" Text="0" FontSize="28" FontWeight="Bold" 
                                HorizontalAlignment="Center" Foreground="#E67E22"/>
-                    <TextBlock Text="Alto Riesgo" Foreground="{StaticResource TextSecondaryBrush}" 
-                               HorizontalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="Alto Riesgo" Foreground="{StaticResource TextSecondaryBrush}"/>
+                        <TextBlock Text=" ⓘ" Foreground="#4DA8DA" FontSize="12" VerticalAlignment="Center"/>
+                    </StackPanel>
                 </StackPanel>
 
                 <StackPanel Grid.Column="3" HorizontalAlignment="Center">

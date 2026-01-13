@@ -269,7 +269,16 @@
                     </Border>
 
                     <!-- Connections Stat -->
-                    <Border Grid.Column="3" Style="{StaticResource StatCard}" Margin="10,0,0,0">
+                    <Border Grid.Column="3" Style="{StaticResource StatCard}" Margin="10,0,0,0" Cursor="Help">
+                        <Border.ToolTip>
+                            <ToolTip Background="#0A0F1E" Foreground="White" BorderBrush="#E11D48" BorderThickness="1">
+                                <StackPanel Margin="5">
+                                    <TextBlock Text="Sistema de Alerta de Red" FontWeight="Bold" Margin="0,0,0,5" Foreground="#F43F5E"/>
+                                    <TextBlock Text="Se considera sospechosa si procesos de sistema (CMD, PowerShell) o puertos inusuales tienen conexiones activas hacia el exterior." 
+                                               TextWrapping="Wrap" Width="250" FontSize="11"/>
+                                </StackPanel>
+                            </ToolTip>
+                        </Border.ToolTip>
                         <StackPanel HorizontalAlignment="Center">
                             <TextBlock x:Name="ConnectionsCount" Text="0" FontSize="40" 
                                        HorizontalAlignment="Center" Foreground="#4DA8DA" FontWeight="Bold">
