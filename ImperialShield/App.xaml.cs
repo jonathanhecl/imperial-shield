@@ -17,6 +17,7 @@ public partial class App : Application
     private TaskbarIcon? _notifyIcon;
     private HostsFileMonitor? _hostsMonitor;
     private DefenderMonitor? _defenderMonitor;
+    private PrivacyMonitor? _privacyMonitor;
     private StartupMonitor? _startupMonitor;
     private DashboardWindow? _dashboardWindow;
     private SplashWindow? _splashWindow;
@@ -131,7 +132,23 @@ public partial class App : Application
         catch (Exception ex)
         {
             Logger.LogException(ex, "DefenderMonitor");
+            Logger.LogException(ex, "DefenderMonitor");
             // No es fatal, continuar
+        }
+
+        // Paso 3.5: Inicializar monitor de Privacidad
+        _splashWindow?.UpdateStatus("Iniciando monitor de Privacidad...");
+        try
+        {
+            _privacyMonitor = new PrivacyMonitor();
+            _privacyMonitor.PrivacyRiskDetected += OnPrivacyRiskDetected;
+            _privacyMonitor.SafeStateRestored += OnSafeStateRestored;
+            _privacyMonitor.Start();
+            Logger.Log("PrivacyMonitor started");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "PrivacyMonitor");
         }
 
         // Paso 4: Cerrar splash y mostrar systray
@@ -242,6 +259,39 @@ public partial class App : Application
             "Se ha detectado una NUEVA EXCLUSIÓN en Windows Defender:\n\n" +
             $"• {e.ExclusionPath}\n\n" +
             "Esto podría permitir que archivos maliciosos se ejecuten sin ser detectados.");
+    }
+
+    private void OnPrivacyRiskDetected(object? sender, PrivacyRiskEventArgs e)
+    {
+        Dispatcher.BeginInvoke(() =>
+        {
+            Logger.Log("Privacy Risk Detected!");
+            try
+            {
+                var iconUri = new Uri("pack://application:,,,/Resources/shield_alert_icon.ico", UriKind.Absolute);
+                if (_notifyIcon != null) _notifyIcon.IconSource = new System.Windows.Media.Imaging.BitmapImage(iconUri);
+            }
+            catch (Exception ex) { Logger.LogException(ex, "Icon update"); }
+
+            var apps = string.Join(", ", e.Risks.Select(r => r.ApplicationName).Distinct());
+            ShowToastNotification("¡ALERTA DE ESPIONAJE!",
+                $"Imperial Shield detectó acceso de hardware sin autorizar:\n{apps}\n¿Bloquear?",
+                ToastNotificationType.Danger);
+        });
+    }
+
+    private void OnSafeStateRestored(object? sender, EventArgs e)
+    {
+        Dispatcher.BeginInvoke(() =>
+        {
+            Logger.Log("Privacy Safe State Restored");
+            try
+            {
+                var iconUri = new Uri("pack://application:,,,/Resources/shield.ico", UriKind.Absolute);
+                if (_notifyIcon != null) _notifyIcon.IconSource = new System.Windows.Media.Imaging.BitmapImage(iconUri);
+            }
+            catch (Exception ex) { Logger.LogException(ex, "Icon update"); }
+        });
     }
 
     #endregion
@@ -385,6 +435,8 @@ public partial class App : Application
         _hostsMonitor?.Dispose();
         _defenderMonitor?.Stop();
         _defenderMonitor?.Dispose();
+        _privacyMonitor?.Stop();
+        _privacyMonitor?.Dispose();
         _startupMonitor?.Stop();
         _notifyIcon?.Dispose();
         SingleInstanceManager.ReleaseLock();

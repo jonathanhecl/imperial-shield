@@ -1,0 +1,12 @@
+  Determinando los proyectos que se van a restaurar...
+  Todos los proyectos est├ín actualizados para la restauraci├│n.
+F:\Clouds\Github\imperial-shield\ImperialShield\Services\DefenderMonitor.cs(12,26): warning CS0414: El campo 'DefenderMonitor._pollingIntervalMs' est├í asignado pero su valor nunca se usa [F:\Clouds\Github\imperial-shield\ImperialShield\ImperialShield.csproj]
+  ImperialShield -> F:\Clouds\Github\imperial-shield\ImperialShield\bin\Debug\net8.0-windows\ImperialShield.dll
+
+Compilaci├│n correcta.
+
+F:\Clouds\Github\imperial-shield\ImperialShield\Services\DefenderMonitor.cs(12,26): warning CS0414: El campo 'DefenderMonitor._pollingIntervalMs' est├í asignado pero su valor nunca se usa [F:\Clouds\Github\imperial-shield\ImperialShield\ImperialShield.csproj]
+    1 Advertencia(s)
+    0 Errores
+
+Tiempo transcurrido 00:00:02.10

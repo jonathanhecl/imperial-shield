@@ -7,6 +7,25 @@ namespace ImperialShield.Services;
 public class AppSettings
 {
     public int PollingIntervalMs { get; set; } = 60000; // Default 1 min
+    
+    public List<string> WhitelistedCameraApps { get; set; } = new() 
+    { 
+        "zoom.exe", 
+        "teams.exe", 
+        "skype.exe", 
+        "discord.exe",
+        "obs64.exe" 
+    };
+
+    public List<string> WhitelistedMicrophoneApps { get; set; } = new() 
+    { 
+        "zoom.exe", 
+        "teams.exe", 
+        "skype.exe", 
+        "discord.exe", 
+        "obs64.exe",
+        "cortana.exe"
+    };
 }
 
 public static class SettingsManager

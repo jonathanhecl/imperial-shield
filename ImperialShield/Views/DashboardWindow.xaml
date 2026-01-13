@@ -4,220 +4,419 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="🛡️ Imperial Shield - Dashboard de Seguridad" 
-        Height="800" Width="1000"
+        Title="⚔️ Imperial Shield - Centro de Comando" 
+        Height="850" Width="1100"
         WindowStartupLocation="CenterScreen"
         Style="{StaticResource ModernWindow}">
 
-    <Grid Margin="30">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <Window.Resources>
+        <!-- RPG-Style Gradients -->
+        <LinearGradientBrush x:Key="EpicHeaderGradient" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#0a1628" Offset="0"/>
+            <GradientStop Color="#1a3a5c" Offset="0.5"/>
+            <GradientStop Color="#0d2847" Offset="1"/>
+        </LinearGradientBrush>
 
-        <!-- Header -->
-        <Border Grid.Row="0" Background="{StaticResource HeaderGradient}" 
-                CornerRadius="16" Padding="30" Margin="0,0,0,25">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+        <LinearGradientBrush x:Key="GoldAccent" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#B8860B" Offset="0"/>
+            <GradientStop Color="#FFD700" Offset="0.5"/>
+            <GradientStop Color="#B8860B" Offset="1"/>
+        </LinearGradientBrush>
 
-                <TextBlock Text="🛡️" FontSize="48" VerticalAlignment="Center" Margin="0,0,20,0"/>
-                
-                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                    <TextBlock Text="Imperial Shield" FontSize="32" FontWeight="Bold" 
-                               Foreground="White"/>
-                    <TextBlock Text="Sistema de Monitoreo de Seguridad para Windows" 
-                               FontSize="14" Foreground="#94A3B8" Margin="0,5,0,0"/>
-                </StackPanel>
+        <LinearGradientBrush x:Key="ShieldGlow" StartPoint="0.5,0" EndPoint="0.5,1">
+            <GradientStop Color="#4DA8DA" Offset="0"/>
+            <GradientStop Color="#1E5A82" Offset="1"/>
+        </LinearGradientBrush>
 
-                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border x:Name="StatusBadge" CornerRadius="20" Padding="15,8" 
-                            Background="{StaticResource SuccessBrush}">
-                        <TextBlock x:Name="StatusText" Text="🟢 Sistema Protegido" 
-                                   Foreground="White" FontWeight="SemiBold"/>
-                    </Border>
-                </StackPanel>
-            </Grid>
-        </Border>
+        <LinearGradientBrush x:Key="CardGradient" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#1B3044" Offset="0"/>
+            <GradientStop Color="#0F1C2E" Offset="1"/>
+        </LinearGradientBrush>
 
-        <!-- Quick Stats -->
-        <Grid Grid.Row="1" Margin="0,0,0,25">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+        <!-- RPG Card Style -->
+        <Style x:Key="RPGCard" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource CardGradient}"/>
+            <Setter Property="BorderBrush" Value="#3A5F82"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="15" ShadowDepth="3" Opacity="0.5" Color="#000"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-            <!-- Defender Status -->
-            <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,10,0">
-                <StackPanel HorizontalAlignment="Center">
-                    <TextBlock x:Name="DefenderIcon" Text="🛡️" FontSize="36" HorizontalAlignment="Center"/>
-                    <TextBlock Text="Windows Defender" HorizontalAlignment="Center" 
-                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,10,0,5"/>
-                    <TextBlock x:Name="DefenderStatus" Text="Verificando..." 
-                               FontWeight="Bold" HorizontalAlignment="Center"
-                               Foreground="{StaticResource SuccessBrush}"/>
-                </StackPanel>
+        <!-- Stat Card Style -->
+        <Style x:Key="StatCard" TargetType="Border">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#1E3A5F" Offset="0"/>
+                        <GradientStop Color="#0D1B2A" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="BorderBrush" Value="#4DA8DA"/>
+            <Setter Property="BorderThickness" Value="1,1,1,3"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="18"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.4" Color="#4DA8DA"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Action Button RPG Style -->
+        <Style x:Key="RPGButton" TargetType="Button">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#2E5077" Offset="0"/>
+                        <GradientStop Color="#1E3A5F" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="#E8F4FC"/>
+            <Setter Property="BorderBrush" Value="#4DA8DA"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6"
+                                Padding="{TemplateBinding Padding}">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.3" Color="#4DA8DA"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="#3A6A9A" Offset="0"/>
+                                            <GradientStop Color="#2E5077" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#7CC4F0"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1A3A5A"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <!-- Main Container with decorative border -->
+    <Border Padding="0" Background="#080F1A">
+        <Grid>
+            <!-- Background Pattern Overlay -->
+            <Border Opacity="0.03">
+                <Border.Background>
+                    <VisualBrush TileMode="Tile" Viewport="0,0,50,50" ViewportUnits="Absolute">
+                        <VisualBrush.Visual>
+                            <Path Data="M0,0 L25,25 L50,0 L50,50 L25,25 L0,50 Z" 
+                                  Fill="#4DA8DA" Stroke="#4DA8DA" StrokeThickness="0.5"/>
+                        </VisualBrush.Visual>
+                    </VisualBrush>
+                </Border.Background>
             </Border>
 
-            <!-- Hosts File Status -->
-            <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="5,0">
-                <StackPanel HorizontalAlignment="Center">
-                    <TextBlock x:Name="HostsIcon" Text="📄" FontSize="36" HorizontalAlignment="Center"/>
-                    <TextBlock Text="Archivo HOSTS" HorizontalAlignment="Center" 
-                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,10,0,5"/>
-                    <TextBlock x:Name="HostsStatus" Text="Sin modificar" 
-                               FontWeight="Bold" HorizontalAlignment="Center"
-                               Foreground="{StaticResource SuccessBrush}"/>
-                </StackPanel>
-            </Border>
+            <Grid Margin="25">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-            <!-- Exclusions Count -->
-            <Border Grid.Column="2" Style="{StaticResource CardBorder}" Margin="5,0">
-                <StackPanel HorizontalAlignment="Center">
-                    <TextBlock x:Name="ExclusionsCount" Text="0" FontSize="36" 
-                               HorizontalAlignment="Center" Foreground="{StaticResource AccentBrush}"/>
-                    <TextBlock Text="Exclusiones AV" HorizontalAlignment="Center" 
-                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,10,0,5"/>
-                    <TextBlock x:Name="ExclusionsStatus" Text="Normal" 
-                               FontWeight="Bold" HorizontalAlignment="Center"
-                               Foreground="{StaticResource SuccessBrush}"/>
-                </StackPanel>
-            </Border>
-
-            <!-- Active Connections -->
-            <Border Grid.Column="3" Style="{StaticResource CardBorder}" Margin="10,0,0,0">
-                <StackPanel HorizontalAlignment="Center">
-                    <TextBlock x:Name="ConnectionsCount" Text="0" FontSize="36" 
-                               HorizontalAlignment="Center" Foreground="{StaticResource AccentBrush}"/>
-                    <TextBlock Text="Conexiones Activas" HorizontalAlignment="Center" 
-                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,10,0,5"/>
-                    <TextBlock x:Name="ConnectionsStatus" Text="Verificando..." 
-                               FontWeight="Bold" HorizontalAlignment="Center"/>
-                </StackPanel>
-            </Border>
-        </Grid>
-
-        <!-- Main Actions -->
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <!-- Tools Panel -->
-            <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,12,0">
-                <StackPanel>
-                    <TextBlock Text="🔧 Herramientas de Investigación" FontSize="18" FontWeight="Bold" 
-                               Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,20"/>
-
-                    <Button Content="🔍 Visor de Procesos" Style="{StaticResource ModernButton}" 
-                            Click="ProcessViewer_Click" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
-                    
-                    <Button Content="🌐 Monitor de Conexiones" Style="{StaticResource ModernButton}" 
-                            Click="NetworkViewer_Click" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
-
-                    <Button Content="🚀 Gestor de Inicio" Style="{StaticResource ModernButton}" 
-                            Click="StartupManager_Click" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
-                    
-                    <Button Content="📄 Ver Archivo HOSTS" Style="{StaticResource ModernButton}" 
-                            Click="ViewHosts_Click" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
-                    
-                    <Button Content="🛡️ Ver Exclusiones Defender" Style="{StaticResource ModernButton}" 
-                            Click="ViewExclusions_Click" HorizontalAlignment="Stretch"/>
-                </StackPanel>
-            </Border>
-
-            <!-- Defender Info -->
-            <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="12,0,0,0">
-                <StackPanel>
-                    <TextBlock Text="🛡️ Estado de Windows Defender" FontSize="18" FontWeight="Bold" 
-                               Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,20"/>
-
-                    <Grid Margin="0,0,0,10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Protección en Tiempo Real" 
-                                   Foreground="{StaticResource TextSecondaryBrush}"/>
-                        <TextBlock x:Name="RealTimeStatus" Grid.Column="1" Text="--" FontWeight="Bold"/>
-                    </Grid>
-
-                    <Grid Margin="0,0,0,10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Monitor de Comportamiento" 
-                                   Foreground="{StaticResource TextSecondaryBrush}"/>
-                        <TextBlock x:Name="BehaviorStatus" Grid.Column="1" Text="--" FontWeight="Bold"/>
-                    </Grid>
-
-                    <Grid Margin="0,0,0,10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Versión de Firmas" 
-                                   Foreground="{StaticResource TextSecondaryBrush}"/>
-                        <TextBlock x:Name="SignatureVersion" Grid.Column="1" Text="--" FontWeight="Bold"
-                                   Foreground="{StaticResource TextPrimaryBrush}"/>
-                    </Grid>
-
-                    <Grid Margin="0,0,0,10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="Antigüedad de Firmas" 
-                                   Foreground="{StaticResource TextSecondaryBrush}"/>
-                        <TextBlock x:Name="SignatureAge" Grid.Column="1" Text="--" FontWeight="Bold"/>
-                    </Grid>
-
+                <!-- ═══════════════════ EPIC HEADER ═══════════════════ -->
+                <Border Grid.Row="0" Background="{StaticResource EpicHeaderGradient}" 
+                        CornerRadius="12" Padding="25" Margin="0,0,0,20"
+                        BorderBrush="#4DA8DA" BorderThickness="1">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="25" ShadowDepth="0" Opacity="0.5" Color="#4DA8DA"/>
+                    </Border.Effect>
                     <Grid>
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Último Escaneo Completo" 
-                                   Foreground="{StaticResource TextSecondaryBrush}"/>
-                        <TextBlock x:Name="LastScan" Grid.Column="1" Text="--" FontWeight="Bold"
-                                   Foreground="{StaticResource TextPrimaryBrush}"/>
-                    </Grid>
-                </StackPanel>
-            </Border>
-        </Grid>
 
-        <!-- Footer -->
-        <Border Grid.Row="3" Margin="0,25,0,0" Padding="15" 
-                Background="{StaticResource SurfaceBrush}" CornerRadius="8">
-            <Grid>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock x:Name="VersionText" Text="Imperial Shield" 
-                               Foreground="{StaticResource TextSecondaryBrush}"/>
-                    <TextBlock Text=" • Monitoreo activo" 
-                               Foreground="{StaticResource SuccessBrush}" Margin="10,0,0,0"/>
-                </StackPanel>
-                
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                    <Button Content="⚙️ Configuración" Background="Transparent" 
-                            Foreground="{StaticResource TextSecondaryBrush}" 
-                            BorderThickness="0" Cursor="Hand" Margin="0,0,15,0"
-                            Click="Settings_Click"/>
-                    <Button Content="❌ Minimizar al Systray" Background="Transparent" 
-                            Foreground="{StaticResource TextSecondaryBrush}" 
-                            BorderThickness="0" Cursor="Hand"
-                            Click="MinimizeToTray_Click"/>
-                </StackPanel>
+                        <!-- Shield Logo with Glow -->
+                        <Border Grid.Column="0" Width="80" Height="80" Margin="0,0,25,0">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="20" ShadowDepth="0" Opacity="0.7" Color="#4DA8DA"/>
+                            </Border.Effect>
+                            <Image Source="/Resources/shield.png" Stretch="Uniform"/>
+                        </Border>
+
+                        <!-- Title Section -->
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock FontSize="36" FontWeight="Bold" Foreground="White">
+                                <Run Text="IMPERIAL" Foreground="#4DA8DA"/>
+                                <Run Text=" SHIELD"/>
+                            </TextBlock>
+                            <TextBlock Text="⚔️ Centro de Comando de Seguridad ⚔️" 
+                                       FontSize="14" Foreground="#7EB8DC" Margin="0,5,0,0"
+                                       FontStyle="Italic"/>
+                        </StackPanel>
+
+                        <!-- Status Badge -->
+                        <Border x:Name="StatusBadge" Grid.Column="2" CornerRadius="25" Padding="20,10"
+                                VerticalAlignment="Center"
+                                BorderThickness="2" BorderBrush="#27AE60">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Color="#1A4D2E" Offset="0"/>
+                                    <GradientStop Color="#0D2818" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <StackPanel Orientation="Horizontal">
+                                <Ellipse Width="12" Height="12" Margin="0,0,10,0">
+                                    <Ellipse.Fill>
+                                        <RadialGradientBrush>
+                                            <GradientStop Color="#5CFF5C" Offset="0"/>
+                                            <GradientStop Color="#27AE60" Offset="1"/>
+                                        </RadialGradientBrush>
+                                    </Ellipse.Fill>
+                                    <Ellipse.Effect>
+                                        <DropShadowEffect BlurRadius="8" ShadowDepth="0" Color="#27AE60"/>
+                                    </Ellipse.Effect>
+                                </Ellipse>
+                                <TextBlock x:Name="StatusText" Text="PROTEGIDO" 
+                                           Foreground="#5CFF5C" FontWeight="Bold" FontSize="14"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- ═══════════════════ STATS ROW ═══════════════════ -->
+                <Grid Grid.Row="1" Margin="0,0,0,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Defender Stat -->
+                    <Border Grid.Column="0" Style="{StaticResource StatCard}" Margin="0,0,10,0">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock x:Name="DefenderIcon" Text="🛡️" FontSize="40" HorizontalAlignment="Center">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="#4DA8DA"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            <TextBlock Text="DEFENSOR" HorizontalAlignment="Center" 
+                                       Foreground="#7EB8DC" Margin="0,10,0,5" FontWeight="SemiBold"
+                                       FontSize="11" />
+                            <TextBlock x:Name="DefenderStatus" Text="ACTIVO" 
+                                       FontWeight="Bold" HorizontalAlignment="Center" FontSize="16"
+                                       Foreground="#5CFF5C"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Hosts Stat -->
+                    <Border Grid.Column="1" Style="{StaticResource StatCard}" Margin="5,0">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock x:Name="HostsIcon" Text="📜" FontSize="40" HorizontalAlignment="Center">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="#F39C12"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            <TextBlock Text="ARCHIVO HOSTS" HorizontalAlignment="Center" 
+                                       Foreground="#7EB8DC" Margin="0,10,0,5" FontWeight="SemiBold"
+                                       FontSize="11" />
+                            <TextBlock x:Name="HostsStatus" Text="INTACTO" 
+                                       FontWeight="Bold" HorizontalAlignment="Center" FontSize="16"
+                                       Foreground="#5CFF5C"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Exclusions Stat -->
+                    <Border Grid.Column="2" Style="{StaticResource StatCard}" Margin="5,0">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock x:Name="ExclusionsCount" Text="0" FontSize="40" 
+                                       HorizontalAlignment="Center" Foreground="#4DA8DA" FontWeight="Bold">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="#4DA8DA"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            <TextBlock Text="EXCLUSIONES" HorizontalAlignment="Center" 
+                                       Foreground="#7EB8DC" Margin="0,10,0,5" FontWeight="SemiBold"
+                                       FontSize="11" />
+                            <TextBlock x:Name="ExclusionsStatus" Text="NORMAL" 
+                                       FontWeight="Bold" HorizontalAlignment="Center" FontSize="16"
+                                       Foreground="#5CFF5C"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Connections Stat -->
+                    <Border Grid.Column="3" Style="{StaticResource StatCard}" Margin="10,0,0,0">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock x:Name="ConnectionsCount" Text="0" FontSize="40" 
+                                       HorizontalAlignment="Center" Foreground="#4DA8DA" FontWeight="Bold">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="#4DA8DA"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            <TextBlock Text="CONEXIONES" HorizontalAlignment="Center" 
+                                       Foreground="#7EB8DC" Margin="0,10,0,5" FontWeight="SemiBold"
+                                       FontSize="11" />
+                            <TextBlock x:Name="ConnectionsStatus" Text="..." 
+                                       FontWeight="Bold" HorizontalAlignment="Center" FontSize="16"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- ═══════════════════ MAIN PANELS ═══════════════════ -->
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Arsenal (Tools) Panel -->
+                    <Border Grid.Column="0" Style="{StaticResource RPGCard}" Margin="0,0,10,0">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                                <TextBlock Text="⚔️" FontSize="24" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <TextBlock Text="ARSENAL DE INVESTIGACIÓN" FontSize="18" FontWeight="Bold" 
+                                           Foreground="#4DA8DA" VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <Button Content="🔍  Visor de Procesos" Style="{StaticResource RPGButton}" 
+                                    Click="ProcessViewer_Click" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
+                            
+                            <Button Content="🌐  Monitor de Conexiones" Style="{StaticResource RPGButton}" 
+                                    Click="NetworkViewer_Click" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
+
+                            <Button Content="🚀  Gestor de Inicio" Style="{StaticResource RPGButton}" 
+                                    Click="StartupManager_Click" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
+                            
+                            <Button Content="📜  Ver Archivo HOSTS" Style="{StaticResource RPGButton}" 
+                                    Click="ViewHosts_Click" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
+                            
+                            <Button Content="🛡️  Ver Exclusiones Defender" Style="{StaticResource RPGButton}" 
+                                    Click="ViewExclusions_Click" HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Defender Status Panel -->
+                    <Border Grid.Column="1" Style="{StaticResource RPGCard}" Margin="10,0,0,0">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                                <TextBlock Text="🏰" FontSize="24" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <TextBlock Text="ESTADO DE LA FORTALEZA" FontSize="18" FontWeight="Bold" 
+                                           Foreground="#4DA8DA" VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <!-- Status Rows -->
+                            <Border Background="#0D1B2A" CornerRadius="6" Padding="15,12" Margin="0,0,0,8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Protección en Tiempo Real" Foreground="#94A3B8" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="RealTimeStatus" Grid.Column="1" Text="--" FontWeight="Bold" FontSize="13"/>
+                                </Grid>
+                            </Border>
+
+                            <Border Background="#0D1B2A" CornerRadius="6" Padding="15,12" Margin="0,0,0,8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Monitor de Comportamiento" Foreground="#94A3B8" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="BehaviorStatus" Grid.Column="1" Text="--" FontWeight="Bold" FontSize="13"/>
+                                </Grid>
+                            </Border>
+
+                            <Border Background="#0D1B2A" CornerRadius="6" Padding="15,12" Margin="0,0,0,8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Versión de Firmas" Foreground="#94A3B8" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="SignatureVersion" Grid.Column="1" Text="--" FontWeight="Bold" 
+                                               Foreground="#E8F4FC" FontSize="13"/>
+                                </Grid>
+                            </Border>
+
+                            <Border Background="#0D1B2A" CornerRadius="6" Padding="15,12" Margin="0,0,0,8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Antigüedad de Firmas" Foreground="#94A3B8" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="SignatureAge" Grid.Column="1" Text="--" FontWeight="Bold" FontSize="13"/>
+                                </Grid>
+                            </Border>
+
+                            <Border Background="#0D1B2A" CornerRadius="6" Padding="15,12">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Último Escaneo Completo" Foreground="#94A3B8" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="LastScan" Grid.Column="1" Text="--" FontWeight="Bold" 
+                                               Foreground="#E8F4FC" FontSize="13"/>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- ═══════════════════ FOOTER ═══════════════════ -->
+                <Border Grid.Row="3" Margin="0,20,0,0" Padding="18,12" 
+                        Background="#0A1525" CornerRadius="8"
+                        BorderBrush="#1E3A5F" BorderThickness="1">
+                    <Grid>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock x:Name="VersionText" Text="Imperial Shield" 
+                                       Foreground="#5A7A9A" FontWeight="SemiBold"/>
+                            <TextBlock Text=" • " Foreground="#3A5A7A"/>
+                            <Ellipse Width="8" Height="8" Fill="#27AE60" Margin="0,0,6,0" VerticalAlignment="Center">
+                                <Ellipse.Effect>
+                                    <DropShadowEffect BlurRadius="5" ShadowDepth="0" Color="#27AE60"/>
+                                </Ellipse.Effect>
+                            </Ellipse>
+                            <TextBlock Text="Monitoreo Activo" Foreground="#27AE60" FontWeight="SemiBold"/>
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Content="⚙️ Configuración" Background="Transparent" 
+                                    Foreground="#7EB8DC" BorderThickness="0" Cursor="Hand" 
+                                    Margin="0,0,15,0" Click="Settings_Click" FontWeight="SemiBold"/>
+                            <Button Content="📥 Minimizar" Background="Transparent" 
+                                    Foreground="#7EB8DC" BorderThickness="0" Cursor="Hand"
+                                    Click="MinimizeToTray_Click" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
             </Grid>
-        </Border>
-    </Grid>
+        </Grid>
+    </Border>
 </Window>
