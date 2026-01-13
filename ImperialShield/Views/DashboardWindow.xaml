@@ -367,6 +367,14 @@
                                     <TextBlock Text="CUARENTENA" FontSize="9" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
                                 </StackPanel>
                             </Button>
+
+                            <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
+                                    Click="ScheduledTasks_Click" ToolTip="Monitor de Tareas">
+                                <StackPanel>
+                                    <TextBlock Text="📅" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                    <TextBlock Text="TAREAS" FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                </StackPanel>
+                            </Button>
                         </WrapPanel>
                         </StackPanel>
                     </Border>

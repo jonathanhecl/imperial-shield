@@ -1,0 +1,322 @@
+<Window x:Class="ImperialShield.Views.ScheduledTasksWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Monitor de Tareas - Imperial Shield" 
+        Height="750" Width="1200"
+        WindowStartupLocation="CenterScreen"
+        Style="{StaticResource ModernWindow}">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        
+        <ContextMenu x:Key="RowContextMenu">
+            <MenuItem Header="▶ Ejecutar tarea" Click="Run_Click"/>
+            <MenuItem Header="⏹ Detener tarea" Click="Stop_Click"/>
+            <Separator/>
+            <MenuItem Header="❌ Deshabilitar" Click="Disable_Click"/>
+            <MenuItem Header="✅ Habilitar" Click="Enable_Click"/>
+        </ContextMenu>
+        
+        <Style x:Key="TaskRowStyle" TargetType="DataGridRow">
+            <Setter Property="ContextMenu" Value="{StaticResource RowContextMenu}"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding State}" Value="Disabled">
+                    <Setter Property="Opacity" Value="0.7"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="25">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="📅 Tareas Programadas" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,0,15,0"/>
+                    <Border Background="#213346" CornerRadius="12" Padding="12,4" VerticalAlignment="Center">
+                        <TextBlock Text="Gestor de Tareas de Windows" Foreground="#4DA8DA" FontWeight="Bold" FontSize="12"/>
+                    </Border>
+                </StackPanel>
+                <TextBlock Text="Visualiza, ejecuta o detén las tareas programadas del sistema. Usa con precaución." 
+                           Foreground="{StaticResource TextSecondaryBrush}" FontSize="14" Margin="0,8,0,0"/>
+            </StackPanel>
+
+            <!-- Legend -->
+            <Border Grid.Column="1" Background="#111827" CornerRadius="8" Padding="15,10" VerticalAlignment="Center" BorderBrush="#1E293B" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="LEYENDA DE ESTADO" Foreground="#64748B" FontSize="10" FontWeight="Bold" Margin="0,0,0,8"/>
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" Margin="0,0,12,0">
+                            <TextBlock Text="🔵" FontSize="11" Margin="0,0,3,0"/>
+                            <TextBlock Text="Ejecutando" Foreground="#4DA8DA" FontSize="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,12,0">
+                            <TextBlock Text="🟢" FontSize="11" Margin="0,0,3,0"/>
+                            <TextBlock Text="Listo" Foreground="#22C55E" FontSize="10"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="⚪" FontSize="11" Margin="0,0,3,0"/>
+                            <TextBlock Text="Deshabilitado" Foreground="#94A3B8" FontSize="10"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Main Content -->
+        <Border Grid.Row="1" Style="{StaticResource CardBorder}" Background="#0A0F1E" Padding="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <Border Background="#111827" Padding="15,12" BorderBrush="#1E293B" BorderThickness="0,0,0,1">
+                    <TextBlock Text="LISTA DE TAREAS DEL SISTEMA" Foreground="#64748B" FontSize="11" FontWeight="Bold"/>
+                </Border>
+
+                <!-- Loading Overlay -->
+                <Grid Grid.Row="1" x:Name="LoadingOverlay" Panel.ZIndex="10" Background="#0A0F1E" Visibility="Collapsed">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="⟳" FontSize="40" Foreground="#4DA8DA" HorizontalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+                            <TextBlock.RenderTransform>
+                                <RotateTransform x:Name="SpinData" Angle="0" />
+                            </TextBlock.RenderTransform>
+                            <TextBlock.Triggers>
+                                <EventTrigger RoutedEvent="Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="SpinData" Storyboard.TargetProperty="Angle" From="0" To="360" Duration="0:0:1" RepeatBehavior="Forever"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </TextBlock.Triggers>
+                        </TextBlock>
+                        <TextBlock Text="Analizando tareas programadas..." Foreground="#94A3B8" Margin="0,15,0,0" FontSize="14"/>
+                    </StackPanel>
+                </Grid>
+
+                <DataGrid x:Name="TasksGrid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" 
+                          Background="Transparent" RowBackground="Transparent" AlternatingRowBackground="#0F172A"
+                          HeadersVisibility="Column" GridLinesVisibility="None" BorderThickness="0"
+                          RowStyle="{StaticResource TaskRowStyle}" UseLayoutRounding="True">
+                    <DataGrid.Resources>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="#111827"/>
+                            <Setter Property="Foreground" Value="#94A3B8"/>
+                            <Setter Property="Padding" Value="12,10"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                            <Setter Property="FontSize" Value="11"/>
+                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                            <Setter Property="BorderBrush" Value="#1E293B"/>
+                        </Style>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="Padding" Value="12,10"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="DataGridCell">
+                                        <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                                            <ContentPresenter VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="#1E3A5F"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.Resources>
+                    <DataGrid.Columns>
+                        <!-- Task Name & Path -->
+                        <DataGridTemplateColumn Header="TAREA / RUTA" Width="2.5*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding TaskName}" FontWeight="Bold" Foreground="White" 
+                                                   FontSize="13" ToolTip="{Binding TaskPath}"/>
+                                        <TextBlock Text="{Binding TaskPath}" FontSize="11" Foreground="#64748B" 
+                                                   TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!-- State -->
+                        <DataGridTemplateColumn Header="ESTADO" Width="140">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border Background="#111827" CornerRadius="4" Padding="8,2" HorizontalAlignment="Left"
+                                            BorderBrush="{Binding StateColor}" BorderThickness="1">
+                                        <TextBlock Text="{Binding TranslatedState}" Foreground="{Binding StateColor}" 
+                                                   FontWeight="SemiBold" FontSize="11" HorizontalAlignment="Center"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        
+                        <!-- Next Run -->
+                        <DataGridTemplateColumn Header="PRÓXIMA EJECUCIÓN" Width="180">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding NextRunText}" Foreground="#94A3B8" VerticalAlignment="Center" FontSize="12"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <!-- Actions -->
+                        <DataGridTemplateColumn Header="ACCIONES" Width="240">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <!-- Run/Stop Button -->
+                                        <Button Click="RunOrStop_Click" Width="90" Height="28"
+                                                FontSize="11" FontWeight="Bold" Margin="0,0,6,0" Tag="{Binding}">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Border x:Name="border" CornerRadius="6" Background="#1E293B" BorderBrush="#334155" BorderThickness="1">
+                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                </Border>
+                                                                <ControlTemplate.Triggers>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter TargetName="border" Property="Background" Value="#4DA8DA"/>
+                                                                        <Setter Property="Foreground" Value="Black"/>
+                                                                    </Trigger>
+                                                                </ControlTemplate.Triggers>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="Foreground" Value="#4DA8DA"/>
+                                                    <Setter Property="Content" Value="▶ Ejecutar"/>
+                                                    <Setter Property="Cursor" Value="Hand"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding State}" Value="Running">
+                                                            <Setter Property="Content" Value="⏹ Detener"/>
+                                                            <Setter Property="Foreground" Value="#EF4444"/>
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="Button">
+                                                                        <Border x:Name="border" CornerRadius="6" Background="#1E293B" BorderBrush="#451A1A" BorderThickness="1">
+                                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                        </Border>
+                                                                        <ControlTemplate.Triggers>
+                                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                                <Setter TargetName="border" Property="Background" Value="#B91C1C"/>
+                                                                                <Setter TargetName="border" Property="BorderBrush" Value="#EF4444"/>
+                                                                                <Setter Property="Foreground" Value="White"/>
+                                                                            </Trigger>
+                                                                        </ControlTemplate.Triggers>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+
+                                        <!-- Enable/Disable Button -->
+                                        <Button Click="ToggleEnabled_Click" Width="90" Height="28"
+                                                FontSize="11" FontWeight="Bold" Margin="0,0,0,0" Tag="{Binding}">
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Border x:Name="border" CornerRadius="6" Background="#1E293B" BorderBrush="#334155" BorderThickness="1">
+                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                </Border>
+                                                                <ControlTemplate.Triggers>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter TargetName="border" Property="Background" Value="#EAB308"/>
+                                                                        <Setter Property="Foreground" Value="Black"/>
+                                                                    </Trigger>
+                                                                </ControlTemplate.Triggers>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="Foreground" Value="#EAB308"/>
+                                                    <Setter Property="Content" Value="❌ Deshabilitar"/>
+                                                    <Setter Property="Cursor" Value="Hand"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding State}" Value="Disabled">
+                                                            <Setter Property="Content" Value="✅ Habilitar"/>
+                                                            <Setter Property="Foreground" Value="#22C55E"/>
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="Button">
+                                                                        <Border x:Name="border" CornerRadius="6" Background="#1E293B" BorderBrush="#14532D" BorderThickness="1">
+                                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                        </Border>
+                                                                        <ControlTemplate.Triggers>
+                                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                                <Setter TargetName="border" Property="Background" Value="#22C55E"/>
+                                                                                <Setter Property="Foreground" Value="White"/>
+                                                                            </Trigger>
+                                                                        </ControlTemplate.Triggers>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+
+        <!-- Footer -->
+        <Border Grid.Row="2" Background="#111827" CornerRadius="0,0,8,8" Padding="20,15" Margin="0,15,0,0" BorderBrush="#1E293B" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Ellipse Width="10" Height="10" Fill="#22C55E" Margin="0,0,12,0"/>
+                    <TextBlock x:Name="LastUpdatedText" Text="Última actualización: --:--" Foreground="#94A3B8" FontSize="13" FontWeight="Medium"/>
+                    <TextBlock Text=" | Total: " Foreground="#64748B" FontSize="13" Margin="10,0,0,0"/>
+                    <TextBlock x:Name="TaskCountText" Text="0" Foreground="#E8F4FC" FontSize="13" FontWeight="Bold"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Content="🔄 Actualizar" Click="Refresh_Click" Style="{StaticResource ModernButton}" 
+                            Background="#1E293B" BorderBrush="#334155" BorderThickness="1" Foreground="#4DA8DA"
+                            Width="120" Height="38" Margin="0,0,12,0" FontWeight="Bold"/>
+                    
+                    <Button Content="📅 Abrir Programador" Click="OpenScheduler_Click" Style="{StaticResource ModernButton}" 
+                            Background="#1E293B" BorderBrush="#334155" BorderThickness="1" Foreground="#94A3B8"
+                            Width="160" Height="38" Margin="0,0,12,0" FontWeight="Bold"
+                            ToolTip="Abre el Programador de Tareas de Windows nativo"/>
+
+                    <Button Content="Cerrar" Click="Close_Click" Style="{StaticResource ModernButton}" 
+                            Width="100" Height="38" FontWeight="Bold"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

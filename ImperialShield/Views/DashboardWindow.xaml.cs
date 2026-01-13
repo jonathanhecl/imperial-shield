@@ -254,11 +254,8 @@ public partial class DashboardWindow : Window
         win.Show();
     }
 
-    private void Quarantine_Click(object sender, RoutedEventArgs e)
-    {
-        var win = new QuarantineWindow();
-        win.Show();
-    }
+    private void Quarantine_Click(object sender, RoutedEventArgs e) => new QuarantineWindow().Show();
+    private void ScheduledTasks_Click(object sender, RoutedEventArgs e) => new ScheduledTasksWindow().Show();
 
     private void MinimizeToTray_Click(object sender, RoutedEventArgs e)
     {
