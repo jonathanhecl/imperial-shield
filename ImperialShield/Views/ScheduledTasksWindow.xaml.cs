@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
-using System.Text.Json;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,8 +29,7 @@ public partial class ScheduledTasksWindow : Window
         public string TaskName { get; set; } = string.Empty;
         public string TaskPath { get; set; } = string.Empty;
         public string State { get; set; } = string.Empty;
-        public DateTime? NextRunTime { get; set; }
-        public DateTime? LastRunTime { get; set; }
+        public string NextRunTimeRaw { get; set; } = string.Empty;
         
         // UI Helpers
         public string TranslatedState => State switch
@@ -39,10 +39,23 @@ public partial class ScheduledTasksWindow : Window
             "Disabled" => "Deshabilitado",
             "Queued" => "En Cola",
             "Unknown" => "Desconocido",
+            // Spanish states from schtasks
+            "Listo" => "Listo",
+            "Deshabilitado" => "Deshabilitado",
+            "En ejecución" => "Ejecutando",
+            _ => State
+        };
+        
+        // Normalize state for comparisons
+        public string NormalizedState => State switch
+        {
+            "Listo" or "Ready" => "Ready",
+            "Deshabilitado" or "Disabled" => "Disabled",
+            "En ejecución" or "Running" => "Running",
             _ => State
         };
 
-        public Brush StateColor => State switch
+        public Brush StateColor => NormalizedState switch
         {
             "Running" => new SolidColorBrush(Color.FromRgb(77, 168, 218)), // Blue
             "Ready" => new SolidColorBrush(Color.FromRgb(34, 197, 94)),   // Green
@@ -51,9 +64,27 @@ public partial class ScheduledTasksWindow : Window
             _ => new SolidColorBrush(Color.FromRgb(148, 163, 184))
         };
 
-        public string NextRunText => NextRunTime.HasValue && NextRunTime.Value > DateTime.MinValue 
-            ? NextRunTime.Value.ToString("g") 
-            : "No programado";
+        public string NextRunText => string.IsNullOrWhiteSpace(NextRunTimeRaw) || 
+            NextRunTimeRaw == "N/D" || NextRunTimeRaw == "N/A" ||
+            NextRunTimeRaw.Contains("Hora próxima") || NextRunTimeRaw.Contains("Next Run")
+            ? "No programado" 
+            : NextRunTimeRaw;
+
+        // Parse date for sorting
+        public DateTime? NextRunDateTime
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(NextRunTimeRaw) || 
+                    NextRunTimeRaw == "N/D" || NextRunTimeRaw == "N/A" ||
+                    NextRunTimeRaw.Contains("Hora") || NextRunTimeRaw.Contains("Next"))
+                    return null;
+                    
+                if (DateTime.TryParse(NextRunTimeRaw, out var dt))
+                    return dt;
+                return null;
+            }
+        }
     }
 
     private async Task LoadTasksAsync()
@@ -63,32 +94,40 @@ public partial class ScheduledTasksWindow : Window
 
         try
         {
-            // Execute PowerShell to get tasks as JSON
-            // We select TaskName, TaskPath, State, and NextRunTime from Get-ScheduledTaskInfo
-            // Note: Getting Info for all tasks is slow, so we optimize.
-            // Fast mode: Get-ScheduledTask | Select TaskName, TaskPath, State
-            string psCommand = "Get-ScheduledTask | Select-Object TaskName, TaskPath, State | ConvertTo-Json -Depth 2";
+            var tasks = await Task.Run(() => GetScheduledTasksViaSchtasks());
             
-            var tasks = await RunPowerShellAsync<List<TaskItem>>(psCommand);
-            
-            if (tasks != null)
+            if (tasks != null && tasks.Count > 0)
             {
-                // Sort: Running first, then custom paths (root \), then others, then Disabled last
-                var sortedTasks = tasks
-                    .OrderByDescending(t => t.State == "Running")
-                    .ThenBy(t => t.State == "Disabled")
-                    .ThenBy(t => t.TaskPath == "\\")
+                // Filter out invalid entries (no real task name, header remnants, etc.)
+                var validTasks = tasks
+                    .Where(t => !string.IsNullOrWhiteSpace(t.TaskName))
+                    .Where(t => t.TaskName != "Nombre de tarea" && t.TaskName != "TaskName")
+                    .Where(t => !t.TaskName.Contains("Hora próxima") && !t.TaskName.Contains("Next Run"))
+                    .Where(t => t.State != "Estado" && t.State != "Status")
+                    .ToList();
+
+                // Sort: Enabled (Ready/Running) first, then by next execution date
+                var sortedTasks = validTasks
+                    .OrderByDescending(t => t.NormalizedState == "Running")
+                    .ThenByDescending(t => t.NormalizedState == "Ready")
+                    .ThenBy(t => t.NextRunDateTime ?? DateTime.MaxValue) // Earliest next run first
                     .ThenBy(t => t.TaskName)
                     .ToList();
 
                 TasksGrid.ItemsSource = sortedTasks;
                 TaskCountText.Text = sortedTasks.Count.ToString();
-                LastUpdatedText.Text = $"Última actualización: {DateTime.Now:HH:mm:ss}";
             }
+            else
+            {
+                TaskCountText.Text = "0";
+                MessageBox.Show("No se pudieron obtener las tareas programadas.\nAsegúrate de ejecutar como Administrador.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            
+            LastUpdatedText.Text = $"Última actualización: {DateTime.Now:HH:mm:ss}";
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error al cargar tareas: {ex.Message}", "Error al obtener tareas");
+            MessageBox.Show($"Error al cargar tareas: {ex.Message}", "Error");
         }
         finally
         {
@@ -96,79 +135,175 @@ public partial class ScheduledTasksWindow : Window
         }
     }
 
-    private async Task<T?> RunPowerShellAsync<T>(string command)
+    private List<TaskItem> GetScheduledTasksViaSchtasks()
     {
-        return await Task.Run(() =>
+        var tasks = new List<TaskItem>();
+        
+        try
         {
-            try
+            // Use schtasks /query which is more reliable
+            var info = new ProcessStartInfo
             {
-                var info = new ProcessStartInfo
+                FileName = "schtasks.exe",
+                Arguments = "/query /fo CSV",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+
+            using var proc = Process.Start(info);
+            if (proc == null) return tasks;
+
+            string output = proc.StandardOutput.ReadToEnd();
+            string error = proc.StandardError.ReadToEnd();
+            proc.WaitForExit();
+
+            // Check for errors
+            if (!string.IsNullOrWhiteSpace(error))
+            {
+                Debug.WriteLine($"schtasks error: {error}");
+            }
+
+            if (string.IsNullOrWhiteSpace(output)) 
+            {
+                Debug.WriteLine("schtasks returned no output");
+                return tasks;
+            }
+
+            // Parse CSV output
+            // Format: "TaskName","Next Run Time","Status"
+            var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            
+            // Skip header line
+            bool isFirstLine = true;
+            
+            foreach (var line in lines)
+            {
+                try
                 {
-                    FileName = "powershell",
-                    Arguments = $"-NoProfile -Command \"[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; {command.Replace("\"", "\\\"")}\"",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    StandardOutputEncoding = System.Text.Encoding.UTF8 // Ensure UTF8
-                };
+                    // Skip header
+                    if (isFirstLine)
+                    {
+                        isFirstLine = false;
+                        // Check if this looks like a header
+                        if (line.Contains("TaskName") || line.Contains("Nombre de tarea") || 
+                            line.Contains("\"Nombre de") || line.Contains("\"TaskName\""))
+                        {
+                            continue;
+                        }
+                    }
+                    
+                    // Parse CSV manually (simple parser for 3 fields)
+                    var fields = ParseCsvLine(line);
+                    if (fields.Count >= 3)
+                    {
+                        string fullPath = fields[0];
+                        string nextRun = fields[1];
+                        string status = fields[2];
 
-                using var proc = Process.Start(info);
-                if (proc == null) return default;
+                        // Extract task name from path
+                        string taskName = fullPath;
+                        string taskPath = "\\";
+                        
+                        int lastSlash = fullPath.LastIndexOf('\\');
+                        if (lastSlash >= 0)
+                        {
+                            taskName = fullPath.Substring(lastSlash + 1);
+                            taskPath = fullPath.Substring(0, lastSlash + 1);
+                            if (string.IsNullOrEmpty(taskPath)) taskPath = "\\";
+                        }
 
-                string output = proc.StandardOutput.ReadToEnd();
-                proc.WaitForExit();
+                        // Skip empty, INFO lines, or folder entries
+                        if (string.IsNullOrWhiteSpace(taskName)) continue;
+                        if (taskName.StartsWith("INFO:")) continue;
+                        if (status == "N/D" || status == "N/A") continue; // Folder entries
 
-                if (string.IsNullOrWhiteSpace(output)) return default;
-
-                // Configure serializer to handle case insensitivity
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                };
-
-                // Handle single object vs array return from PS
-                if (output.Trim().StartsWith("{"))
-                {
-                    output = $"[{output}]";
+                        tasks.Add(new TaskItem
+                        {
+                            TaskName = taskName,
+                            TaskPath = taskPath,
+                            State = status,
+                            NextRunTimeRaw = nextRun
+                        });
+                    }
                 }
+                catch
+                {
+                    // Skip malformed lines
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error getting tasks: {ex.Message}");
+        }
 
-                return JsonSerializer.Deserialize<T>(output, options);
-            }
-            catch
-            {
-                return default;
-            }
-        });
+        return tasks;
     }
 
-    private async void RunPowerShellAction(string action, string taskName, string taskPath)
+    private List<string> ParseCsvLine(string line)
+    {
+        var fields = new List<string>();
+        bool inQuotes = false;
+        string currentField = "";
+
+        for (int i = 0; i < line.Length; i++)
+        {
+            char c = line[i];
+            if (c == '"')
+            {
+                inQuotes = !inQuotes;
+            }
+            else if (c == ',' && !inQuotes)
+            {
+                fields.Add(currentField);
+                currentField = "";
+            }
+            else
+            {
+                currentField += c;
+            }
+        }
+        fields.Add(currentField);
+
+        return fields;
+    }
+
+    private async void RunPowerShellAction(string action, string fullTaskPath)
     {
         LoadingOverlay.Visibility = Visibility.Visible;
         try
         {
-            // Escape path and name
-            string cmd = $"{action} -TaskName '{taskName}' -TaskPath '{taskPath}'";
-            if (action == "Start-ScheduledTask" || action == "Stop-ScheduledTask")
-            {
-                // These don't need elevation usually if user owns them, but system ones do.
-                // We rely on the app running as Admin.
-            }
-
             await Task.Run(() =>
             {
+                // Use schtasks for actions (more reliable than PS cmdlets)
+                string cmd = action switch
+                {
+                    "Start" => $"/run /tn \"{fullTaskPath}\"",
+                    "End" => $"/end /tn \"{fullTaskPath}\"",
+                    "Enable" => $"/change /tn \"{fullTaskPath}\" /enable",
+                    "Disable" => $"/change /tn \"{fullTaskPath}\" /disable",
+                    _ => ""
+                };
+
+                if (string.IsNullOrEmpty(cmd)) return;
+
                 var info = new ProcessStartInfo
                 {
-                    FileName = "powershell",
-                    Arguments = $"-NoProfile -Command \"{cmd}\"",
+                    FileName = "schtasks",
+                    Arguments = cmd,
                     UseShellExecute = false,
-                    CreateNoWindow = true
+                    CreateNoWindow = true,
+                    RedirectStandardError = true
                 };
-                Process.Start(info)?.WaitForExit();
+                
+                var p = Process.Start(info);
+                p?.WaitForExit(5000);
             });
 
-            // Refresh after small delay
-            await Task.Delay(1000);
+            // Refresh after action
+            await Task.Delay(500);
             await LoadTasksAsync();
         }
         catch (Exception ex)
@@ -178,20 +313,28 @@ public partial class ScheduledTasksWindow : Window
         }
     }
 
+    private string GetFullTaskPath(TaskItem task)
+    {
+        // Combine path and name
+        return task.TaskPath.TrimEnd('\\') + "\\" + task.TaskName;
+    }
+
     private void RunOrStop_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.Tag is TaskItem task)
         {
-            if (task.State == "Running")
+            string fullPath = GetFullTaskPath(task);
+            
+            if (task.NormalizedState == "Running")
             {
                 if (MessageBox.Show($"¿Detener la tarea '{task.TaskName}'?", "Confirmar", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    RunPowerShellAction("Stop-ScheduledTask", task.TaskName, task.TaskPath);
+                    RunPowerShellAction("End", fullPath);
                 }
             }
             else
             {
-                RunPowerShellAction("Start-ScheduledTask", task.TaskName, task.TaskPath);
+                RunPowerShellAction("Start", fullPath);
             }
         }
     }
@@ -200,39 +343,45 @@ public partial class ScheduledTasksWindow : Window
     {
         if (sender is Button btn && btn.Tag is TaskItem task)
         {
-            if (task.State == "Disabled")
+            string fullPath = GetFullTaskPath(task);
+            
+            if (task.NormalizedState == "Disabled")
             {
-                 RunPowerShellAction("Enable-ScheduledTask", task.TaskName, task.TaskPath);
+                RunPowerShellAction("Enable", fullPath);
             }
             else
             {
                 if (MessageBox.Show($"¿Deshabilitar la tarea '{task.TaskName}'?\nLa tarea dejará de ejecutarse automáticamente.", "Confirmar", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    RunPowerShellAction("Disable-ScheduledTask", task.TaskName, task.TaskPath);
+                    RunPowerShellAction("Disable", fullPath);
                 }
             }
         }
     }
 
-    // Context Menu Handlers (Reuse logic)
+    // Context Menu Handlers
     private void Run_Click(object sender, RoutedEventArgs e)
     {
-        if (GetTaskFromMenu(sender) is TaskItem task) RunPowerShellAction("Start-ScheduledTask", task.TaskName, task.TaskPath);
+        if (GetTaskFromMenu(sender) is TaskItem task) 
+            RunPowerShellAction("Start", GetFullTaskPath(task));
     }
 
     private void Stop_Click(object sender, RoutedEventArgs e)
     {
-        if (GetTaskFromMenu(sender) is TaskItem task) RunPowerShellAction("Stop-ScheduledTask", task.TaskName, task.TaskPath);
+        if (GetTaskFromMenu(sender) is TaskItem task) 
+            RunPowerShellAction("End", GetFullTaskPath(task));
     }
 
     private void Disable_Click(object sender, RoutedEventArgs e)
     {
-        if (GetTaskFromMenu(sender) is TaskItem task) RunPowerShellAction("Disable-ScheduledTask", task.TaskName, task.TaskPath);
+        if (GetTaskFromMenu(sender) is TaskItem task) 
+            RunPowerShellAction("Disable", GetFullTaskPath(task));
     }
 
     private void Enable_Click(object sender, RoutedEventArgs e)
     {
-        if (GetTaskFromMenu(sender) is TaskItem task) RunPowerShellAction("Enable-ScheduledTask", task.TaskName, task.TaskPath);
+        if (GetTaskFromMenu(sender) is TaskItem task) 
+            RunPowerShellAction("Enable", GetFullTaskPath(task));
     }
 
     private TaskItem? GetTaskFromMenu(object sender)
@@ -253,6 +402,6 @@ public partial class ScheduledTasksWindow : Window
         }
     }
 
-    private void Refresh_Click(object sender, RoutedEventArgs e) => LoadTasksAsync();
+    private async void Refresh_Click(object sender, RoutedEventArgs e) => await LoadTasksAsync();
     private void Close_Click(object sender, RoutedEventArgs e) => Close();
 }

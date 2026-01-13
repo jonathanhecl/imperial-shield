@@ -20,7 +20,7 @@
         <Style x:Key="TaskRowStyle" TargetType="DataGridRow">
             <Setter Property="ContextMenu" Value="{StaticResource RowContextMenu}"/>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding State}" Value="Disabled">
+                <DataTrigger Binding="{Binding NormalizedState}" Value="Disabled">
                     <Setter Property="Opacity" Value="0.7"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -207,7 +207,7 @@
                                                     <Setter Property="Content" Value="▶ Ejecutar"/>
                                                     <Setter Property="Cursor" Value="Hand"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding State}" Value="Running">
+                                                        <DataTrigger Binding="{Binding NormalizedState}" Value="Running">
                                                             <Setter Property="Content" Value="⏹ Detener"/>
                                                             <Setter Property="Foreground" Value="#EF4444"/>
                                                             <Setter Property="Template">
@@ -256,7 +256,7 @@
                                                     <Setter Property="Content" Value="❌ Deshabilitar"/>
                                                     <Setter Property="Cursor" Value="Hand"/>
                                                     <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding State}" Value="Disabled">
+                                                        <DataTrigger Binding="{Binding NormalizedState}" Value="Disabled">
                                                             <Setter Property="Content" Value="✅ Habilitar"/>
                                                             <Setter Property="Foreground" Value="#22C55E"/>
                                                             <Setter Property="Template">
@@ -304,14 +304,56 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button Content="🔄 Actualizar" Click="Refresh_Click" Style="{StaticResource ModernButton}" 
-                            Background="#1E293B" BorderBrush="#334155" BorderThickness="1" Foreground="#4DA8DA"
-                            Width="120" Height="38" Margin="0,0,12,0" FontWeight="Bold"/>
+                    <Button Content="🔄 Actualizar" Click="Refresh_Click"
+                            Width="120" Height="38" Margin="0,0,12,0" FontWeight="Bold">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="border" CornerRadius="6" Background="#1E293B" BorderBrush="#334155" BorderThickness="1">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="border" Property="Background" Value="#2E5077"/>
+                                                    <Setter TargetName="border" Property="BorderBrush" Value="#4DA8DA"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Foreground" Value="#4DA8DA"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Style>
+                        </Button.Style>
+                    </Button>
                     
-                    <Button Content="📅 Abrir Programador" Click="OpenScheduler_Click" Style="{StaticResource ModernButton}" 
-                            Background="#1E293B" BorderBrush="#334155" BorderThickness="1" Foreground="#94A3B8"
-                            Width="160" Height="38" Margin="0,0,12,0" FontWeight="Bold"
-                            ToolTip="Abre el Programador de Tareas de Windows nativo"/>
+                    <Button Content="📅 Abrir Programador" Click="OpenScheduler_Click"
+                            Width="170" Height="38" Margin="0,0,12,0" FontWeight="Bold"
+                            ToolTip="Abre el Programador de Tareas de Windows nativo">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="border" CornerRadius="6" Background="#1E293B" BorderBrush="#334155" BorderThickness="1">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="border" Property="Background" Value="#2E5077"/>
+                                                    <Setter TargetName="border" Property="BorderBrush" Value="#4DA8DA"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Foreground" Value="#94A3B8"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Style>
+                        </Button.Style>
+                    </Button>
 
                     <Button Content="Cerrar" Click="Close_Click" Style="{StaticResource ModernButton}" 
                             Width="100" Height="38" FontWeight="Bold"/>
