@@ -41,6 +41,16 @@ namespace ImperialShield.Views
 
         private void OpenPath_Click(object sender, RoutedEventArgs e)
         {
+            OpenFileLocation();
+        }
+
+        private void OpenLocation_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileLocation();
+        }
+
+        private void OpenFileLocation()
+        {
             try
             {
                 if (File.Exists(_appPath))

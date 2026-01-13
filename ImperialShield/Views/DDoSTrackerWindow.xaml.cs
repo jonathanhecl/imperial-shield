@@ -46,6 +46,33 @@ public partial class DDoSTrackerWindow : Window
         this.Close();
     }
 
+    private void OpenLocation_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            // Try to find the process to get the path if it's running
+            var procs = Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(_processName));
+            if (procs.Length > 0)
+            {
+                var path = procs[0].MainModule?.FileName;
+                if (!string.IsNullOrEmpty(path) && System.IO.File.Exists(path))
+                {
+                    Process.Start("explorer.exe", $"/select,\"{path}\"");
+                    return;
+                }
+            }
+
+            // Fallback: search in common paths or just show message
+            // Since we only have the name in this context, we can't do much if process is gone.
+            // But we can try to search if it looks like a full path (simulations pass full path sometimes or just name)
+            if (System.IO.File.Exists(_processName))
+            {
+                Process.Start("explorer.exe", $"/select,\"{_processName}\"");
+            }
+        }
+        catch { }
+    }
+
     public static void ShowAlert(string processName, string ip, int count, string warning)
     {
         Application.Current.Dispatcher.Invoke(() =>

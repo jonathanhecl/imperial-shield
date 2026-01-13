@@ -74,7 +74,16 @@
                         <TextBlock x:Name="TargetExeText" Text="chrome.exe" Foreground="#4DA8DA" FontSize="18" FontWeight="Bold" Margin="0,2,0,10"/>
                         
                         <TextBlock Text="Redirigido a (Debugger):" Foreground="White" FontSize="12" Opacity="0.7"/>
-                        <TextBlock x:Name="DebuggerPathText" Text="C:\Windows\temp\virus.exe" Foreground="#E74C3C" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                        <TextBlock x:Name="DebuggerPathText" Text="C:\Windows\temp\virus.exe" 
+                                   Foreground="#E74C3C" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap"
+                                   ToolTip="Clic derecho para opciones"
+                                   Cursor="Hand">
+                            <TextBlock.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="Abrir ubicación del archivo" Click="OpenDebuggerLocation_Click"/>
+                                </ContextMenu>
+                            </TextBlock.ContextMenu>
+                        </TextBlock>
                     </StackPanel>
                 </Border>
                 

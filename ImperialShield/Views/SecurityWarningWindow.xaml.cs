@@ -1,6 +1,7 @@
 using System;
 using System.Windows;
 using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace ImperialShield.Views;
 
@@ -23,6 +24,18 @@ public partial class SecurityWarningWindow : Window
         DebuggerPathText.Text = debuggerPath;
         
         System.Media.SystemSounds.Hand.Play();
+    }
+
+    private void OpenDebuggerLocation_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+             if (System.IO.File.Exists(DebuggerPathText.Text))
+             {
+                 Process.Start("explorer.exe", $"/select,\"{DebuggerPathText.Text}\"");
+             }
+        }
+        catch { }
     }
 
     private void Action_Click(object sender, RoutedEventArgs e)

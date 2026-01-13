@@ -9,7 +9,7 @@ public class DefenderMonitor : IDisposable
     private Timer? _timer;
     private bool _lastKnownStatus = true;
     private HashSet<string> _knownExclusions = new(StringComparer.OrdinalIgnoreCase);
-    private readonly int _pollingIntervalMs = 60000; // 60 segundos
+    // private readonly int _pollingIntervalMs = 60000; // Unused
     private bool _isDisposed;
 
     public event EventHandler<DefenderStatusEventArgs>? DefenderStatusChanged;

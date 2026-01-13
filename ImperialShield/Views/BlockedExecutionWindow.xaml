@@ -77,7 +77,15 @@
                 <Border Background="#1B2838" CornerRadius="10" Padding="20" Margin="0,0,0,15">
                     <TextBlock x:Name="ExeNameText" Text="malware.exe" 
                                Foreground="#E74C3C" FontSize="22" FontWeight="Bold" 
-                               TextAlignment="Center"/>
+                               TextAlignment="Center"
+                               ToolTip="Clic derecho para opciones"
+                               Cursor="Hand">
+                        <TextBlock.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Abrir gestión de Cuarentena" Click="OpenQuarantine_Click"/>
+                            </ContextMenu>
+                        </TextBlock.ContextMenu>
+                    </TextBlock>
                 </Border>
                 
                 <TextBlock Text="Este ejecutable está bloqueado por razones de seguridad y NO puede ejecutarse." 

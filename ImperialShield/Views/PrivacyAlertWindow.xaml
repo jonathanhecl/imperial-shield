@@ -102,7 +102,15 @@
             <!-- Detailed Message -->
             <StackPanel Grid.Row="2" VerticalAlignment="Top" Margin="0,10">
                 <TextBlock x:Name="AppNameText" Foreground="#4DA8DA" FontSize="22" 
-                           FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,5"/>
+                           FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,5"
+                           ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"
+                           Cursor="Hand">
+                    <TextBlock.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Abrir ubicación del archivo" Click="OpenLocation_Click"/>
+                        </ContextMenu>
+                    </TextBlock.ContextMenu>
+                </TextBlock>
                 <TextBlock x:Name="MessageText" Foreground="White" FontSize="16" 
                            FontWeight="SemiBold" TextWrapping="Wrap" 
                            TextAlignment="Center" LineHeight="24"/>

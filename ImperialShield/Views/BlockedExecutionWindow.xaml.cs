@@ -16,6 +16,8 @@ public partial class BlockedExecutionWindow : Window
         Logger.Log($"BlockedExecutionWindow shown for: {blockedExeName}");
     }
 
+
+
     private void Close_Click(object sender, RoutedEventArgs e)
     {
         this.Close();
