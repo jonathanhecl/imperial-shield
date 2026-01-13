@@ -7,6 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Windows.Media;
 using Microsoft.Win32;
+using System.Windows.Input;
 using ImperialShield.Services;
 
 namespace ImperialShield.Views
@@ -256,13 +257,17 @@ namespace ImperialShield.Views
 
         private void OpenLocation_Click(object sender, RoutedEventArgs e)
         {
-            StartupItem? item = null;
-            if (sender is FrameworkElement element)
-            {
-                item = element.DataContext as StartupItem;
-            }
-            
-            if (item != null)
+            HandleOpenLocation(sender);
+        }
+
+        private void OpenLocation_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            HandleOpenLocation(sender);
+        }
+
+        private void HandleOpenLocation(object sender)
+        {
+            if (sender is FrameworkElement element && element.DataContext is StartupItem item)
             {
                 try
                 {
