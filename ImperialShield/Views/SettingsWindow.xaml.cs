@@ -31,21 +31,11 @@ namespace ImperialShield.Views
             StartupCheckBox.IsChecked = StartupManager.IsStartupEnabled();
         }
 
-        private void TestAlert_Click(object sender, RoutedEventArgs e)
+        private void OpenAlertTest_Click(object sender, RoutedEventArgs e)
         {
-            var demoRisk = new PrivacyRisk(
-                @"C:\Program Files\AppEspía\bin\AppEspía.exe", 
-                DeviceType.Camera, 
-                true
-            );
-            var alert = new PrivacyAlertWindow(demoRisk);
-            alert.ShowDialog();
-        }
-
-        private void TestDDoS_Click(object sender, RoutedEventArgs e)
-        {
-            DDoSTrackerWindow.ShowAlert("TestDDoS.exe", "203.0.113.55", 666, 
-                "ATAQUE SALIENTE SIMULADO: 'TestDDoS.exe' está enviando tráfico masivo a 203.0.113.55");
+            var testWin = new AlertTestWindow();
+            testWin.Owner = this;
+            testWin.ShowDialog();
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)

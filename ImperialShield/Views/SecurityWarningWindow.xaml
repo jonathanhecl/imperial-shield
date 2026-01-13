@@ -2,13 +2,12 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="ALERTA DE SEGURIDAD - Imperial Shield" 
-        Width="650" Height="480"
+        Width="650" Height="550"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
         Topmost="True"
-        WindowStartupLocation="CenterScreen"
-        Style="{StaticResource ModernWindow}">
+        WindowStartupLocation="CenterScreen">
     
     <Window.Resources>
         <Storyboard x:Key="PulseWarning">
@@ -75,8 +74,9 @@
                         
                         <TextBlock Text="Redirigido a (Debugger):" Foreground="White" FontSize="12" Opacity="0.7"/>
                         <TextBlock x:Name="DebuggerPathText" Text="C:\Windows\temp\virus.exe" 
-                                   Foreground="#E74C3C" FontSize="14" FontWeight="SemiBold" TextWrapping="Wrap"
-                                   ToolTip="Clic derecho para opciones"
+                                   Foreground="#E74C3C" FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap"
+                                   ToolTipService.InitialShowDelay="0"
+                                   ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"
                                    Cursor="Hand">
                             <TextBlock.ContextMenu>
                                 <ContextMenu>

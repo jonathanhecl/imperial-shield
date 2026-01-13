@@ -24,7 +24,7 @@ namespace ImperialShield.Views
 
             DeviceIcon.Text = risk.Device == DeviceType.Camera ? "📷" : "🎤";
             AppNameText.Text = risk.ApplicationName;
-            AppPathText.Text = risk.ApplicationPath;
+            AppNameText.ToolTip = risk.ApplicationPath;
             
             string deviceStr = risk.Device == DeviceType.Camera ? "cámara" : "micrófono";
             MessageText.Text = $"Se ha detectado una nueva aplicación intentando acceder a tu {deviceStr}. Imperial Shield recomienda bloquearla si no la reconoces.";
@@ -37,11 +37,6 @@ namespace ImperialShield.Views
         {
             Result = PrivacyAlertResult.Revoke;
             this.Close();
-        }
-
-        private void OpenPath_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileLocation();
         }
 
         private void OpenLocation_Click(object sender, RoutedEventArgs e)

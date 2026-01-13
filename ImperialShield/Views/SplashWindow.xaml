@@ -23,18 +23,10 @@
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
             
-            <!-- Shield Icon -->
-            <Viewbox Grid.Row="0" Width="120" Height="120" Margin="0,30,0,0">
-                <Canvas Width="100" Height="100">
-                    <!-- Shield Shape -->
-                    <Path Fill="#1E3A5F" Data="M50,5 L90,20 L90,50 C90,75 70,90 50,95 C30,90 10,75 10,50 L10,20 Z"/>
-                    <!-- Inner Shield -->
-                    <Path Fill="#2E5077" Data="M50,12 L82,24 L82,48 C82,70 65,82 50,87 C35,82 18,70 18,48 L18,24 Z"/>
-                    <!-- Checkmark -->
-                    <Path Stroke="#4DA8DA" StrokeThickness="6" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"
-                          Data="M30,50 L45,65 L70,35"/>
-                </Canvas>
-            </Viewbox>
+            <!-- Shield Logo -->
+            <Image Grid.Row="0" Source="/Resources/shield.png" 
+                   Width="130" Height="130" Margin="0,30,0,0"
+                   RenderOptions.BitmapScalingMode="HighQuality"/>
             
             <!-- Title -->
             <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,10,0,0">

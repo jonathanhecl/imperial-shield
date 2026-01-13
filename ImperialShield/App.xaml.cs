@@ -81,11 +81,12 @@ public partial class App : Application
         // Check if we were invoked by IFEO (quarantine interception)
         if (QuarantineService.HandleQuarantineInterception(args))
         {
-            string? blockedExe = QuarantineService.GetBlockedExecutableName(args);
-            if (!string.IsNullOrEmpty(blockedExe))
+            // args[1] holds the full path of the blocked executable passed by IFEO
+            string? blockedExePath = args.Length >= 2 && args[0] == "--blocked" ? args[1] : null;
+            if (!string.IsNullOrEmpty(blockedExePath))
             {
                 _splashWindow?.Close();
-                BlockedExecutionWindow.ShowBlocked(blockedExe);
+                BlockedExecutionWindow.ShowBlocked(blockedExePath);
                 Shutdown();
                 return;
             }
