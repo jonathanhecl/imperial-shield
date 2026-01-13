@@ -25,10 +25,16 @@
     <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimaryColor}"/>
     <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondaryColor}"/>
 
-    <!-- Gradient Brushes -->
-    <LinearGradientBrush x:Key="HeaderGradient" StartPoint="0,0" EndPoint="1,1">
-        <GradientStop Color="{StaticResource PrimaryColor}" Offset="0"/>
-        <GradientStop Color="{StaticResource SecondaryColor}" Offset="1"/>
+    <!-- RPG-Style Brushes -->
+    <LinearGradientBrush x:Key="EpicHeaderGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#0a1628" Offset="0"/>
+        <GradientStop Color="#1a3a5c" Offset="0.5"/>
+        <GradientStop Color="#0d2847" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="CardGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#1B3044" Offset="0"/>
+        <GradientStop Color="#0F1C2E" Offset="1"/>
     </LinearGradientBrush>
 
     <!-- Button Style -->
@@ -69,6 +75,58 @@
                 <Setter Property="Background" Value="#EC7063"/>
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+    <!-- Action Button RPG Style -->
+    <Style x:Key="RPGButton" TargetType="Button">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#2E5077" Offset="0"/>
+                    <GradientStop Color="#1E3A5F" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Foreground" Value="#E8F4FC"/>
+        <Setter Property="BorderBrush" Value="#4DA8DA"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="20,12"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" 
+                            Background="{TemplateBinding Background}" 
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.3" Color="#4DA8DA"/>
+                        </Border.Effect>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#3A6A9A" Offset="0"/>
+                                        <GradientStop Color="#2E5077" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter TargetName="border" Property="BorderBrush" Value="#7CC4F0"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#1A3A5A"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <!-- DataGrid Style -->
@@ -112,6 +170,19 @@
     </Style>
 
     <!-- Card Style -->
+    <Style x:Key="RPGCard" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource CardGradient}"/>
+        <Setter Property="BorderBrush" Value="#3A5F82"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="20"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="15" ShadowDepth="3" Opacity="0.5" Color="#000"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="CardBorder" TargetType="Border">
         <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
         <Setter Property="CornerRadius" Value="12"/>

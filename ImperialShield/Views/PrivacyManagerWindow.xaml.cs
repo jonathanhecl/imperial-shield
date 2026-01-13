@@ -28,7 +28,7 @@ public partial class PrivacyManagerWindow : Window
             ? (IsActiveRisk ? "Ahora mismo" : "Nunca/Desconocido") 
             : LastUsedStop.ToString("g");
 
-        public string StatusText => IsActiveRisk ? "🔴 Grabando" : (IsRunning ? "🟢 Ejecutando" : "⚫ Detenido");
+        public string StatusText => IsActiveRisk ? "🔴 En Uso" : (IsRunning ? "🟢 Ejecutando" : "⚫ Detenido");
         
         public PrivacyMonitor.PrivacyAppHistory OriginalData { get; set; } = new();
     }
@@ -61,22 +61,33 @@ public partial class PrivacyManagerWindow : Window
     private List<PrivacyAppViewModel> MapToViewModel(List<PrivacyMonitor.PrivacyAppHistory> history, DeviceType type)
     {
         var runningProcs = Process.GetProcesses();
+        
+        // Group by AppId (Path or PackageFamilyName) to avoid duplicates like mentioned (Discord, etc)
+        var groupedHistory = history.GroupBy(h => h.AppId).Select(g => new PrivacyMonitor.PrivacyAppHistory
+        {
+            AppId = g.Key,
+            DisplayName = g.First().DisplayName,
+            IsNonPackaged = g.First().IsNonPackaged,
+            LastUsedStart = g.Max(x => x.LastUsedStart),
+            LastUsedStop = g.Max(x => x.LastUsedStop),
+            IsActive = g.Any(x => x.IsActive),
+            PermissionStatus = g.First().PermissionStatus
+        });
+
         var result = new List<PrivacyAppViewModel>();
 
-        foreach (var h in history)
+        foreach (var h in groupedHistory)
         {
             bool isRunning = false;
             
             if (h.IsNonPackaged)
             {
-                // h.AppId contains full path like C:\...\zoom.exe
                 string fileName = System.IO.Path.GetFileNameWithoutExtension(h.AppId);
                 isRunning = runningProcs.Any(p => p.ProcessName.Equals(fileName, StringComparison.OrdinalIgnoreCase));
             }
             else
             {
-                // Store apps are harder to match exactly by package family name against process name
-                // Heuristic: Check if any process name contains part of the DisplayName
+                // Store apps heuristic
                 isRunning = runningProcs.Any(p => p.ProcessName.Contains(h.DisplayName, StringComparison.OrdinalIgnoreCase));
             }
 
@@ -117,34 +128,66 @@ public partial class PrivacyManagerWindow : Window
         {
             try
             {
-                string procName = System.IO.Path.GetFileNameWithoutExtension(app.AppId);
-                // Try strictly first
-                var procs = Process.GetProcessesByName(procName);
-                if (procs.Length == 0)
-                {
-                    // Loose match
-                    procs = Process.GetProcesses().Where(p => p.ProcessName.Contains(app.DisplayName, StringComparison.OrdinalIgnoreCase)).ToArray();
-                }
-
-                if (procs.Length > 0)
-                {
-                    int killed = 0;
-                    foreach (var p in procs)
-                    {
-                        try { p.Kill(); killed++; } catch { }
-                    }
-                    MessageBox.Show($"Se terminaron {killed} proceso(s).");
-                    RefreshData();
-                }
-                else
-                {
-                    MessageBox.Show("No se encontraron procesos activos para esta aplicación.");
-                }
+                KillProcessesForApp(app);
+                RefreshData();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error al matar proceso: {ex.Message}");
             }
+        }
+    }
+
+    private void KillProcessesForApp(PrivacyAppViewModel app)
+    {
+        string procName = app.IsNonPackaged ? System.IO.Path.GetFileNameWithoutExtension(app.AppId) : app.DisplayName;
+        
+        var procs = Process.GetProcessesByName(procName);
+        if (procs.Length == 0)
+        {
+            procs = Process.GetProcesses().Where(p => p.ProcessName.Contains(app.DisplayName, StringComparison.OrdinalIgnoreCase)).ToArray();
+        }
+
+        if (procs.Length > 0)
+        {
+            int killed = 0;
+            foreach (var p in procs)
+            {
+                try { p.Kill(); killed++; } catch { }
+            }
+            MessageBox.Show($"Se terminaron {killed} proceso(s) de '{app.DisplayName}'.");
+        }
+        else
+        {
+            MessageBox.Show("No se encontraron procesos activos para esta aplicación.");
+        }
+    }
+
+    private void OpenLocation_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem mi && mi.DataContext is PrivacyAppViewModel app)
+        {
+            if (app.IsNonPackaged && System.IO.File.Exists(app.AppId))
+            {
+                Process.Start("explorer.exe", $"/select,\"{app.AppId}\"");
+            }
+            else if (!app.IsNonPackaged)
+            {
+                MessageBox.Show("Esta es una aplicación de Windows Store. No tiene una ubicación de archivo tradicional explorable.", "Aplicación de Sistema");
+            }
+            else
+            {
+                MessageBox.Show("No se pudo encontrar el archivo ejecutable en el disco.", "Error");
+            }
+        }
+    }
+
+    private void CopyPath_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem mi && mi.DataContext is PrivacyAppViewModel app)
+        {
+            Clipboard.SetText(app.AppId);
+            MessageBox.Show("Ruta copiada al portapapeles.");
         }
     }
 }
