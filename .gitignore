@@ -95,3 +95,5 @@ coverage/
 
 # Build error
 build_err.txt
+build_log.txt
+

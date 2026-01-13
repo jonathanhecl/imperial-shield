@@ -262,56 +262,10 @@ public partial class App : Application
         window.Show();
     }
 
-    private void ViewHosts_Click(object sender, RoutedEventArgs e)
+    private void ShowStartupManager_Click(object sender, RoutedEventArgs e)
     {
-        try
-        {
-            var hostsPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.System),
-                @"drivers\etc\hosts");
-
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = "notepad.exe",
-                Arguments = hostsPath,
-                UseShellExecute = true
-            });
-        }
-        catch (Exception ex)
-        {
-            Logger.LogException(ex, "ViewHosts");
-            MessageBox.Show($"Error al abrir el archivo HOSTS: {ex.Message}",
-                "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
-    }
-
-    private void ViewDefender_Click(object sender, RoutedEventArgs e)
-    {
-        // Usar BeginInvoke para que el MessageBox aparezca después de que el menú se cierre
-        Dispatcher.BeginInvoke(new Action(() =>
-        {
-            if (_defenderMonitor == null) return;
-
-            var info = _defenderMonitor.GetDefenderInfo();
-            var exclusions = _defenderMonitor.GetCurrentExclusions();
-
-            var message = $"=== Estado de Windows Defender ===\n\n" +
-                         $"Protección en Tiempo Real: {(info.RealTimeProtectionEnabled ? "✅ Activo" : "❌ Inactivo")}\n" +
-                         $"Monitor de Comportamiento: {(info.BehaviorMonitorEnabled ? "✅ Activo" : "❌ Inactivo")}\n" +
-                         $"Versión de Firmas: {info.SignatureVersion}\n" +
-                         $"Antigüedad de Firmas: {info.SignatureAgeDays} día(s)\n" +
-                         $"Último Escaneo: {info.LastFullScan?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca"}\n\n" +
-                         $"=== Exclusiones ({exclusions.Count}) ===\n" +
-                         (exclusions.Count > 0
-                             ? string.Join("\n", exclusions.Take(10).Select(ex => $"• {ex}"))
-                             : "No hay exclusiones configuradas");
-
-            if (exclusions.Count > 10)
-                message += $"\n... y {exclusions.Count - 10} más";
-
-            MessageBox.Show(message, "Estado de Windows Defender",
-                MessageBoxButton.OK, MessageBoxImage.Information);
-        }), System.Windows.Threading.DispatcherPriority.Background);
+        var window = new StartupManagerWindow();
+        window.Show();
     }
 
     private void Settings_Click(object sender, RoutedEventArgs e)

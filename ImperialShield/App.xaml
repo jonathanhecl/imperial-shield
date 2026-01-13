@@ -20,9 +20,7 @@
                         <MenuItem Header="📊 Abrir Dashboard" Click="ShowDashboard_Click"/>
                         <MenuItem Header="🔍 Visor de Procesos" Click="ShowProcessViewer_Click"/>
                         <MenuItem Header="🌐 Monitor de Conexiones" Click="ShowNetworkViewer_Click"/>
-                        <Separator/>
-                        <MenuItem Header="📄 Ver Archivo HOSTS" Click="ViewHosts_Click"/>
-                        <MenuItem Header="🛡️ Estado de Defender" Click="ViewDefender_Click"/>
+                        <MenuItem Header="🚀 Gestor de Inicio" Click="ShowStartupManager_Click"/>
                         <Separator/>
                         <MenuItem Header="⚙️ Configuración" Click="Settings_Click"/>
                         <MenuItem Header="❌ Salir" Click="Exit_Click"/>

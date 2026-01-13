@@ -200,10 +200,10 @@ namespace ImperialShield.Views
 
     public class StartupItem
     {
-        public required string Name { get; set; }
-        public required string Command { get; set; }
-        public required string Type { get; set; }
-        public required string Path { get; set; }
+        public string Name { get; set; } = "";
+        public string Command { get; set; } = "";
+        public string Type { get; set; } = "";
+        public string Path { get; set; } = "";
         public bool IsEnabled { get; set; }
         public StartupOrigin Origin { get; set; }
 
