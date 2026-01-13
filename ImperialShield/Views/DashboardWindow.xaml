@@ -428,6 +428,26 @@
                                                Foreground="#E8F4FC" FontSize="13"/>
                                 </Grid>
                             </Border>
+
+                            <Border Background="#0D1B2A" CornerRadius="6" Padding="15,12" Margin="0,8,0,0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="DDoS Watchdog" Foreground="#94A3B8" VerticalAlignment="Center"/>
+                                        <TextBlock Text=" (Activo)" Foreground="#00FF9D" FontSize="11" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                                    </StackPanel>
+                                    
+                                    <TextBlock Grid.Column="1" Text="🟢 MONITOREANDO" FontWeight="Bold" 
+                                               Foreground="#27AE60" FontSize="12">
+                                        <TextBlock.Effect>
+                                            <DropShadowEffect Color="#27AE60" BlurRadius="5" ShadowDepth="0" Opacity="0.4"/>
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                </Grid>
+                            </Border>
                         </StackPanel>
                     </Border>
                 </Grid>

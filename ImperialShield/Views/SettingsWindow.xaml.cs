@@ -33,7 +33,19 @@ namespace ImperialShield.Views
 
         private void TestAlert_Click(object sender, RoutedEventArgs e)
         {
-            AlertWindow.Show("¡Prueba de Seguridad! Se ha detectado un cambio simulado en el sistema.");
+            var demoRisk = new PrivacyRisk(
+                @"C:\Program Files\AppEspía\bin\AppEspía.exe", 
+                DeviceType.Camera, 
+                true
+            );
+            var alert = new PrivacyAlertWindow(demoRisk);
+            alert.ShowDialog();
+        }
+
+        private void TestDDoS_Click(object sender, RoutedEventArgs e)
+        {
+            DDoSTrackerWindow.ShowAlert("TestDDoS.exe", "203.0.113.55", 666, 
+                "ATAQUE SALIENTE SIMULADO: 'TestDDoS.exe' está enviando tráfico masivo a 203.0.113.55");
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)

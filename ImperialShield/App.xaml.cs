@@ -20,6 +20,7 @@ public partial class App : Application
     private PrivacyMonitor? _privacyMonitor;
     private StartupMonitor? _startupMonitor;
     private IFEOMonitor? _ifeoMonitor;
+    private DDoSMonitor? _ddosMonitor;
     private DashboardWindow? _dashboardWindow;
     private SplashWindow? _splashWindow;
 
@@ -180,9 +181,24 @@ public partial class App : Application
             _ifeoMonitor.Start();
             Logger.Log("IFEOMonitor started");
         }
+        // Brace removed here
         catch (Exception ex)
         {
             Logger.LogException(ex, "IFEOMonitor Setup");
+        }
+
+        // Paso 7: Inicializar monitor DDoS (Watchdog)
+         _splashWindow?.UpdateStatus("Activando DDoS Watchdog...");
+        try
+        {
+            _ddosMonitor = new DDoSMonitor();
+            _ddosMonitor.DDoSAttackDetected += OnDDoSDetected;
+            _ddosMonitor.Start();
+            Logger.Log("DDoSMonitor started");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "DDoSMonitor Setup");
         }
 
         _splashWindow?.UpdateStatus("Listo.");
@@ -347,6 +363,12 @@ public partial class App : Application
                 }
             }
         });
+        // Duplicate removed here
+    }
+
+    private void OnDDoSDetected(object? sender, DDoSEventArgs e)
+    {
+        DDoSTrackerWindow.ShowAlert(e.ProcessName, e.RemoteIP, e.ConnectionCount, e.WarningMessage);
     }
 
     #endregion
