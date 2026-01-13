@@ -19,6 +19,7 @@ public partial class App : Application
     private DefenderMonitor? _defenderMonitor;
     private PrivacyMonitor? _privacyMonitor;
     private StartupMonitor? _startupMonitor;
+    private IFEOMonitor? _ifeoMonitor;
     private DashboardWindow? _dashboardWindow;
     private SplashWindow? _splashWindow;
 
@@ -170,6 +171,20 @@ public partial class App : Application
         _startupMonitor.NewStartupAppDetected += OnNewStartupAppDetected;
         _startupMonitor.Start();
 
+        // Paso 6: Inicializar monitor de IFEO (Redirecciones)
+        _splashWindow?.UpdateStatus("Iniciando monitor de Redirecciones...");
+        try
+        {
+            _ifeoMonitor = new IFEOMonitor();
+            _ifeoMonitor.RogueIFEODetected += OnRogueIFEODetected;
+            _ifeoMonitor.Start();
+            Logger.Log("IFEOMonitor started");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "IFEOMonitor Setup");
+        }
+
         _splashWindow?.UpdateStatus("Listo.");
         Logger.Log("Initialization complete");
 
@@ -308,6 +323,28 @@ public partial class App : Application
                 ShowToastNotification("Permiso Revocado", 
                     $"Se bloqueó el acceso a {deviceName} para '{e.App.ApplicationName}'.",
                     ToastNotificationType.Success);
+            }
+        });
+    }
+
+    private void OnRogueIFEODetected(object? sender, IFEORiskEventArgs e)
+    {
+        Dispatcher.BeginInvoke(() =>
+        {
+            var result = SecurityWarningWindow.ShowWarning(e.ExecutableName, e.DebuggerPath);
+
+            if (result == SecurityAction.Delete)
+            {
+                if (QuarantineService.UnquarantineExecutable(e.ExecutableName))
+                {
+                    ShowToastNotification("Amenaza Eliminada", 
+                        $"La redirección maliciosa de '{e.ExecutableName}' ha sido eliminada.",
+                        ToastNotificationType.Success);
+                }
+                else
+                {
+                    MessageBox.Show("No se pudo eliminar la entrada del registro. Verifica los permisos de Administrador.", "Error");
+                }
             }
         });
     }
