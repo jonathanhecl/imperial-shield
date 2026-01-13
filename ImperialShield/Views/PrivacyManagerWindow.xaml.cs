@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using ImperialShield.Services;
 
 namespace ImperialShield.Views;
@@ -11,6 +13,16 @@ namespace ImperialShield.Views;
 public partial class PrivacyManagerWindow : Window
 {
     private PrivacyMonitor _monitor;
+
+    // Trusted publishers list
+    private static readonly string[] TrustedPublishers = new[]
+    {
+        "Microsoft", "Google", "Mozilla", "Apple", "Adobe", "NVIDIA", "Intel", "AMD",
+        "Valve", "Steam", "Discord", "Spotify", "Zoom", "Logitech", "Razer", "Elgato",
+        "OBS", "Corsair", "ASUS", "MSI", "Realtek", "Dell", "HP", "Lenovo", "Samsung"
+    };
+
+    public enum ThreatLevel { Trusted, Safe, Medium, High }
 
     public class PrivacyAppViewModel
     {
@@ -23,12 +35,56 @@ public partial class PrivacyManagerWindow : Window
         public bool IsRunning { get; set; }
         public DeviceType DeviceType { get; set; }
         
+        // Security properties
+        public bool IsSigned { get; set; }
+        public string Publisher { get; set; } = string.Empty;
+        public ThreatLevel ThreatLevel { get; set; } = ThreatLevel.Safe;
+        public bool IsImperialShield { get; set; }
+        public bool IsStoreApp { get; set; }
+        
         // For UI Binding
         public string LastActivity => LastUsedStop == DateTime.MinValue 
             ? (IsActiveRisk ? "Ahora mismo" : "Nunca/Desconocido") 
             : LastUsedStop.ToString("g");
 
-        public string StatusText => IsActiveRisk ? "🔴 En Uso" : (IsRunning ? "🟢 Ejecutando" : "⚫ Detenido");
+        public string StatusText => IsActiveRisk ? "🔴 En Uso" : (IsRunning ? "🔵 Ejecutando" : "⚫ Detenido");
+        
+        // Security UI Bindings
+        public string ThreatIcon => ThreatLevel switch
+        {
+            ThreatLevel.Trusted => "🛡️",
+            ThreatLevel.Safe => "✅",
+            ThreatLevel.Medium => "🟡",
+            ThreatLevel.High => "🔴",
+            _ => "❓"
+        };
+
+        public string ThreatText => ThreatLevel switch
+        {
+            ThreatLevel.Trusted => "Confiable",
+            ThreatLevel.Safe => "Seguro",
+            ThreatLevel.Medium => "Sin Firma",
+            ThreatLevel.High => "Sospechoso",
+            _ => "Desconocido"
+        };
+
+        public Brush ThreatColor => ThreatLevel switch
+        {
+            ThreatLevel.Trusted => new SolidColorBrush(Color.FromRgb(77, 168, 218)),
+            ThreatLevel.Safe => new SolidColorBrush(Color.FromRgb(34, 197, 94)),
+            ThreatLevel.Medium => new SolidColorBrush(Color.FromRgb(234, 179, 8)),
+            ThreatLevel.High => new SolidColorBrush(Color.FromRgb(239, 68, 68)),
+            _ => new SolidColorBrush(Color.FromRgb(148, 163, 184))
+        };
+
+        public string SignatureText => IsImperialShield ? "🛡️ Sistema (Verificado)" 
+            : IsStoreApp ? "📦 Microsoft Store" 
+            : IsSigned ? $"✓ {Publisher}" 
+            : "⚠️ Sin Firma";
+
+        public Brush SignatureColor => IsImperialShield || IsStoreApp ? new SolidColorBrush(Color.FromRgb(77, 168, 218))
+            : IsSigned ? new SolidColorBrush(Color.FromRgb(34, 197, 94))
+            : new SolidColorBrush(Color.FromRgb(234, 179, 8));
         
         public PrivacyMonitor.PrivacyAppHistory OriginalData { get; set; } = new();
     }
@@ -56,13 +112,14 @@ public partial class PrivacyManagerWindow : Window
         var micApps = _monitor.GetAllAppsWithPermission(DeviceType.Microphone);
         var micViewModels = MapToViewModel(micApps, DeviceType.Microphone);
         MicGrid.ItemsSource = micViewModels;
+
+        LastUpdatedText.Text = $"Última actualización: {DateTime.Now:HH:mm:ss}";
     }
 
     private List<PrivacyAppViewModel> MapToViewModel(List<PrivacyMonitor.PrivacyAppHistory> history, DeviceType type)
     {
         var runningProcs = Process.GetProcesses();
         
-        // Group by AppId (Path or PackageFamilyName) to avoid duplicates like mentioned (Discord, etc)
         var groupedHistory = history.GroupBy(h => h.AppId).Select(g => new PrivacyMonitor.PrivacyAppHistory
         {
             AppId = g.Key,
@@ -87,11 +144,10 @@ public partial class PrivacyManagerWindow : Window
             }
             else
             {
-                // Store apps heuristic
                 isRunning = runningProcs.Any(p => p.ProcessName.Contains(h.DisplayName, StringComparison.OrdinalIgnoreCase));
             }
 
-            result.Add(new PrivacyAppViewModel
+            var vm = new PrivacyAppViewModel
             {
                 AppId = h.AppId,
                 DisplayName = h.DisplayName,
@@ -101,11 +157,121 @@ public partial class PrivacyManagerWindow : Window
                 IsActiveRisk = h.IsActive,
                 IsRunning = isRunning,
                 DeviceType = type,
-                OriginalData = h
-            });
+                OriginalData = h,
+                IsStoreApp = !h.IsNonPackaged
+            };
+
+            // Analyze security
+            AnalyzeSecurity(vm);
+
+            result.Add(vm);
         }
         
-        return result.OrderByDescending(x => x.IsActiveRisk).ThenByDescending(x => x.IsRunning).ThenByDescending(x => x.LastUsedStop).ToList();
+        return result
+            .OrderByDescending(x => x.IsActiveRisk)
+            .ThenByDescending(x => x.IsRunning)
+            .ThenBy(x => x.ThreatLevel)
+            .ThenByDescending(x => x.LastUsedStop)
+            .ToList();
+    }
+
+    private void AnalyzeSecurity(PrivacyAppViewModel vm)
+    {
+        // Check if it's Imperial Shield
+        if (vm.DisplayName.Contains("ImperialShield", StringComparison.OrdinalIgnoreCase) ||
+            vm.AppId.Contains("ImperialShield", StringComparison.OrdinalIgnoreCase))
+        {
+            vm.IsImperialShield = true;
+            vm.IsSigned = true;
+            vm.Publisher = "Imperial Shield";
+            vm.ThreatLevel = ThreatLevel.Trusted;
+            return;
+        }
+
+        // Store apps are considered trusted (signed by Microsoft)
+        if (!vm.IsNonPackaged)
+        {
+            vm.IsSigned = true;
+            vm.Publisher = "Microsoft Store";
+            vm.ThreatLevel = ThreatLevel.Trusted;
+            return;
+        }
+
+        // For non-packaged apps, verify signature
+        if (System.IO.File.Exists(vm.AppId))
+        {
+            vm.IsSigned = VerifySignature(vm.AppId);
+            vm.Publisher = GetPublisher(vm.AppId);
+            vm.ThreatLevel = AnalyzeThreat(vm);
+        }
+        else
+        {
+            vm.IsSigned = false;
+            vm.Publisher = "Desconocido";
+            vm.ThreatLevel = ThreatLevel.Medium;
+        }
+    }
+
+    private bool VerifySignature(string filePath)
+    {
+        try
+        {
+            var cert = X509Certificate.CreateFromSignedFile(filePath);
+            return cert != null;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private string GetPublisher(string filePath)
+    {
+        try
+        {
+            var cert = X509Certificate.CreateFromSignedFile(filePath);
+            if (cert != null)
+            {
+                string subject = cert.Subject;
+                // Extract CN (Common Name)
+                var cnStart = subject.IndexOf("CN=");
+                if (cnStart >= 0)
+                {
+                    var cnEnd = subject.IndexOf(',', cnStart);
+                    if (cnEnd < 0) cnEnd = subject.Length;
+                    return subject.Substring(cnStart + 3, cnEnd - cnStart - 3).Trim('"');
+                }
+                return subject.Length > 50 ? subject.Substring(0, 47) + "..." : subject;
+            }
+        }
+        catch { }
+        return "Desconocido";
+    }
+
+    private ThreatLevel AnalyzeThreat(PrivacyAppViewModel vm)
+    {
+        // Unsigned + suspicious location = HIGH
+        if (!vm.IsSigned)
+        {
+            string lowerPath = vm.AppId.ToLower();
+            if (lowerPath.Contains("\\temp\\") || 
+                lowerPath.Contains("\\downloads\\") || 
+                lowerPath.Contains("\\desktop\\") ||
+                lowerPath.Contains("appdata\\local\\temp"))
+            {
+                return ThreatLevel.High;
+            }
+            return ThreatLevel.Medium;
+        }
+
+        // Signed by trusted publisher
+        if (TrustedPublishers.Any(p => vm.Publisher.Contains(p, StringComparison.OrdinalIgnoreCase)))
+        {
+            return ThreatLevel.Trusted;
+        }
+
+        // Signed but unknown publisher
+        return ThreatLevel.Safe;
     }
 
     private void Revoke_Click(object sender, RoutedEventArgs e)
@@ -122,23 +288,27 @@ public partial class PrivacyManagerWindow : Window
         }
     }
 
-    private void Kill_Click(object sender, RoutedEventArgs e)
+    private void Terminate_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is Button btn && btn.Tag is PrivacyAppViewModel app)
+        PrivacyAppViewModel? app = null;
+        if (sender is Button btn) app = btn.Tag as PrivacyAppViewModel;
+        else if (sender is MenuItem mi) app = mi.DataContext as PrivacyAppViewModel;
+
+        if (app != null)
         {
             try
             {
-                KillProcessesForApp(app);
+                TerminateProcessesForApp(app);
                 RefreshData();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error al matar proceso: {ex.Message}");
+                MessageBox.Show($"Error al terminar proceso: {ex.Message}");
             }
         }
     }
 
-    private void KillProcessesForApp(PrivacyAppViewModel app)
+    private void TerminateProcessesForApp(PrivacyAppViewModel app)
     {
         string procName = app.IsNonPackaged ? System.IO.Path.GetFileNameWithoutExtension(app.AppId) : app.DisplayName;
         
@@ -155,7 +325,6 @@ public partial class PrivacyManagerWindow : Window
             {
                 try { p.Kill(); killed++; } catch { }
             }
-            MessageBox.Show($"Se terminaron {killed} proceso(s) de '{app.DisplayName}'.");
         }
         else
         {
@@ -165,7 +334,11 @@ public partial class PrivacyManagerWindow : Window
 
     private void OpenLocation_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is MenuItem mi && mi.DataContext is PrivacyAppViewModel app)
+        PrivacyAppViewModel? app = null;
+        if (sender is MenuItem mi) app = mi.DataContext as PrivacyAppViewModel;
+        else if (sender is FrameworkElement fe) app = fe.DataContext as PrivacyAppViewModel;
+
+        if (app != null)
         {
             if (app.IsNonPackaged && System.IO.File.Exists(app.AppId))
             {
@@ -190,4 +363,7 @@ public partial class PrivacyManagerWindow : Window
             MessageBox.Show("Ruta copiada al portapapeles.");
         }
     }
+
+    private void Refresh_Click(object sender, RoutedEventArgs e) => RefreshData();
+    private void Close_Click(object sender, RoutedEventArgs e) => Close();
 }
