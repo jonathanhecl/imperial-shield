@@ -266,13 +266,6 @@ public partial class App : Application
         Dispatcher.BeginInvoke(() =>
         {
             Logger.Log("Privacy Risk Detected!");
-            try
-            {
-                var iconUri = new Uri("pack://application:,,,/Resources/shield_alert_icon.ico", UriKind.Absolute);
-                if (_notifyIcon != null) _notifyIcon.IconSource = new System.Windows.Media.Imaging.BitmapImage(iconUri);
-            }
-            catch (Exception ex) { Logger.LogException(ex, "Icon update"); }
-
             var apps = string.Join(", ", e.Risks.Select(r => r.ApplicationName).Distinct());
             ShowToastNotification("¡ALERTA DE ESPIONAJE!",
                 $"Imperial Shield detectó acceso de hardware sin autorizar:\n{apps}\n¿Bloquear?",
@@ -282,16 +275,7 @@ public partial class App : Application
 
     private void OnSafeStateRestored(object? sender, EventArgs e)
     {
-        Dispatcher.BeginInvoke(() =>
-        {
-            Logger.Log("Privacy Safe State Restored");
-            try
-            {
-                var iconUri = new Uri("pack://application:,,,/Resources/shield.ico", UriKind.Absolute);
-                if (_notifyIcon != null) _notifyIcon.IconSource = new System.Windows.Media.Imaging.BitmapImage(iconUri);
-            }
-            catch (Exception ex) { Logger.LogException(ex, "Icon update"); }
-        });
+        Logger.Log("Privacy Safe State Restored");
     }
 
     #endregion
