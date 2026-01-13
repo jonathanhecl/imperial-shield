@@ -96,6 +96,7 @@
             <DataGrid x:Name="ProcessGrid" 
                       ItemsSource="{Binding Processes}"
                       SelectedItem="{Binding SelectedProcess}"
+                      IsReadOnly="True"
                       MouseDoubleClick="ProcessGrid_MouseDoubleClick">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Nivel" Binding="{Binding ThreatLevelIcon}" Width="60">

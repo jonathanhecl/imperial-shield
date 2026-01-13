@@ -95,7 +95,8 @@
         <Border Grid.Row="2" Style="{StaticResource CardBorder}" Padding="0">
             <DataGrid x:Name="ConnectionGrid" 
                       ItemsSource="{Binding Connections}"
-                      SelectedItem="{Binding SelectedConnection}">
+                      SelectedItem="{Binding SelectedConnection}"
+                      IsReadOnly="True">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="⚠️" Binding="{Binding ThreatLevelIcon}" Width="50">
                         <DataGridTextColumn.ElementStyle>

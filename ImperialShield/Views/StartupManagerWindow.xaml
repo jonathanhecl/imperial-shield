@@ -33,7 +33,7 @@
                       Background="Transparent" BorderThickness="0" 
                       RowBackground="Transparent" AlternatingRowBackground="#1A2E45"
                       HeadersVisibility="Column" GridLinesVisibility="None"
-                      AutoGenerateColumns="False">
+                      AutoGenerateColumns="False" IsReadOnly="True">
                 <DataGrid.Resources>
                     <Style TargetType="DataGridColumnHeader">
                         <Setter Property="Background" Value="#1E3A5F"/>
