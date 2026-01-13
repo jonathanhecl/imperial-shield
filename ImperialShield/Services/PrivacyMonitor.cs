@@ -198,19 +198,135 @@ public class PrivacyMonitor : IDisposable
         return false;
     }
 
+    public class PrivacyAppHistory
+    {
+        public string AppId { get; set; } = string.Empty;
+        public string DisplayName { get; set; } = string.Empty;
+        public bool IsNonPackaged { get; set; }
+        public DateTime LastUsedStart { get; set; }
+        public DateTime LastUsedStop { get; set; }
+        public bool IsActive { get; set; }
+        public string PermissionStatus { get; set; } = "Allow"; // Allow or Deny
+    }
+    
+    public List<PrivacyAppHistory> GetAllAppsWithPermission(DeviceType type)
+    {
+        var list = new List<PrivacyAppHistory>();
+        string deviceStr = type == DeviceType.Camera ? "webcam" : "microphone";
+        string basePath = $@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\{deviceStr}";
+
+        try
+        {
+            using var key = Registry.CurrentUser.OpenSubKey(basePath);
+            if (key == null) return list;
+
+            foreach (var subKeyName in key.GetSubKeyNames())
+            {
+                if (subKeyName.Equals("NonPackaged", StringComparison.OrdinalIgnoreCase))
+                {
+                    using var nonPackagedKey = key.OpenSubKey(subKeyName);
+                    if (nonPackagedKey != null)
+                    {
+                        foreach (var appSubKey in nonPackagedKey.GetSubKeyNames())
+                        {
+                            using var appKey = nonPackagedKey.OpenSubKey(appSubKey);
+                            if (appKey != null)
+                            {
+                                var app = ParseAppKey(appKey, appSubKey, true);
+                                if (app != null) list.Add(app);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    using var packagedKey = key.OpenSubKey(subKeyName);
+                    if (packagedKey != null)
+                    {
+                        var app = ParseAppKey(packagedKey, subKeyName, false);
+                        if (app != null) list.Add(app);
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "GetAllAppsWithPermission");
+        }
+
+        return list;
+    }
+
+    private PrivacyAppHistory? ParseAppKey(RegistryKey key, string keyName, bool isNonPackaged)
+    {
+        try
+        {
+            long start = (long)(key.GetValue("LastUsedTimeStart") ?? 0L);
+            long stop = (long)(key.GetValue("LastUsedTimeStop") ?? 0L);
+            string val = (string)(key.GetValue("Value") ?? "Allow");
+
+            var app = new PrivacyAppHistory
+            {
+                AppId = isNonPackaged ? keyName.Replace("#", "\\") : keyName,
+                IsNonPackaged = isNonPackaged,
+                LastUsedStart = DateTime.FromFileTime(start),
+                LastUsedStop = stop == 0 ? DateTime.MinValue : DateTime.FromFileTime(stop),
+                IsActive = stop == 0 || start > stop,
+                PermissionStatus = val
+            };
+            
+            // Try to make a friendly name
+            if (isNonPackaged)
+                app.DisplayName = Path.GetFileName(app.AppId);
+            else
+                app.DisplayName = keyName.Split('_').FirstOrDefault() ?? keyName;
+
+            return app;
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public void RevokePermission(string appId, bool isNonPackaged, DeviceType type)
+    {
+        try
+        {
+            string deviceStr = type == DeviceType.Camera ? "webcam" : "microphone";
+            string path; 
+            
+            if (isNonPackaged)
+            {
+                // Escape paths for registry if using strings, but here we construct path
+                // NonPackaged keys use '#' as path separator equivalent
+                string safeKey = appId.Replace("\\", "#");
+                path = $@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\{deviceStr}\NonPackaged\{safeKey}";
+            }
+            else
+            {
+                path = $@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\{deviceStr}\{appId}";
+            }
+
+            using var key = Registry.CurrentUser.OpenSubKey(path, true);
+            if (key != null)
+            {
+                key.SetValue("Value", "Deny");
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "RevokePermission");
+        }
+    }
+
     private bool IsWhitelisted(string appPath, DeviceType type)
     {
         var list = type == DeviceType.Camera 
             ? SettingsManager.Current.WhitelistedCameraApps 
             : SettingsManager.Current.WhitelistedMicrophoneApps;
 
-        // Try to match by full path or just filename
-        // Usually registry gives full path for NonPackaged: C:\Program Files\Zoom\bin\zoom.exe
-        // Whitelist has: "zoom.exe"
-        
         string fileName = Path.GetFileName(appPath);
-        
-        // Check exact match (for full paths in whitelist) or filename match
         return list.Contains(appPath, StringComparer.OrdinalIgnoreCase) || 
                list.Contains(fileName, StringComparer.OrdinalIgnoreCase);
     }

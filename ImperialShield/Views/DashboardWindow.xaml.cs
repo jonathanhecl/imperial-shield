@@ -248,6 +248,12 @@ public partial class DashboardWindow : Window
         }
     }
 
+    private void Privacy_Click(object sender, RoutedEventArgs e)
+    {
+        var win = new PrivacyManagerWindow();
+        win.Show();
+    }
+
     private void MinimizeToTray_Click(object sender, RoutedEventArgs e)
     {
         Hide();

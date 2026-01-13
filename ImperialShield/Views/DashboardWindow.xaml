@@ -302,20 +302,56 @@
                                            Foreground="#4DA8DA" VerticalAlignment="Center" />
                             </StackPanel>
 
-                            <Button Content="🔍  Visor de Procesos" Style="{StaticResource RPGButton}" 
-                                    Click="ProcessViewer_Click" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
+                        <WrapPanel HorizontalAlignment="Center">
+                            <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
+                                    Click="ProcessViewer_Click" ToolTip="Visor de Procesos">
+                                <StackPanel>
+                                    <TextBlock Text="⚙️" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                    <TextBlock Text="PROCESOS" FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                </StackPanel>
+                            </Button>
                             
-                            <Button Content="🌐  Monitor de Conexiones" Style="{StaticResource RPGButton}" 
-                                    Click="NetworkViewer_Click" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
+                            <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
+                                    Click="NetworkViewer_Click" ToolTip="Monitor de Conexiones">
+                                <StackPanel>
+                                    <TextBlock Text="🌐" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                    <TextBlock Text="RED" FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                </StackPanel>
+                            </Button>
 
-                            <Button Content="🚀  Gestor de Inicio" Style="{StaticResource RPGButton}" 
-                                    Click="StartupManager_Click" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
+                            <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
+                                    Click="StartupManager_Click" ToolTip="Gestor de Inicio">
+                                <StackPanel>
+                                    <TextBlock Text="🚀" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                    <TextBlock Text="INICIO" FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                </StackPanel>
+                            </Button>
                             
-                            <Button Content="📜  Ver Archivo HOSTS" Style="{StaticResource RPGButton}" 
-                                    Click="ViewHosts_Click" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
+                            <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
+                                    Click="ViewHosts_Click" ToolTip="Archivo HOSTS">
+                                <StackPanel>
+                                    <TextBlock Text="📜" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                    <TextBlock Text="HOSTS" FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                </StackPanel>
+                            </Button>
                             
-                            <Button Content="🛡️  Ver Exclusiones Defender" Style="{StaticResource RPGButton}" 
-                                    Click="ViewExclusions_Click" HorizontalAlignment="Stretch"/>
+                            <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
+                                    Click="ViewExclusions_Click" ToolTip="Exclusiones Defender">
+                                <StackPanel>
+                                    <TextBlock Text="🛡️" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                    <TextBlock Text="EXCLUSIONES" FontSize="9" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
+                                    Click="Privacy_Click" ToolTip="Centro de Privacidad"
+                                    BorderBrush="#E74C3C" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="👁️" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                    <TextBlock Text="PRIVACIDAD" FontSize="9" HorizontalAlignment="Center" Foreground="#E74C3C"/>
+                                </StackPanel>
+                            </Button>
+                        </WrapPanel>
                         </StackPanel>
                     </Border>
 
