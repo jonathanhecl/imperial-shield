@@ -30,6 +30,31 @@ public partial class ScheduledTasksWindow : Window
         public string TaskPath { get; set; } = string.Empty;
         public string State { get; set; } = string.Empty;
         public string NextRunTimeRaw { get; set; } = string.Empty;
+        public string Author { get; set; } = string.Empty;
+        public string Action { get; set; } = string.Empty;
+        public string ExecutablePath { get; set; } = string.Empty;
+        
+        // Security Props
+        public bool IsMicrosoft { get; set; }
+        public bool IsTrustedPublisher { get; set; }
+        public bool IsSuspicious { get; set; }
+        public int ThreatLevel { get; set; } // 0=Safe, 1=Unknown, 2=Medium, 3=High
+
+        public string ThreatIcon => ThreatLevel switch
+        {
+            3 => "⚠️", // High (Red in UI via logic or just icon)
+            2 => "⚠️", // Medium
+            0 => IsMicrosoft ? "📦" : "🛡️", // Trusted
+            _ => "🛡️" // Unknown but low threat default
+        };
+
+        public string ThreatLevelText => ThreatLevel switch
+        {
+            3 => "Peligro Alto (Ubicación o tipo sospechoso)",
+            2 => "Sospechoso (Script no firmado)",
+            0 => "Confiable (Microsoft / Firmado)",
+            _ => "Desconocido (Terceros)"
+        };
         
         // UI Helpers
         public string TranslatedState => State switch
@@ -87,6 +112,68 @@ public partial class ScheduledTasksWindow : Window
         }
     }
 
+    private List<TaskItem> _allTasks = new();
+    private bool _showOnlySuspicious = false;
+
+    private void FilterToggle_Click(object sender, RoutedEventArgs e)
+    {
+        _showOnlySuspicious = !_showOnlySuspicious;
+        UpdateFilterButtonText();
+        ApplyFilter();
+    }
+
+    private void UpdateFilterButtonText()
+    {
+        // Update button content dynamically
+        if (FilterToggleBtn.Template.FindName("border", FilterToggleBtn) is System.Windows.Controls.Border border)
+        {
+            if (border.Child is StackPanel sp && sp.Children.Count >= 2)
+            {
+                if (sp.Children[0] is TextBlock iconTb && sp.Children[1] is TextBlock textTb)
+                {
+                    if (_showOnlySuspicious)
+                    {
+                        iconTb.Text = "⚠️";
+                        textTb.Text = "Solo Sospechosas";
+                        textTb.Foreground = new SolidColorBrush(Color.FromRgb(239, 68, 68)); // Red
+                        border.BorderBrush = new SolidColorBrush(Color.FromRgb(239, 68, 68));
+                    }
+                    else
+                    {
+                        iconTb.Text = "👁️";
+                        textTb.Text = "Mostrar Todo";
+                        textTb.Foreground = new SolidColorBrush(Color.FromRgb(148, 163, 184)); // Gray
+                        border.BorderBrush = new SolidColorBrush(Color.FromRgb(51, 65, 85));
+                    }
+                }
+            }
+        }
+    }
+
+    private void ApplyFilter()
+    {
+        if (_allTasks == null || !_allTasks.Any()) return;
+
+        var filtered = _allTasks.ToList();
+
+        if (_showOnlySuspicious)
+        {
+            // Show only Non-Microsoft or Suspicious
+            filtered = filtered.Where(t => t.IsSuspicious || (!t.IsMicrosoft && !t.IsTrustedPublisher)).ToList();
+        }
+
+        // Sort: Suspicious first, then Running...
+        var sorted = filtered
+            .OrderByDescending(t => t.ThreatLevel == 3) // High Threat
+            .ThenByDescending(t => t.ThreatLevel == 2) // Medium
+            .ThenByDescending(t => t.NormalizedState == "Running")
+            .ThenBy(t => t.NextRunDateTime ?? DateTime.MaxValue)
+            .ToList();
+
+        TasksGrid.ItemsSource = sorted;
+        TaskCountText.Text = sorted.Count.ToString();
+    }
+
     private async Task LoadTasksAsync()
     {
         LoadingOverlay.Visibility = Visibility.Visible;
@@ -94,40 +181,29 @@ public partial class ScheduledTasksWindow : Window
 
         try
         {
-            var tasks = await Task.Run(() => GetScheduledTasksViaSchtasks());
+            var tasks = await Task.Run(() => GetScheduledTasksViaSchtasksVerbose());
             
             if (tasks != null && tasks.Count > 0)
             {
-                // Filter out invalid entries (no real task name, header remnants, etc.)
-                var validTasks = tasks
+                // Filter only exact header matches, not partial
+                _allTasks = tasks
                     .Where(t => !string.IsNullOrWhiteSpace(t.TaskName))
-                    .Where(t => t.TaskName != "Nombre de tarea" && t.TaskName != "TaskName")
-                    .Where(t => !t.TaskName.Contains("Hora próxima") && !t.TaskName.Contains("Next Run"))
+                    .Where(t => t.TaskName != "TaskName" && t.TaskName != "Nombre de tarea")
                     .Where(t => t.State != "Estado" && t.State != "Status")
                     .ToList();
 
-                // Sort: Enabled (Ready/Running) first, then by next execution date
-                var sortedTasks = validTasks
-                    .OrderByDescending(t => t.NormalizedState == "Running")
-                    .ThenByDescending(t => t.NormalizedState == "Ready")
-                    .ThenBy(t => t.NextRunDateTime ?? DateTime.MaxValue) // Earliest next run first
-                    .ThenBy(t => t.TaskName)
-                    .ToList();
-
-                TasksGrid.ItemsSource = sortedTasks;
-                TaskCountText.Text = sortedTasks.Count.ToString();
+                ApplyFilter();
             }
             else
             {
                 TaskCountText.Text = "0";
-                MessageBox.Show("No se pudieron obtener las tareas programadas.\nAsegúrate de ejecutar como Administrador.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             
             LastUpdatedText.Text = $"Última actualización: {DateTime.Now:HH:mm:ss}";
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Error al cargar tareas: {ex.Message}", "Error");
+            MessageBox.Show($"Error al cargar tareas: {ex.Message}");
         }
         finally
         {
@@ -135,111 +211,112 @@ public partial class ScheduledTasksWindow : Window
         }
     }
 
-    private List<TaskItem> GetScheduledTasksViaSchtasks()
+    private List<TaskItem> GetScheduledTasksViaSchtasksVerbose()
     {
         var tasks = new List<TaskItem>();
         
         try
         {
-            // Use schtasks /query which is more reliable
+            // Use advanced PS command to get State AND NextRunTime effectively
+            // Get-ScheduledTask + Get-ScheduledTaskInfo combo
+            // We use a calculated property for NextRunTime
+            // Warning: This is slower than simple list but required for sorting
+            string psCommand = "Get-ScheduledTask | Select-Object TaskName, TaskPath, State, @{N='NextRunTime';E={((Get-ScheduledTaskInfo -TaskName $_.TaskName -TaskPath $_.TaskPath).NextRunTime)}} | ConvertTo-Csv -NoTypeInformation";
+            
             var info = new ProcessStartInfo
             {
-                FileName = "schtasks.exe",
-                Arguments = "/query /fo CSV",
+                FileName = "powershell.exe",
+                Arguments = $"-NoProfile -ExecutionPolicy Bypass -Command \"{psCommand}\"",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
-                CreateNoWindow = true
+                CreateNoWindow = true,
+                StandardOutputEncoding = Encoding.UTF8
             };
 
             using var proc = Process.Start(info);
             if (proc == null) return tasks;
 
             string output = proc.StandardOutput.ReadToEnd();
-            string error = proc.StandardError.ReadToEnd();
             proc.WaitForExit();
 
-            // Check for errors
-            if (!string.IsNullOrWhiteSpace(error))
-            {
-                Debug.WriteLine($"schtasks error: {error}");
-            }
+            if (string.IsNullOrWhiteSpace(output)) return tasks;
 
-            if (string.IsNullOrWhiteSpace(output)) 
-            {
-                Debug.WriteLine("schtasks returned no output");
-                return tasks;
-            }
-
-            // Parse CSV output
-            // Format: "TaskName","Next Run Time","Status"
-            var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            var lines = output.Split(new[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
             
-            // Skip header line
-            bool isFirstLine = true;
+            bool isFirst = true; 
             
             foreach (var line in lines)
             {
-                try
+                if (isFirst) { isFirst = false; continue; } 
+
+                var fields = ParseCsvLine(line);
+                if (fields.Count < 3) continue; // Need nice robust parsing
+
+                string taskName = fields[0];
+                string taskPath = fields[1];
+                string state = fields[2];
+                string nextRun = fields.Count > 3 ? fields[3] : "";
+
+                var item = new TaskItem
                 {
-                    // Skip header
-                    if (isFirstLine)
-                    {
-                        isFirstLine = false;
-                        // Check if this looks like a header
-                        if (line.Contains("TaskName") || line.Contains("Nombre de tarea") || 
-                            line.Contains("\"Nombre de") || line.Contains("\"TaskName\""))
-                        {
-                            continue;
-                        }
-                    }
-                    
-                    // Parse CSV manually (simple parser for 3 fields)
-                    var fields = ParseCsvLine(line);
-                    if (fields.Count >= 3)
-                    {
-                        string fullPath = fields[0];
-                        string nextRun = fields[1];
-                        string status = fields[2];
-
-                        // Extract task name from path
-                        string taskName = fullPath;
-                        string taskPath = "\\";
-                        
-                        int lastSlash = fullPath.LastIndexOf('\\');
-                        if (lastSlash >= 0)
-                        {
-                            taskName = fullPath.Substring(lastSlash + 1);
-                            taskPath = fullPath.Substring(0, lastSlash + 1);
-                            if (string.IsNullOrEmpty(taskPath)) taskPath = "\\";
-                        }
-
-                        // Skip empty, INFO lines, or folder entries
-                        if (string.IsNullOrWhiteSpace(taskName)) continue;
-                        if (taskName.StartsWith("INFO:")) continue;
-                        if (status == "N/D" || status == "N/A") continue; // Folder entries
-
-                        tasks.Add(new TaskItem
-                        {
-                            TaskName = taskName,
-                            TaskPath = taskPath,
-                            State = status,
-                            NextRunTimeRaw = nextRun
-                        });
-                    }
-                }
-                catch
-                {
-                    // Skip malformed lines
-                }
+                    TaskName = taskName,
+                    TaskPath = taskPath,
+                    State = state,
+                    NextRunTimeRaw = nextRun // Keep raw string for now
+                };
+                
+                AnalyzeSecurity(item);
+                tasks.Add(item);
             }
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Error getting tasks: {ex.Message}");
+            Debug.WriteLine("Error PS: " + ex.Message);
+        }
+        return tasks;
+    }
+
+    private string GetField(List<string> fields, string[] headers, string enName, string esName, int defaultIndex)
+    {
+        int idx = defaultIndex;
+        if (idx < fields.Count) return fields[idx];
+        return "";
+    }
+
+    private void AnalyzeSecurity(TaskItem item)
+    {
+        // 1. Check if Microsoft task by TaskPath
+        // Tasks in \Microsoft\ folder are Windows system tasks
+        if (item.TaskPath.StartsWith("\\Microsoft\\", StringComparison.OrdinalIgnoreCase))
+        {
+            item.IsMicrosoft = true;
+            item.IsTrustedPublisher = true;
+            item.ThreatLevel = 0;
+            return;
         }
 
-        return tasks;
+        // 2. Known third-party trusted paths
+        string[] trustedPaths = { "\\Google\\", "\\Adobe\\", "\\Intel\\", "\\NVIDIA\\", "\\AMD\\", "\\Mozilla\\" };
+        foreach (var tp in trustedPaths)
+        {
+            if (item.TaskPath.Contains(tp, StringComparison.OrdinalIgnoreCase))
+            {
+                item.IsTrustedPublisher = true;
+                item.ThreatLevel = 0;
+                return;
+            }
+        }
+
+        // 3. Root level tasks without known path - potentially suspicious
+        if (item.TaskPath == "\\" || item.TaskPath.Length < 3)
+        {
+            // Root tasks from unknown sources
+            item.ThreatLevel = 1; // Unknown
+            return;
+        }
+
+        item.ThreatLevel = 1; // Default unknown
     }
 
     private List<string> ParseCsvLine(string line)
