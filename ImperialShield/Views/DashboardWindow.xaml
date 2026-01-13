@@ -344,20 +344,18 @@
                             </Button>
 
                             <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
-                                    Click="Privacy_Click" ToolTip="Centro de Privacidad"
-                                    BorderBrush="#E74C3C" BorderThickness="1">
+                                    Click="Privacy_Click" ToolTip="Centro de Privacidad">
                                 <StackPanel>
                                     <TextBlock Text="👁️" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                                    <TextBlock Text="PRIVACIDAD" FontSize="9" HorizontalAlignment="Center" Foreground="#E74C3C"/>
+                                    <TextBlock Text="PRIVACIDAD" FontSize="9" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
                                 </StackPanel>
                             </Button>
 
                             <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
-                                    Click="Quarantine_Click" ToolTip="Centro de Cuarentena"
-                                    BorderBrush="#F39C12" BorderThickness="1">
+                                    Click="Quarantine_Click" ToolTip="Centro de Cuarentena">
                                 <StackPanel>
                                     <TextBlock Text="🔒" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                                    <TextBlock Text="CUARENTENA" FontSize="9" HorizontalAlignment="Center" Foreground="#F39C12"/>
+                                    <TextBlock Text="CUARENTENA" FontSize="9" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
                                 </StackPanel>
                             </Button>
                         </WrapPanel>

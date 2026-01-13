@@ -373,6 +373,18 @@ public partial class App : Application
         window.Show();
     }
 
+    private void ShowPrivacy_Click(object sender, RoutedEventArgs e)
+    {
+        var window = new PrivacyManagerWindow();
+        window.Show();
+    }
+
+    private void ShowQuarantine_Click(object sender, RoutedEventArgs e)
+    {
+        var window = new QuarantineWindow();
+        window.Show();
+    }
+
     private void Settings_Click(object sender, RoutedEventArgs e)
     {
         // Abrir ventana de configuración premium
