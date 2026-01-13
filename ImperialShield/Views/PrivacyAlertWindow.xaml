@@ -119,12 +119,17 @@
             
             <!-- Action Buttons -->
             <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Center">
-                <Button Content="🛑 REVOCAR PERMISO Y TERMINAR" 
-                        Click="Revoke_Click" 
+                <Button Click="Revoke_Click" 
                         Width="420" Height="55" Margin="0,0,0,10"
                         FontSize="17" FontWeight="Bold"
                         Background="#E11D48" Foreground="White" 
                         BorderThickness="0" Cursor="Hand">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🛑" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="REVOCAR PERMISO Y TERMINAR" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button.Content>
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Template">

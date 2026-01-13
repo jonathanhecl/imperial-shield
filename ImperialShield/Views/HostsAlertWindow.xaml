@@ -87,12 +87,17 @@
             
             <!-- Action Buttons -->
             <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Center">
-                <Button Content="🧹 LIMPIAR ARCHIVO HOSTS" 
-                        Click="CleanHosts_Click" 
+                <Button Click="CleanHosts_Click" 
                         Width="420" Height="55" Margin="0,0,0,10"
                         FontSize="18" FontWeight="Bold"
                         Background="#E11D48" Foreground="White" 
                         BorderThickness="0" Cursor="Hand">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🧹" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="LIMPIAR ARCHIVO HOSTS" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button.Content>
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Template">
@@ -116,12 +121,17 @@
                     </Button.Effect>
                 </Button>
                 
-                <Button Content="📂 ABRIR ARCHIVO HOSTS" 
-                        Click="OpenHosts_Click" 
+                <Button Click="OpenHosts_Click" 
                         Width="420" Height="45" Margin="0,0,0,10"
                         FontSize="14" FontWeight="SemiBold"
                         Background="#1B2838" Foreground="#4DA8DA" 
                         BorderThickness="1" BorderBrush="#3A5F82" Cursor="Hand">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📂" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="ABRIR ARCHIVO HOSTS" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button.Content>
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Template">

@@ -175,9 +175,15 @@
 
                 <Separator Background="#1E3A5F" Margin="0,20"/>
                 
-                <Button Content="�️ Prueba de Alertas (Desarrollo)" 
-                        Click="OpenAlertTest_Click" Width="280" HorizontalAlignment="Left"
-                        Height="40" Background="#1A2838" Foreground="#FFCC00" BorderBrush="#FFCC00" BorderThickness="1">
+                <Button Click="OpenAlertTest_Click" Width="300" HorizontalAlignment="Left"
+                        Height="40" Background="#1A2838" Foreground="#FFCC00" BorderBrush="#FFCC00" BorderThickness="1"
+                        Cursor="Hand">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🔬" Margin="0,0,8,0" VerticalAlignment="Center" FontSize="16"/>
+                            <TextBlock Text="Prueba de Alertas (Desarrollo)" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Button.Content>
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Template">

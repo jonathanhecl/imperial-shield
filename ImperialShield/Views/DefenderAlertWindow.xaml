@@ -113,12 +113,17 @@
             
             <!-- Action Buttons -->
             <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Center">
-                <Button Content="🛡️ REACTIVAR DEFENDER AHORA" 
-                        Click="EnableDefender_Click" 
+                <Button Click="EnableDefender_Click" 
                         Width="400" Height="55" Margin="0,0,0,10"
                         FontSize="18" FontWeight="Bold"
                         Background="#10B981" Foreground="White" 
                         BorderThickness="0" Cursor="Hand">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🛡️" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="REACTIVAR DEFENDER AHORA" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button.Content>
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Template">
