@@ -475,7 +475,16 @@
                                     Margin="0,0,15,0" Click="Settings_Click" FontWeight="SemiBold"/>
                             <Button Content="📥 Minimizar" Background="Transparent" 
                                     Foreground="#7EB8DC" BorderThickness="0" Cursor="Hand"
-                                    Click="MinimizeToTray_Click" FontWeight="SemiBold"/>
+                                    Margin="0,0,15,0" Click="MinimizeToTray_Click" FontWeight="SemiBold"/>
+                            <Button Click="ExitApp_Click" Background="Transparent" 
+                                    BorderThickness="0" Cursor="Hand" FontWeight="Bold">
+                                <Button.Content>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="✖" Foreground="#F43F5E" FontWeight="Bold" Margin="0,0,5,0"/>
+                                        <TextBlock Text="Detener Defensa" Foreground="#F43F5E" FontWeight="Bold"/>
+                                    </StackPanel>
+                                </Button.Content>
+                            </Button>
                         </StackPanel>
                     </Grid>
                 </Border>

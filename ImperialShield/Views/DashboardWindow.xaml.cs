@@ -265,6 +265,20 @@ public partial class DashboardWindow : Window
         Hide();
     }
 
+    private void ExitApp_Click(object sender, RoutedEventArgs e)
+    {
+        var confirmWin = new ConfirmExitWindow();
+        confirmWin.Owner = this;
+        confirmWin.ShowDialog();
+        
+        if (confirmWin.Confirmed)
+        {
+            // Libear recursos locales e indicar al sistema el cierre total
+            _refreshTimer?.Dispose();
+            Application.Current.Shutdown();
+        }
+    }
+
     protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
     {
         // No cerrar, solo ocultar
