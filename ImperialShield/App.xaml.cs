@@ -278,10 +278,10 @@ public partial class App : Application
     private void OnHostsFileChanged(object? sender, HostsFileChangedEventArgs e)
     {
         Logger.Log("HOSTS file changed detected");
-        Views.AlertWindow.Show(
-            "¡ATENCIÓN! Se han detectado cambios en el archivo HOSTS del sistema.\n\n" +
+        Views.HostsAlertWindow.Show(
+            $"Se han detectado cambios en el archivo HOSTS del sistema.\n\n" +
             $"{e.ChangeDescription}\n\n" +
-            "¿Autorizas estos cambios?");
+            "El archivo HOSTS puede ser usado por malware para redirigir sitios web legítimos a páginas falsas.");
     }
 
     private void OnDefenderStatusChanged(object? sender, DefenderStatusEventArgs e)
@@ -290,9 +290,10 @@ public partial class App : Application
         
         if (!e.IsEnabled)
         {
-            Views.AlertWindow.Show(
-                "¡ATENCIÓN! La Protección en Tiempo Real de Windows Defender ha sido DESACTIVADA.\n\n" +
-                "Su equipo se encuentra vulnerable a amenazas externas.");
+            Views.DefenderAlertWindow.Show(
+                "La Protección en Tiempo Real de Windows Defender ha sido DESACTIVADA.\n\n" +
+                "Tu equipo se encuentra vulnerable a virus, malware y ransomware.\n\n" +
+                "Se recomienda encarecidamente reactivar la protección inmediatamente.");
         }
     }
 
@@ -332,14 +333,20 @@ public partial class App : Application
             var alert = new PrivacyAlertWindow(e.App);
             alert.ShowDialog();
 
-            if (alert.Result == PrivacyAlertResult.Revoke)
+            if (alert.Result == PrivacyAlertResult.RevokeAndKill)
             {
                 _privacyMonitor?.RevokePermission(e.App.ApplicationPath, e.App.IsNonPackaged, e.App.Device);
                 
                 string deviceName = e.App.Device == DeviceType.Camera ? "cámara" : "micrófono";
-                ShowToastNotification("Permiso Revocado", 
-                    $"Se bloqueó el acceso a {deviceName} para '{e.App.ApplicationName}'.",
+                ShowToastNotification("Permiso Revocado y App Terminada", 
+                    $"Se bloqueó el acceso a {deviceName} para '{e.App.ApplicationName}' y se terminó el proceso.",
                     ToastNotificationType.Success);
+            }
+            else if (alert.Result == PrivacyAlertResult.KillOnly)
+            {
+                ShowToastNotification("Aplicación Terminada", 
+                    $"Se terminó '{e.App.ApplicationName}'. El permiso de acceso no fue revocado.",
+                    ToastNotificationType.Info);
             }
         });
     }

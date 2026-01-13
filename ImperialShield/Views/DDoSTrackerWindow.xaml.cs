@@ -41,6 +41,58 @@ public partial class DDoSTrackerWindow : Window
         }
     }
 
+    private void KillAndBlock_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            string? exePath = null;
+            
+            // First, try to get the executable path from the running process
+            var processes = Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(_processName));
+            foreach (var p in processes)
+            {
+                try
+                {
+                    exePath = p.MainModule?.FileName;
+                    p.Kill();
+                }
+                catch { }
+            }
+            
+            // Quarantine the executable
+            string exeToBlock = !string.IsNullOrEmpty(exePath) ? exePath : _processName;
+            string exeName = System.IO.Path.GetFileName(exeToBlock);
+            
+            if (QuarantineService.QuarantineExecutable(exeName))
+            {
+                Logger.Log($"DDoS Attacker quarantined: {exeName}");
+                MessageBox.Show(
+                    $"✅ Proceso terminado y bloqueado.\n\n" +
+                    $"El ejecutable '{exeName}' ha sido puesto en cuarentena.\n" +
+                    $"No podrá ejecutarse nuevamente hasta que lo liberes desde el Gestor de Cuarentena.",
+                    "Amenaza Neutralizada y Bloqueada",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show(
+                    $"⚠️ Proceso terminado, pero no se pudo bloquear.\n\n" +
+                    $"Imperial Shield necesita permisos de Administrador para poner ejecutables en cuarentena.",
+                    "Bloqueo Fallido",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
+            }
+            
+            this.Close();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "KillAndBlock_Click");
+            MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
     private void Close_Click(object sender, RoutedEventArgs e)
     {
         this.Close();

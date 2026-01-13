@@ -1,8 +1,8 @@
-<Window x:Class="ImperialShield.Views.PrivacyAlertWindow"
+<Window x:Class="ImperialShield.Views.HostsAlertWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="ALERTA DE PRIVACIDAD - Imperial Shield" 
-        Width="650" Height="550"
+        Title="ALERTA: HOSTS MODIFICADO - Imperial Shield" 
+        Width="650" Height="650"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
@@ -11,54 +11,31 @@
     
     <Window.Resources>
         <Storyboard x:Key="PulseLogo">
-            <DoubleAnimation Storyboard.TargetName="AlertImage" 
+            <DoubleAnimation Storyboard.TargetName="AlertIcon" 
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
                              From="1.0" To="1.1" Duration="0:0:0.8" AutoReverse="True" RepeatBehavior="Forever"/>
-            <DoubleAnimation Storyboard.TargetName="AlertImage" 
+            <DoubleAnimation Storyboard.TargetName="AlertIcon" 
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
                              From="1.0" To="1.1" Duration="0:0:0.8" AutoReverse="True" RepeatBehavior="Forever"/>
         </Storyboard>
         
-        <Storyboard x:Key="GlowBorder">
-            <DoubleAnimation Storyboard.TargetName="AlertBorder" 
-                             Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.Opacity)"
-                             From="0.4" To="1.0" Duration="0:0:0.5" AutoReverse="True" RepeatBehavior="Forever"/>
-        </Storyboard>
-
         <Storyboard x:Key="WindowEntrance">
             <DoubleAnimation Storyboard.TargetName="MainBorder" 
                              Storyboard.TargetProperty="Opacity"
                              From="0" To="1" Duration="0:0:0.3"/>
-            <DoubleAnimation Storyboard.TargetName="MainBorder" 
-                             Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
-                             From="0.8" To="1.0" Duration="0:0:0.4">
-                <DoubleAnimation.EasingFunction>
-                    <BackEase Amplitude="1" EasingMode="EaseOut"/>
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
-            <DoubleAnimation Storyboard.TargetName="MainBorder" 
-                             Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
-                             From="0.8" To="1.0" Duration="0:0:0.4">
-                <DoubleAnimation.EasingFunction>
-                    <BackEase Amplitude="1" EasingMode="EaseOut"/>
-                </DoubleAnimation.EasingFunction>
-            </DoubleAnimation>
         </Storyboard>
     </Window.Resources>
 
     <Window.Triggers>
         <EventTrigger RoutedEvent="Window.Loaded">
-            <BeginStoryboard Storyboard="{StaticResource GlowBorder}"/>
+            <BeginStoryboard Storyboard="{StaticResource PulseLogo}"/>
             <BeginStoryboard Storyboard="{StaticResource WindowEntrance}"/>
         </EventTrigger>
     </Window.Triggers>
 
-    <Border x:Name="MainBorder" CornerRadius="30" Background="#0A0F1E" BorderBrush="#E11D48" BorderThickness="4" Opacity="0" UseLayoutRounding="True">
-        <Border.RenderTransform>
-            <ScaleTransform CenterX="325" CenterY="275"/>
-        </Border.RenderTransform>
+    <Border x:Name="MainBorder" CornerRadius="30" Background="#0A0F1E" BorderBrush="#F39C12" BorderThickness="4" Opacity="0" UseLayoutRounding="True">
         <Border.Effect>
-            <DropShadowEffect x:Name="AlertShadow" BlurRadius="60" ShadowDepth="0" Opacity="0.8" Color="#F43F5E"/>
+            <DropShadowEffect BlurRadius="60" ShadowDepth="0" Opacity="0.7" Color="#F39C12"/>
         </Border.Effect>
         
         <Grid Margin="40">
@@ -68,28 +45,22 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            
-            <Border x:Name="AlertBorder" Grid.RowSpan="4" Margin="-40" CornerRadius="30">
-                 <Border.Effect>
-                    <DropShadowEffect BlurRadius="30" ShadowDepth="0" Color="#F43F5E" Opacity="0.5"/>
-                 </Border.Effect>
-            </Border>
 
-            <!-- Device Icon -->
-            <TextBlock x:Name="DeviceIcon" Grid.Row="0" Text="📷" FontSize="80" 
-                       HorizontalAlignment="Center" Margin="0,0,0,15">
+            <!-- Warning Icon -->
+            <TextBlock x:Name="AlertIcon" Grid.Row="0" Text="📝" FontSize="60" 
+                       HorizontalAlignment="Center" Margin="0,0,0,10">
                 <TextBlock.RenderTransform>
-                    <ScaleTransform x:Name="AlertImage" CenterX="40" CenterY="40"/>
+                    <ScaleTransform CenterX="30" CenterY="30"/>
                 </TextBlock.RenderTransform>
                 <TextBlock.Effect>
-                    <DropShadowEffect BlurRadius="25" ShadowDepth="0" Color="#F43F5E" Opacity="0.9"/>
+                    <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="#F39C12" Opacity="0.8"/>
                 </TextBlock.Effect>
             </TextBlock>
             
-            <!-- Warning Title Red -->
-            <TextBlock Grid.Row="1" Text="¡ACCESO NO AUTORIZADO!" 
-                       Foreground="#F43F5E" 
-                       FontWeight="ExtraBold" FontSize="30" 
+            <!-- Warning Title -->
+            <TextBlock Grid.Row="1" Text="¡ARCHIVO HOSTS MODIFICADO!" 
+                       Foreground="#F39C12" 
+                       FontWeight="ExtraBold" FontSize="26" 
                        HorizontalAlignment="Center"
                        TextAlignment="Center"
                        Margin="0,0,0,10">
@@ -99,30 +70,27 @@
             </TextBlock>
             
             <!-- Detailed Message -->
-            <StackPanel Grid.Row="2" VerticalAlignment="Top" Margin="0,10">
-                <TextBlock x:Name="AppNameText" Foreground="#4DA8DA" FontSize="22" 
-                           FontWeight="Bold" TextAlignment="Center" Margin="0,0,0,5"
-                           ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"
-                           Cursor="Hand">
-                           Cursor="Hand"
-                           ToolTipService.InitialShowDelay="0">
-                    <TextBlock.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Abrir ubicación del archivo" Click="OpenLocation_Click"/>
-                        </ContextMenu>
-                    </TextBlock.ContextMenu>
-                </TextBlock>
-                <TextBlock x:Name="MessageText" Foreground="White" FontSize="16" 
-                           FontWeight="SemiBold" TextWrapping="Wrap" 
-                           TextAlignment="Center" LineHeight="24" Margin="0,0,0,20"/>
+            <StackPanel Grid.Row="2" VerticalAlignment="Top">
+                <TextBlock x:Name="MessageText" 
+                           Foreground="White" FontSize="15" 
+                           FontWeight="SemiBold"
+                           TextWrapping="Wrap" 
+                           TextAlignment="Center"
+                           LineHeight="24"
+                           Margin="0,0,0,15"/>
+                
+                <Border Background="#1B2838" CornerRadius="10" Padding="15" Margin="0,0,0,10">
+                    <TextBlock Text="⚠️ El archivo HOSTS puede redirigir sitios web legítimos a páginas falsas para robar credenciales o bloquear actualizaciones de antivirus." 
+                               Foreground="#94A3B8" FontSize="12" TextWrapping="Wrap" TextAlignment="Center"/>
+                </Border>
             </StackPanel>
             
             <!-- Action Buttons -->
             <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Center">
-                <Button Content="🛑 REVOCAR PERMISO Y TERMINAR" 
-                        Click="Revoke_Click" 
+                <Button Content="🧹 LIMPIAR ARCHIVO HOSTS" 
+                        Click="CleanHosts_Click" 
                         Width="420" Height="55" Margin="0,0,0,10"
-                        FontSize="17" FontWeight="Bold"
+                        FontSize="18" FontWeight="Bold"
                         Background="#E11D48" Foreground="White" 
                         BorderThickness="0" Cursor="Hand">
                     <Button.Style>
@@ -143,39 +111,16 @@
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
+                    <Button.Effect>
+                        <DropShadowEffect BlurRadius="15" ShadowDepth="4" Color="Black" Opacity="0.4"/>
+                    </Button.Effect>
                 </Button>
-
-                <Button Content="⚡ SOLO TERMINAR APLICACIÓN" 
-                        Click="KillOnly_Click" 
+                
+                <Button Content="📂 ABRIR ARCHIVO HOSTS" 
+                        Click="OpenHosts_Click" 
                         Width="420" Height="45" Margin="0,0,0,10"
                         FontSize="14" FontWeight="SemiBold"
-                        Background="#F39C12" Foreground="Black" 
-                        BorderThickness="0" Cursor="Hand">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border Background="{TemplateBinding Background}" CornerRadius="10">
-                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                            <Style.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="#FFBF40"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-
-                <Button Content="IGNORAR" 
-                        Click="Ignore_Click" 
-                        Width="420" Height="40"
-                        FontSize="13" FontWeight="Bold"
-                        Background="Transparent" Foreground="#94A3B8" 
+                        Background="#1B2838" Foreground="#4DA8DA" 
                         BorderThickness="1" BorderBrush="#3A5F82" Cursor="Hand">
                     <Button.Style>
                         <Style TargetType="Button">
@@ -191,7 +136,33 @@
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter Property="Foreground" Value="White"/>
-                                    <Setter Property="BorderBrush" Value="White"/>
+                                    <Setter Property="BorderBrush" Value="#4DA8DA"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                
+                <Button Content="IGNORAR" 
+                        Click="Close_Click" 
+                        Width="420" Height="40"
+                        FontSize="13" FontWeight="Bold"
+                        Background="Transparent" Foreground="#708090" 
+                        BorderThickness="0" Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Foreground" Value="White"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>

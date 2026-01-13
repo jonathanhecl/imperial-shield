@@ -51,12 +51,18 @@ namespace ImperialShield.Views
 
         private void TestDefenderOff_Click(object sender, RoutedEventArgs e)
         {
-            AlertWindow.Show("¡SISTEMA VULNERABLE!\n\nMicrosoft Defender está desactivado. Imperial Shield recomienda activarlo inmediatamente.");
+            DefenderAlertWindow.Show(
+                "La Protección en Tiempo Real de Windows Defender ha sido DESACTIVADA.\n\n" +
+                "Tu equipo se encuentra vulnerable a virus, malware y ransomware.\n\n" +
+                "Se recomienda encarecidamente reactivar la protección inmediatamente.");
         }
 
         private void TestHosts_Click(object sender, RoutedEventArgs e)
         {
-            AlertWindow.Show("MODIFICACIÓN DETECTADA\n\nEl archivo HOSTS del sistema ha sido modificado recientemente. Esto podría indicar un intento de redirección de tráfico.");
+            HostsAlertWindow.Show(
+                "Se han detectado cambios en el archivo HOSTS del sistema.\n\n" +
+                "Nuevas entradas añadidas:\n• 127.0.0.1 → windowsupdate.microsoft.com\n• 127.0.0.1 → update.microsoft.com\n\n" +
+                "El archivo HOSTS puede ser usado por malware para redirigir sitios web legítimos a páginas falsas.");
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)

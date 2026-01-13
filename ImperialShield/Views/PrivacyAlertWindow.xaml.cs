@@ -9,7 +9,9 @@ namespace ImperialShield.Views
     public enum PrivacyAlertResult
     {
         Ignore,
-        Revoke
+        Revoke,
+        KillOnly,
+        RevokeAndKill
     }
 
     public partial class PrivacyAlertWindow : Window
@@ -35,8 +37,34 @@ namespace ImperialShield.Views
 
         private void Revoke_Click(object sender, RoutedEventArgs e)
         {
-            Result = PrivacyAlertResult.Revoke;
+            Result = PrivacyAlertResult.RevokeAndKill;
+            KillProcess();
             this.Close();
+        }
+
+        private void KillOnly_Click(object sender, RoutedEventArgs e)
+        {
+            Result = PrivacyAlertResult.KillOnly;
+            KillProcess();
+            this.Close();
+        }
+
+        private void KillProcess()
+        {
+            try
+            {
+                string processName = Path.GetFileNameWithoutExtension(_appPath);
+                var processes = Process.GetProcessesByName(processName);
+                foreach (var p in processes)
+                {
+                    try { p.Kill(); } catch { }
+                }
+                Logger.Log($"Privacy: Killed process {processName}");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex, "PrivacyAlertWindow.KillProcess");
+            }
         }
 
         private void OpenLocation_Click(object sender, RoutedEventArgs e)
