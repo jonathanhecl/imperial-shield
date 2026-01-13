@@ -119,7 +119,23 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Storyboard x:Key="StatusPulse">
+            <DoubleAnimation Storyboard.TargetName="StatusGlow" 
+                             Storyboard.TargetProperty="Opacity"
+                             From="0.4" To="1.0" Duration="0:0:1" 
+                             AutoReverse="True" RepeatBehavior="Forever"/>
+            <DoubleAnimation Storyboard.TargetName="StatusDot" 
+                             Storyboard.TargetProperty="Opacity"
+                             From="0.7" To="1.0" Duration="0:0:1" 
+                             AutoReverse="True" RepeatBehavior="Forever"/>
+        </Storyboard>
     </Window.Resources>
+    
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource StatusPulse}"/>
+        </EventTrigger>
+    </Window.Triggers>
 
     <!-- Main Container with decorative border -->
     <Border Padding="0" Background="#080F1A">
@@ -188,7 +204,7 @@
                                 </LinearGradientBrush>
                             </Border.Background>
                             <StackPanel Orientation="Horizontal">
-                                <Ellipse Width="12" Height="12" Margin="0,0,10,0">
+                                <Ellipse x:Name="StatusDot" Width="12" Height="12" Margin="0,0,10,0">
                                     <Ellipse.Fill>
                                         <RadialGradientBrush>
                                             <GradientStop Color="#5CFF5C" Offset="0"/>
@@ -196,7 +212,7 @@
                                         </RadialGradientBrush>
                                     </Ellipse.Fill>
                                     <Ellipse.Effect>
-                                        <DropShadowEffect BlurRadius="8" ShadowDepth="0" Color="#27AE60"/>
+                                        <DropShadowEffect x:Name="StatusGlow" BlurRadius="8" ShadowDepth="0" Color="#27AE60"/>
                                     </Ellipse.Effect>
                                 </Ellipse>
                                 <TextBlock x:Name="StatusText" Text="PROTEGIDO" 
@@ -335,6 +351,14 @@
                                     <TextBlock Text="INICIO" FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
                                 </StackPanel>
                             </Button>
+
+                            <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
+                                    Click="ScheduledTasks_Click" ToolTip="Monitor de Tareas">
+                                <StackPanel>
+                                    <TextBlock Text="📅" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                    <TextBlock Text="TAREAS" FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                </StackPanel>
+                            </Button>
                             
                             <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
                                     Click="ViewHosts_Click" ToolTip="Archivo HOSTS">
@@ -368,13 +392,7 @@
                                 </StackPanel>
                             </Button>
 
-                            <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
-                                    Click="ScheduledTasks_Click" ToolTip="Monitor de Tareas">
-                                <StackPanel>
-                                    <TextBlock Text="📅" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                                    <TextBlock Text="TAREAS" FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
-                                </StackPanel>
-                            </Button>
+
                         </WrapPanel>
                         </StackPanel>
                     </Border>

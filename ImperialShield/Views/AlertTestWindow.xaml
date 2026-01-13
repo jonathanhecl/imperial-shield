@@ -77,6 +77,7 @@
                     <!-- System Alerts -->
                     <TextBlock Text="Sistema" Foreground="#E74C3C" FontWeight="Bold" Margin="0,15,0,5"/>
                     <Button Content="⚠️ Secuestro de Proceso (IFEO Rogue)" Click="TestSecurityWarning_Click" Style="{StaticResource DevButtonStyle}"/>
+                    <Button Content="📅 Nueva Tarea Detectada" Click="TestNewTask_Click" Style="{StaticResource DevButtonStyle}"/>
                 </StackPanel>
             </ScrollViewer>
             

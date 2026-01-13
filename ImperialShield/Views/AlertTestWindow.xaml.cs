@@ -65,6 +65,15 @@ namespace ImperialShield.Views
                 "El archivo HOSTS puede ser usado por malware para redirigir sitios web legítimos a páginas falsas.");
         }
 
+        private void TestNewTask_Click(object sender, RoutedEventArgs e)
+        {
+            var alert = new NewTaskAlertWindow(
+                "SilentCryptoMinerUpdater", 
+                @"\Microsoft\Windows\SystemMaintenance\Updater"
+            );
+            alert.ShowDialog();
+        }
+
         private void Close_Click(object sender, RoutedEventArgs e)
         {
             this.Close();

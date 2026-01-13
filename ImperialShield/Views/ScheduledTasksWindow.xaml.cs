@@ -162,12 +162,14 @@ public partial class ScheduledTasksWindow : Window
             filtered = filtered.Where(t => t.IsSuspicious || (!t.IsMicrosoft && !t.IsTrustedPublisher)).ToList();
         }
 
-        // Sort: Suspicious first, then Running...
+        // Sort: Suspicious (if high threat) -> Running -> Ready -> Date -> Name
         var sorted = filtered
-            .OrderByDescending(t => t.ThreatLevel == 3) // High Threat
+            .OrderByDescending(t => t.ThreatLevel == 3) // High Threat (Always top attention)
             .ThenByDescending(t => t.ThreatLevel == 2) // Medium
-            .ThenByDescending(t => t.NormalizedState == "Running")
-            .ThenBy(t => t.NextRunDateTime ?? DateTime.MaxValue)
+            .ThenByDescending(t => t.NormalizedState == "Running") // 1. Running
+            .ThenByDescending(t => t.NormalizedState == "Ready")   // 2. Ready
+            .ThenBy(t => t.NextRunDateTime ?? DateTime.MaxValue)   // 3. Date (Earliest first)
+            .ThenBy(t => t.TaskName)                               // 4. Name fallback
             .ToList();
 
         TasksGrid.ItemsSource = sorted;

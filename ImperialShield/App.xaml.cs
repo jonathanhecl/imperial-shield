@@ -21,6 +21,7 @@ public partial class App : Application
     private StartupMonitor? _startupMonitor;
     private IFEOMonitor? _ifeoMonitor;
     private DDoSMonitor? _ddosMonitor;
+    private TasksMonitor? _tasksMonitor;
     private DashboardWindow? _dashboardWindow;
     private SplashWindow? _splashWindow;
 
@@ -172,6 +173,20 @@ public partial class App : Application
         _startupMonitor = new StartupMonitor();
         _startupMonitor.NewStartupAppDetected += OnNewStartupAppDetected;
         _startupMonitor.Start();
+
+        // Paso 5: Inicializar monitor de Tareas Programadas
+        _splashWindow?.UpdateStatus("Monitoreando tareas programadas...");
+        try 
+        {
+            _tasksMonitor = new TasksMonitor();
+            _tasksMonitor.NewTaskDetected += OnNewTaskDetected;
+            _tasksMonitor.Start();
+            Logger.Log("TasksMonitor started");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "TasksMonitor Setup");
+        }
 
         // Paso 6: Inicializar monitor de IFEO (Redirecciones)
         _splashWindow?.UpdateStatus("Iniciando monitor de Redirecciones...");
@@ -522,6 +537,15 @@ public partial class App : Application
             "Muchos virus y troyanos usan este método para persistir en el sistema. ¿Reconoces esta aplicación?");
     }
 
+    private void OnNewTaskDetected(object? sender, NewTaskEventArgs e)
+    {
+        Dispatcher.Invoke(() =>
+        {
+            var alert = new NewTaskAlertWindow(e.TaskName, e.TaskPath);
+            alert.Show();
+        });
+    }
+
     #endregion
 
     protected override void OnExit(ExitEventArgs e)
@@ -533,6 +557,9 @@ public partial class App : Application
         _defenderMonitor?.Stop();
         _defenderMonitor?.Dispose();
         _privacyMonitor?.Stop();
+        _privacyMonitor?.Dispose();
+        _tasksMonitor?.Stop();
+        _tasksMonitor?.Dispose();
         _privacyMonitor?.Dispose();
         _startupMonitor?.Stop();
         _notifyIcon?.Dispose();
