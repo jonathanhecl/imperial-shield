@@ -143,6 +143,7 @@ public partial class App : Application
             _privacyMonitor = new PrivacyMonitor();
             _privacyMonitor.PrivacyRiskDetected += OnPrivacyRiskDetected;
             _privacyMonitor.SafeStateRestored += OnSafeStateRestored;
+            _privacyMonitor.NewPrivacyAppDetected += OnNewPrivacyAppDetected;
             _privacyMonitor.Start();
             Logger.Log("PrivacyMonitor started");
         }
@@ -276,6 +277,38 @@ public partial class App : Application
     private void OnSafeStateRestored(object? sender, EventArgs e)
     {
         Logger.Log("Privacy Safe State Restored");
+    }
+
+    private void OnNewPrivacyAppDetected(object? sender, NewPrivacyAppEventArgs e)
+    {
+        Dispatcher.BeginInvoke(() =>
+        {
+            string deviceName = e.App.Device == DeviceType.Camera ? "CÁMARA" : "MICRÓFONO";
+            string appName = e.App.ApplicationName;
+            
+            Logger.Log($"NEW PRIVACY APP: {appName} accessed {deviceName}");
+            
+            var result = MessageBox.Show(
+                $"¡NUEVA APLICACIÓN CON ACCESO A TU {deviceName}!\n\n" +
+                $"Aplicación: {appName}\n\n" +
+                $"Esta es la primera vez que Imperial Shield detecta que esta aplicación " +
+                $"solicita acceso a tu {deviceName.ToLower()}.\n\n" +
+                $"¿Deseas REVOCAR el permiso de esta aplicación?",
+                "⚠️ Nueva App de Privacidad Detectada",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                _privacyMonitor?.RevokePermission(e.App.ApplicationPath, e.App.IsNonPackaged, e.App.Device);
+                MessageBox.Show(
+                    $"Permiso de {deviceName.ToLower()} revocado para '{appName}'.\n\n" +
+                    "La aplicación ya no podrá acceder a este dispositivo.",
+                    "Permiso Revocado",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+        });
     }
 
     #endregion

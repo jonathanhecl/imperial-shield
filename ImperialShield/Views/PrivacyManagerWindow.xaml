@@ -7,6 +7,7 @@
         Style="{StaticResource ModernWindow}">
 
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <LinearGradientBrush x:Key="TabHeaderGradient" StartPoint="0,0" EndPoint="0,1">
             <GradientStop Color="#0F1C2E" Offset="0"/>
             <GradientStop Color="#1E3A5F" Offset="1"/>

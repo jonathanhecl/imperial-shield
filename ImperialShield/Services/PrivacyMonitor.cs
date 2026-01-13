@@ -18,12 +18,14 @@ public class PrivacyRisk
     public string ApplicationPath { get; }
     public string ApplicationName { get; }
     public DeviceType Device { get; }
+    public bool IsNonPackaged { get; }
 
-    public PrivacyRisk(string appPath, DeviceType device)
+    public PrivacyRisk(string appPath, DeviceType device, bool isNonPackaged = true)
     {
         ApplicationPath = appPath;
         ApplicationName = Path.GetFileName(appPath);
         Device = device;
+        IsNonPackaged = isNonPackaged;
     }
 }
 
@@ -36,30 +38,70 @@ public class PrivacyRiskEventArgs : EventArgs
     }
 }
 
+public class NewPrivacyAppEventArgs : EventArgs
+{
+    public PrivacyRisk App { get; }
+    public NewPrivacyAppEventArgs(PrivacyRisk app)
+    {
+        App = app;
+    }
+}
+
 public class PrivacyMonitor : IDisposable
 {
     private Timer? _timer;
-    private readonly int _pollingIntervalMs = 2000; // 2 seconds
     private bool _isDisposed;
 
-    // Track state to avoid spamming alerts, but we want to alert continuously if distinct? 
-    // Or just alert when status changes.
-    // For the icon, we want it Red as long as there is a risk.
-    
+    // Track known apps to detect NEW ones
+    private readonly HashSet<string> _knownCameraApps = new(StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<string> _knownMicrophoneApps = new(StringComparer.OrdinalIgnoreCase);
+    private bool _initialScanDone = false;
+
+    // Track current active risks
     private readonly HashSet<string> _currentRisks = new();
 
     public event EventHandler<PrivacyRiskEventArgs>? PrivacyRiskDetected;
     public event EventHandler? SafeStateRestored;
+    public event EventHandler<NewPrivacyAppEventArgs>? NewPrivacyAppDetected;
 
     public void Start()
     {
-        _timer = new Timer(CheckPrivacyStatus, null, 1000, _pollingIntervalMs);
-        Logger.Log("PrivacyMonitor started.");
+        // Use configured polling interval
+        int interval = SettingsManager.Current.PollingIntervalMs;
+        
+        // Do initial scan to populate known apps (don't alert on startup)
+        ScanAndPopulateKnownApps();
+        _initialScanDone = true;
+
+        _timer = new Timer(CheckPrivacyStatus, null, interval, interval);
+        Logger.Log($"PrivacyMonitor started with interval: {interval}ms");
     }
 
     public void Stop()
     {
         _timer?.Change(Timeout.Infinite, Timeout.Infinite);
+    }
+
+    private void ScanAndPopulateKnownApps()
+    {
+        try
+        {
+            // Populate known camera apps
+            var camApps = GetAllAppIds("webcam");
+            foreach (var app in camApps)
+                _knownCameraApps.Add(app);
+
+            // Populate known mic apps
+            var micApps = GetAllAppIds("microphone");
+            foreach (var app in micApps)
+                _knownMicrophoneApps.Add(app);
+
+            Logger.Log($"Initial privacy scan: {_knownCameraApps.Count} camera apps, {_knownMicrophoneApps.Count} mic apps");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "ScanAndPopulateKnownApps");
+        }
     }
 
     private void CheckPrivacyStatus(object? state)
@@ -68,9 +110,13 @@ public class PrivacyMonitor : IDisposable
 
         try
         {
+            // Check for NEW apps added since last scan
+            CheckForNewApps(DeviceType.Camera);
+            CheckForNewApps(DeviceType.Microphone);
+
+            // Check for active risks (apps currently using the device)
             var risks = new List<PrivacyRisk>();
 
-            // Check Camera
             var camApps = GetActiveApps("webcam");
             foreach (var app in camApps)
             {
@@ -80,7 +126,6 @@ public class PrivacyMonitor : IDisposable
                 }
             }
 
-            // Check Microphone
             var micApps = GetActiveApps("microphone");
             foreach (var app in micApps)
             {
@@ -92,24 +137,17 @@ public class PrivacyMonitor : IDisposable
 
             if (risks.Any())
             {
-                // Logic to debounce or only fire if new?
-                // The user says: "Lanzas una notificación... Cambias el icono".
-                // We should fire the event consistently or at least let the main app handle the persistent state.
-                // Let's fire it always when risks are present, the UI can decide to ignore duplicates.
-                // Or better: fire if the set of risks changed OR if it's just periodic heartbeats.
-                // Ideally, we fire once when a risk appears.
-                
-                // Let's create a risk identifier string
                 var detectionIds = risks.Select(r => $"{r.ApplicationPath}:{r.Device}").ToHashSet();
-                
-                // Check if this is exactly the same as last time
-                bool isSame = detectionIds.SetEquals(_currentRisks);
+                bool hasNewRisks = !detectionIds.SetEquals(_currentRisks);
                 
                 _currentRisks.Clear();
                 foreach (var id in detectionIds) _currentRisks.Add(id);
 
-                // Always invoke so UI can refresh icon if needed, but maybe UI handles "New" alerts vs "Ongoing".
-                PrivacyRiskDetected?.Invoke(this, new PrivacyRiskEventArgs(risks));
+                // Only fire if there are new risks (avoid spamming)
+                if (hasNewRisks)
+                {
+                    PrivacyRiskDetected?.Invoke(this, new PrivacyRiskEventArgs(risks));
+                }
             }
             else
             {
@@ -126,10 +164,72 @@ public class PrivacyMonitor : IDisposable
         }
     }
 
+    private void CheckForNewApps(DeviceType type)
+    {
+        var knownSet = type == DeviceType.Camera ? _knownCameraApps : _knownMicrophoneApps;
+        string deviceStr = type == DeviceType.Camera ? "webcam" : "microphone";
+
+        var currentApps = GetAllAppIds(deviceStr);
+
+        foreach (var appId in currentApps)
+        {
+            if (!knownSet.Contains(appId))
+            {
+                // New app detected!
+                knownSet.Add(appId);
+
+                if (_initialScanDone)
+                {
+                    string displayName = Path.GetFileName(appId);
+                    Logger.Log($"NEW PRIVACY APP: {displayName} ({type})");
+                    
+                    var risk = new PrivacyRisk(appId, type);
+                    NewPrivacyAppDetected?.Invoke(this, new NewPrivacyAppEventArgs(risk));
+                }
+            }
+        }
+    }
+
+    private List<string> GetAllAppIds(string deviceType)
+    {
+        var apps = new List<string>();
+        string basePath = $@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\{deviceType}";
+
+        try
+        {
+            using var key = Registry.CurrentUser.OpenSubKey(basePath);
+            if (key == null) return apps;
+
+            foreach (var subKeyName in key.GetSubKeyNames())
+            {
+                if (subKeyName.Equals("NonPackaged", StringComparison.OrdinalIgnoreCase))
+                {
+                    using var nonPackagedKey = key.OpenSubKey(subKeyName);
+                    if (nonPackagedKey != null)
+                    {
+                        foreach (var appSubKey in nonPackagedKey.GetSubKeyNames())
+                        {
+                            apps.Add(appSubKey.Replace("#", "\\"));
+                        }
+                    }
+                }
+                else
+                {
+                    apps.Add(subKeyName);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "GetAllAppIds");
+        }
+
+        return apps;
+    }
+
     private List<string> GetActiveApps(string deviceType)
     {
         var activeApps = new List<string>();
-        // Registry path
         string basePath = $@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\{deviceType}";
 
         using var key = Registry.CurrentUser.OpenSubKey(basePath);
@@ -137,7 +237,6 @@ public class PrivacyMonitor : IDisposable
 
         foreach (var subKeyName in key.GetSubKeyNames())
         {
-            // 1. NonPackaged (Classic Exes)
             if (subKeyName.Equals("NonPackaged", StringComparison.OrdinalIgnoreCase))
             {
                 using var nonPackagedKey = key.OpenSubKey(subKeyName);
@@ -148,20 +247,17 @@ public class PrivacyMonitor : IDisposable
                         using var appKey = nonPackagedKey.OpenSubKey(appSubKey);
                         if (CheckAppKey(appKey))
                         {
-                             // Key name uses # for \, replace it
-                             activeApps.Add(appSubKey.Replace("#", "\\"));
+                            activeApps.Add(appSubKey.Replace("#", "\\"));
                         }
                     }
                 }
             }
-            // 2. Packaged Apps (Store Apps) - usually peers of NonPackaged
             else if (!subKeyName.Equals("NonPackaged", StringComparison.OrdinalIgnoreCase))
             {
                 using var packagedKey = key.OpenSubKey(subKeyName);
-                // Packaged keys might work differently, but typically follow same structure (LastUsedTimeStop)
                 if (CheckAppKey(packagedKey))
                 {
-                    activeApps.Add(subKeyName); // This will be the Package Family Name
+                    activeApps.Add(subKeyName);
                 }
             }
         }
@@ -180,20 +276,11 @@ public class PrivacyMonitor : IDisposable
 
             if (stopVal is long stopTime)
             {
-                // Rule 1: StopTime is 0 (Active)
                 if (stopTime == 0) return true;
-
-                // Rule 2: StartTime > StopTime (Active)
-                 if (startVal is long startTime)
-                 {
-                     if (startTime > stopTime) return true;
-                 }
+                if (startVal is long startTime && startTime > stopTime) return true;
             }
         }
-        catch 
-        {
-            // Ignore parsing errors
-        }
+        catch { }
 
         return false;
     }
@@ -206,9 +293,9 @@ public class PrivacyMonitor : IDisposable
         public DateTime LastUsedStart { get; set; }
         public DateTime LastUsedStop { get; set; }
         public bool IsActive { get; set; }
-        public string PermissionStatus { get; set; } = "Allow"; // Allow or Deny
+        public string PermissionStatus { get; set; } = "Allow";
     }
-    
+
     public List<PrivacyAppHistory> GetAllAppsWithPermission(DeviceType type)
     {
         var list = new List<PrivacyAppHistory>();
@@ -274,8 +361,7 @@ public class PrivacyMonitor : IDisposable
                 IsActive = stop == 0 || start > stop,
                 PermissionStatus = val
             };
-            
-            // Try to make a friendly name
+
             if (isNonPackaged)
                 app.DisplayName = Path.GetFileName(app.AppId);
             else
@@ -294,12 +380,10 @@ public class PrivacyMonitor : IDisposable
         try
         {
             string deviceStr = type == DeviceType.Camera ? "webcam" : "microphone";
-            string path; 
-            
+            string path;
+
             if (isNonPackaged)
             {
-                // Escape paths for registry if using strings, but here we construct path
-                // NonPackaged keys use '#' as path separator equivalent
                 string safeKey = appId.Replace("\\", "#");
                 path = $@"SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\{deviceStr}\NonPackaged\{safeKey}";
             }
@@ -312,6 +396,7 @@ public class PrivacyMonitor : IDisposable
             if (key != null)
             {
                 key.SetValue("Value", "Deny");
+                Logger.Log($"Revoked {type} permission for: {appId}");
             }
         }
         catch (Exception ex)
@@ -322,12 +407,12 @@ public class PrivacyMonitor : IDisposable
 
     private bool IsWhitelisted(string appPath, DeviceType type)
     {
-        var list = type == DeviceType.Camera 
-            ? SettingsManager.Current.WhitelistedCameraApps 
+        var list = type == DeviceType.Camera
+            ? SettingsManager.Current.WhitelistedCameraApps
             : SettingsManager.Current.WhitelistedMicrophoneApps;
 
         string fileName = Path.GetFileName(appPath);
-        return list.Contains(appPath, StringComparer.OrdinalIgnoreCase) || 
+        return list.Contains(appPath, StringComparer.OrdinalIgnoreCase) ||
                list.Contains(fileName, StringComparer.OrdinalIgnoreCase);
     }
 
