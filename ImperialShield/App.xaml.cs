@@ -76,6 +76,18 @@ public partial class App : Application
     {
         Logger.Log("Initializing application...");
         
+        // Check if we were invoked by IFEO (quarantine interception)
+        if (QuarantineService.HandleQuarantineInterception(args))
+        {
+            string? blockedExe = QuarantineService.GetBlockedExecutableName(args);
+            if (!string.IsNullOrEmpty(blockedExe))
+            {
+                _splashWindow?.Close();
+                BlockedExecutionWindow.ShowBlocked(blockedExe);
+                Shutdown();
+                return;
+            }
+        }
         // Paso 1: Configurar el icono del systray
         _splashWindow?.UpdateStatus("Configurando systray...");
         try

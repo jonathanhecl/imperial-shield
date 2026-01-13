@@ -351,6 +351,15 @@
                                     <TextBlock Text="PRIVACIDAD" FontSize="9" HorizontalAlignment="Center" Foreground="#E74C3C"/>
                                 </StackPanel>
                             </Button>
+
+                            <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
+                                    Click="Quarantine_Click" ToolTip="Centro de Cuarentena"
+                                    BorderBrush="#F39C12" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="🔒" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                    <TextBlock Text="CUARENTENA" FontSize="9" HorizontalAlignment="Center" Foreground="#F39C12"/>
+                                </StackPanel>
+                            </Button>
                         </WrapPanel>
                         </StackPanel>
                     </Border>

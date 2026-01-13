@@ -254,6 +254,12 @@ public partial class DashboardWindow : Window
         win.Show();
     }
 
+    private void Quarantine_Click(object sender, RoutedEventArgs e)
+    {
+        var win = new QuarantineWindow();
+        win.Show();
+    }
+
     private void MinimizeToTray_Click(object sender, RoutedEventArgs e)
     {
         Hide();
