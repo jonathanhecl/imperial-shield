@@ -268,85 +268,93 @@
                             </StackPanel>
 
                             <!-- 2x3 Grid of Buttons -->
-                            <UniformGrid Columns="2" Rows="3">
-                                <Button Style="{StaticResource RPGButton}" Height="100" Margin="4"
-                                        Click="ProcessViewer_Click" ToolTip="Visor de Procesos">
-                                    <StackPanel HorizontalAlignment="Center">
-                                        <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="36" 
-                                                   HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
-                                            <TextBlock.Effect>
-                                                <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
-                                            </TextBlock.Effect>
-                                        </TextBlock>
-                                        <TextBlock Text="PROCESOS" FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC" FontWeight="SemiBold"/>
-                                    </StackPanel>
-                                </Button>
-                                
-                                <Button Style="{StaticResource RPGButton}" Height="100" Margin="4"
-                                        Click="NetworkViewer_Click" ToolTip="Monitor de Conexiones">
-                                    <StackPanel HorizontalAlignment="Center">
-                                        <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="36" 
-                                                   HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
-                                            <TextBlock.Effect>
-                                                <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
-                                            </TextBlock.Effect>
-                                        </TextBlock>
-                                        <TextBlock Text="CONEXIONES" FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC" FontWeight="SemiBold"/>
-                                    </StackPanel>
-                                </Button>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" Height="380">
+                                <UniformGrid Columns="2" Rows="3">
+                                    <Button x:Name="ArsenalProcessBtn" Style="{StaticResource RPGButton}" Height="100" Margin="4"
+                                            Click="ProcessViewer_Click" ToolTip="Visor de Procesos">
+                                        <StackPanel HorizontalAlignment="Center">
+                                            <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="36" 
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
+                                                <TextBlock.Effect>
+                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
+                                                </TextBlock.Effect>
+                                            </TextBlock>
+                                            <TextBlock Text="PROCESOS" FontSize="11" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
+                                            <TextBlock x:Name="ArsenalProcessCount" Text="..." FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                        </StackPanel>
+                                    </Button>
+                                    
+                                    <Button x:Name="ArsenalNetBtn" Style="{StaticResource RPGButton}" Height="100" Margin="4"
+                                            Click="NetworkViewer_Click" ToolTip="Monitor de Conexiones">
+                                        <StackPanel HorizontalAlignment="Center">
+                                            <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="36" 
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
+                                                <TextBlock.Effect>
+                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
+                                                </TextBlock.Effect>
+                                            </TextBlock>
+                                            <TextBlock Text="CONEXIONES" FontSize="11" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
+                                            <TextBlock x:Name="ArsenalNetCount" Text="..." FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                        </StackPanel>
+                                    </Button>
 
-                                <Button Style="{StaticResource RPGButton}" Height="100" Margin="4"
-                                        Click="StartupManager_Click" ToolTip="Gestor de Inicio">
-                                    <StackPanel HorizontalAlignment="Center">
-                                        <TextBlock Text="&#xE7B8;" FontFamily="Segoe MDL2 Assets" FontSize="36" 
-                                                   HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
-                                            <TextBlock.Effect>
-                                                <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
-                                            </TextBlock.Effect>
-                                        </TextBlock>
-                                        <TextBlock Text="INICIO" FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC" FontWeight="SemiBold"/>
-                                    </StackPanel>
-                                </Button>
+                                    <Button x:Name="ArsenalStartupBtn" Style="{StaticResource RPGButton}" Height="100" Margin="4"
+                                            Click="StartupManager_Click" ToolTip="Gestor de Inicio">
+                                        <StackPanel HorizontalAlignment="Center">
+                                            <TextBlock Text="&#xE7B8;" FontFamily="Segoe MDL2 Assets" FontSize="36" 
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
+                                                <TextBlock.Effect>
+                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
+                                                </TextBlock.Effect>
+                                            </TextBlock>
+                                            <TextBlock Text="INICIO" FontSize="11" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
+                                            <TextBlock x:Name="ArsenalStartupCount" Text="..." FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                        </StackPanel>
+                                    </Button>
 
-                                <Button Style="{StaticResource RPGButton}" Height="100" Margin="4"
-                                        Click="ScheduledTasks_Click" ToolTip="Monitor de Tareas">
-                                    <StackPanel HorizontalAlignment="Center">
-                                        <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="36" 
-                                                   HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
-                                            <TextBlock.Effect>
-                                                <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
-                                            </TextBlock.Effect>
-                                        </TextBlock>
-                                        <TextBlock Text="TAREAS" FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC" FontWeight="SemiBold"/>
-                                    </StackPanel>
-                                </Button>
+                                    <Button x:Name="ArsenalTasksBtn" Style="{StaticResource RPGButton}" Height="100" Margin="4"
+                                            Click="ScheduledTasks_Click" ToolTip="Monitor de Tareas">
+                                        <StackPanel HorizontalAlignment="Center">
+                                            <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="36" 
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
+                                                <TextBlock.Effect>
+                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
+                                                </TextBlock.Effect>
+                                            </TextBlock>
+                                            <TextBlock Text="TAREAS" FontSize="11" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
+                                            <TextBlock x:Name="ArsenalTasksCount" Text="..." FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                        </StackPanel>
+                                    </Button>
 
-                                <Button Style="{StaticResource RPGButton}" Height="100" Margin="4"
-                                        Click="Privacy_Click" ToolTip="Centro de Privacidad">
-                                    <StackPanel HorizontalAlignment="Center">
-                                        <TextBlock Text="&#xE890;" FontFamily="Segoe MDL2 Assets" FontSize="36" 
-                                                   HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
-                                            <TextBlock.Effect>
-                                                <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
-                                            </TextBlock.Effect>
-                                        </TextBlock>
-                                        <TextBlock Text="PRIVACIDAD" FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC" FontWeight="SemiBold"/>
-                                    </StackPanel>
-                                </Button>
+                                    <Button x:Name="ArsenalPrivacyBtn" Style="{StaticResource RPGButton}" Height="100" Margin="4"
+                                            Click="Privacy_Click" ToolTip="Centro de Privacidad">
+                                        <StackPanel HorizontalAlignment="Center">
+                                            <TextBlock Text="&#xE890;" FontFamily="Segoe MDL2 Assets" FontSize="36" 
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
+                                                <TextBlock.Effect>
+                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
+                                                </TextBlock.Effect>
+                                            </TextBlock>
+                                            <TextBlock Text="PRIVACIDAD" FontSize="11" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
+                                            <TextBlock x:Name="ArsenalPrivacyCount" Text="..." FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                        </StackPanel>
+                                    </Button>
 
-                                <Button Style="{StaticResource RPGButton}" Height="100" Margin="4"
-                                        Click="Quarantine_Click" ToolTip="Centro de Cuarentena">
-                                    <StackPanel HorizontalAlignment="Center">
-                                        <TextBlock Text="&#xE730;" FontFamily="Segoe MDL2 Assets" FontSize="36" 
-                                                   HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#F39C12">
-                                            <TextBlock.Effect>
-                                                <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#F39C12" Opacity="0.8"/>
-                                            </TextBlock.Effect>
-                                        </TextBlock>
-                                        <TextBlock Text="CUARENTENA" FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC" FontWeight="SemiBold"/>
-                                    </StackPanel>
-                                </Button>
-                            </UniformGrid>
+                                    <Button x:Name="ArsenalQuarantineBtn" Style="{StaticResource RPGButton}" Height="100" Margin="4"
+                                            Click="Quarantine_Click" ToolTip="Centro de Cuarentena">
+                                        <StackPanel HorizontalAlignment="Center">
+                                            <TextBlock Text="&#xE730;" FontFamily="Segoe MDL2 Assets" FontSize="36" 
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#F39C12">
+                                                <TextBlock.Effect>
+                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#F39C12" Opacity="0.8"/>
+                                                </TextBlock.Effect>
+                                            </TextBlock>
+                                            <TextBlock Text="CUARENTENA" FontSize="11" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
+                                            <TextBlock x:Name="ArsenalQuarantineCount" Text="..." FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                        </StackPanel>
+                                    </Button>
+                                </UniformGrid>
+                            </ScrollViewer>
                         </StackPanel>
                     </Border>
 
@@ -362,229 +370,233 @@
                             </StackPanel>
 
                             <!-- Monitoring List -->
-                            <StackPanel>
-                                <!-- Windows Defender -->
-                                <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
-                                        Cursor="Hand" MouseLeftButtonUp="ViewDefenderHome_Click" ToolTip="Click para abrir Seguridad de Windows">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                            <TextBlock Text="&#xE83F;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Text="Monitoreo de Windows Defender" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                            <TextBlock x:Name="CheckDefenseTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                            <Border x:Name="CheckDefenseBadge" CornerRadius="10" Background="#27AE60" Padding="10,3">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Ellipse x:Name="CheckDefenseDot" Width="6" Height="6" Fill="#5CFF5C" Margin="0,0,5,0"/>
-                                                    <TextBlock x:Name="CheckDefenseStatus" Text="Activo" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
-                                                </StackPanel>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" Height="380">
+                                <StackPanel>
+                                    <!-- Windows Defender -->
+                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
+                                            Cursor="Hand" MouseLeftButtonUp="ViewDefenderHome_Click" ToolTip="Click para abrir Seguridad de Windows">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
+                                                <TextBlock Text="&#xE83F;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#27AE60" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="Seguridad de Windows" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                                <TextBlock Text="Microsoft Defender UI" Foreground="#7EB8DC" FontSize="11"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                <TextBlock x:Name="CheckDefenseTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                                <Border x:Name="CheckDefenseBadge" CornerRadius="10" Background="#27AE60" Padding="10,3">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Ellipse x:Name="CheckDefenseDot" Width="6" Height="6" Fill="#5CFF5C" Margin="0,0,5,0"/>
+                                                        <TextBlock x:Name="CheckDefenseStatus" Text="Activo" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
 
-                                <!-- HOSTS Mapping -->
-                                <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
-                                        Cursor="Hand" MouseLeftButtonUp="ViewHosts_Click" ToolTip="Click para editar archivo HOSTS">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                            <TextBlock Text="&#xE909;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Text="Monitoreo de Mapeo de" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
-                                            <TextBlock Text="Nombres de Dominio (HOSTS)" Foreground="#7EB8DC" FontSize="11"/>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                            <TextBlock x:Name="CheckHostsTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                            <Border x:Name="CheckHostsBadge" CornerRadius="10" Background="#1E3A5F" Padding="10,3">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Ellipse x:Name="CheckHostsDot" Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
-                                                    <TextBlock x:Name="CheckHostsCount" Text="..." Foreground="White" FontSize="11" FontWeight="SemiBold"/>
-                                                </StackPanel>
+                                    <!-- HOSTS Mapping -->
+                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
+                                            Cursor="Hand" MouseLeftButtonUp="ViewHosts_Click" ToolTip="Click para editar archivo HOSTS">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
+                                                <TextBlock Text="&#xE909;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="Mapeo de Nombres (HOSTS)" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                                <TextBlock Text="DNS Local y Bloqueos" Foreground="#7EB8DC" FontSize="11"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                <TextBlock x:Name="CheckHostsTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                                <Border x:Name="CheckHostsBadge" CornerRadius="10" Background="#1E3A5F" Padding="10,3">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Ellipse x:Name="CheckHostsDot" Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
+                                                        <TextBlock x:Name="CheckHostsCount" Text="..." Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
 
-                                <!-- Exclusiones de Defender -->
-                                <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
-                                        Cursor="Hand" MouseLeftButtonUp="ViewExclusions_Click" ToolTip="Click para gestionar exclusiones">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                            <TextBlock Text="&#xED1A;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Text="Exclusiones de Defender" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                            <TextBlock x:Name="CheckExclusionsTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                            <Border x:Name="CheckExclusionsBadge" CornerRadius="10" Background="#1E3A5F" Padding="10,3">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Ellipse x:Name="CheckExclusionsDot" Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
-                                                    <TextBlock x:Name="CheckExclusionsCount" Text="..." Foreground="White" FontSize="11" FontWeight="SemiBold"/>
-                                                </StackPanel>
+                                    <!-- Exclusiones de Defender -->
+                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
+                                            Cursor="Hand" MouseLeftButtonUp="ViewExclusions_Click" ToolTip="Click para gestionar exclusiones">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
+                                                <TextBlock Text="&#xED1A;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="Exclusiones de Defender" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                                <TextBlock Text="Rutas Permitidas" Foreground="#7EB8DC" FontSize="11"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                <TextBlock x:Name="CheckExclusionsTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                                <Border x:Name="CheckExclusionsBadge" CornerRadius="10" Background="#1E3A5F" Padding="10,3">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Ellipse x:Name="CheckExclusionsDot" Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
+                                                        <TextBlock x:Name="CheckExclusionsCount" Text="..." Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
 
-                                <!-- Ataques DDoS -->
-                                <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
-                                        Cursor="Hand" MouseLeftButtonUp="NetworkViewer_Click" ToolTip="Click para ver conexiones sospechosas">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                            <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#E74C3C" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Text="Ataques DDoS salientes" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                            <TextBlock x:Name="CheckConnectionsTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                            <Border x:Name="CheckConnectionsBadge" CornerRadius="10" Background="#1E3A5F" Padding="10,3">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Ellipse x:Name="CheckConnectionsDot" Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
-                                                    <TextBlock x:Name="CheckConnectionsCount" Text="..." Foreground="White" FontSize="11" FontWeight="SemiBold"/>
-                                                </StackPanel>
+                                    <!-- Ataques DDoS -->
+                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
+                                            Cursor="Hand" MouseLeftButtonUp="NetworkViewer_Click" ToolTip="Click para ver conexiones sospechosas">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
+                                                <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#E74C3C" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="Actividad de Red (DDoS)" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                                <TextBlock Text="Fugas y Ataques" Foreground="#7EB8DC" FontSize="11"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                <TextBlock x:Name="CheckConnectionsTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                                <Border x:Name="CheckConnectionsBadge" CornerRadius="10" Background="#1E3A5F" Padding="10,3">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Ellipse x:Name="CheckConnectionsDot" Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
+                                                        <TextBlock x:Name="CheckConnectionsCount" Text="..." Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
 
-                                <!-- Programas al Inicio -->
-                                <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
-                                        Cursor="Hand" MouseLeftButtonUp="StartupManager_Click" ToolTip="Click para gestionar programas de inicio">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                            <TextBlock Text="&#xE7B8;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Text="Programas al Inicio" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                            <TextBlock x:Name="CheckStartupTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                            <Border x:Name="CheckStartupBadge" CornerRadius="10" Background="#1E3A5F" Padding="10,3">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Ellipse x:Name="CheckStartupDot" Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
-                                                    <TextBlock x:Name="CheckStartupCount" Text="..." Foreground="White" FontSize="11" FontWeight="SemiBold"/>
-                                                </StackPanel>
+                                    <!-- Programas al Inicio -->
+                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
+                                            Cursor="Hand" MouseLeftButtonUp="StartupManager_Click" ToolTip="Click para gestionar programas de inicio">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
+                                                <TextBlock Text="&#xE7B8;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="Programas al Inicio" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                                <TextBlock Text="Auto-arranque de Apps" Foreground="#7EB8DC" FontSize="11"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                <TextBlock x:Name="CheckStartupTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                                <Border x:Name="CheckStartupBadge" CornerRadius="10" Background="#1E3A5F" Padding="10,3">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Ellipse x:Name="CheckStartupDot" Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
+                                                        <TextBlock x:Name="CheckStartupCount" Text="..." Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
 
-                                <!-- Tareas Programadas -->
-                                <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
-                                        Cursor="Hand" MouseLeftButtonUp="ScheduledTasks_Click" ToolTip="Click para gestionar tareas programadas">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                            <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Text="Tareas Programadas" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                            <TextBlock x:Name="CheckTasksTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                            <Border x:Name="CheckTasksBadge" CornerRadius="10" Background="#1E3A5F" Padding="10,3">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Ellipse x:Name="CheckTasksDot" Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
-                                                    <TextBlock x:Name="CheckTasksCount" Text="..." Foreground="White" FontSize="11" FontWeight="SemiBold"/>
-                                                </StackPanel>
+                                    <!-- Tareas Programadas -->
+                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
+                                            Cursor="Hand" MouseLeftButtonUp="ScheduledTasks_Click" ToolTip="Click para gestionar tareas programadas">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
+                                                <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="Tareas Programadas" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                                <TextBlock Text="Ejecución en segundo plano" Foreground="#7EB8DC" FontSize="11"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                <TextBlock x:Name="CheckTasksTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                                <Border x:Name="CheckTasksBadge" CornerRadius="10" Background="#1E3A5F" Padding="10,3">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Ellipse x:Name="CheckTasksDot" Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
+                                                        <TextBlock x:Name="CheckTasksCount" Text="..." Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
 
-                                <!-- Windows Script Host (WSH) Status -->
-                                <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
-                                        Cursor="Hand" MouseLeftButtonUp="Quarantine_Click" ToolTip="Click para gestionar Windows Script Host">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                            <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Text="Windows Script Host" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
-                                            <TextBlock Text="Bloqueo VBS/JS" Foreground="#7EB8DC" FontSize="11"/>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                            <TextBlock x:Name="CheckWshTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                            <Border x:Name="CheckWshBadge" CornerRadius="10" Background="#1E3A5F" Padding="10,3">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Ellipse x:Name="CheckWshDot" Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
-                                                    <TextBlock x:Name="CheckWshStatus" Text="..." Foreground="White" FontSize="11" FontWeight="SemiBold"/>
-                                                </StackPanel>
+                                    <!-- Windows Script Host (WSH) Status -->
+                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
+                                            Cursor="Hand" MouseLeftButtonUp="Quarantine_Click" ToolTip="Click para gestionar Windows Script Host">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
+                                                <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="Windows Script Host" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                                <TextBlock Text="Bloqueo VBS/JS" Foreground="#7EB8DC" FontSize="11"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                <TextBlock x:Name="CheckWshTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                                <Border x:Name="CheckWshBadge" CornerRadius="10" Background="#1E3A5F" Padding="10,3">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Ellipse x:Name="CheckWshDot" Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
+                                                        <TextBlock x:Name="CheckWshStatus" Text="..." Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
 
-                                <!-- Acceso a Cámara y Micrófono -->
-                                <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10"
-                                        Cursor="Hand" MouseLeftButtonUp="Privacy_Click" ToolTip="Click para el Centro de Privacidad">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                            <TextBlock Text="&#xE890;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                        </Border>
-                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                            <TextBlock Text="Acceso a Cámara y" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
-                                            <TextBlock Text="Micrófono" Foreground="#7EB8DC" FontSize="11"/>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                            <TextBlock x:Name="CheckPrivacyTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                            <Border x:Name="CheckPrivacyBadge" CornerRadius="10" Background="#27AE60" Padding="10,3">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Ellipse x:Name="CheckPrivacyDot" Width="6" Height="6" Fill="#5CFF5C" Margin="0,0,5,0"/>
-                                                    <TextBlock x:Name="CheckPrivacyCount" Text="Active" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
-                                                </StackPanel>
+                                    <!-- Acceso a Cámara y Micrófono -->
+                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10"
+                                            Cursor="Hand" MouseLeftButtonUp="Privacy_Click" ToolTip="Click para el Centro de Privacidad">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
+                                                <TextBlock Text="&#xE890;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
-                            </StackPanel>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="Privacidad (Cámara/Mic)" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                                <TextBlock Text="Uso de Dispositivos" Foreground="#7EB8DC" FontSize="11"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                <TextBlock x:Name="CheckPrivacyTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                                <Border x:Name="CheckPrivacyBadge" CornerRadius="10" Background="#27AE60" Padding="10,3">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Ellipse x:Name="CheckPrivacyDot" Width="6" Height="6" Fill="#5CFF5C" Margin="0,0,5,0"/>
+                                                        <TextBlock x:Name="CheckPrivacyStatus" Text="Activo" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+                            </ScrollViewer>
                         </StackPanel>
                     </Border>
                 </Grid>
@@ -598,30 +610,32 @@
                             <TextBlock x:Name="VersionText" Text="Imperial Shield" 
                                        Foreground="#5A7A9A" FontWeight="SemiBold"/>
                             <TextBlock Text=" • " Foreground="#3A5A7A"/>
-                            <Ellipse Width="8" Height="8" Fill="#27AE60" Margin="0,0,6,0" VerticalAlignment="Center">
+                            <Ellipse x:Name="FooterStatusDot" Width="8" Height="8" Fill="#27AE60" Margin="0,0,6,0" VerticalAlignment="Center">
                                 <Ellipse.Effect>
-                                    <DropShadowEffect BlurRadius="5" ShadowDepth="0" Color="#27AE60"/>
+                                    <DropShadowEffect x:Name="FooterStatusGlow" BlurRadius="5" ShadowDepth="0" Color="#27AE60"/>
                                 </Ellipse.Effect>
                             </Ellipse>
-                            <TextBlock Text="Monitoreo Activo" Foreground="#27AE60" FontWeight="SemiBold"/>
+                            <TextBlock x:Name="FooterStatusText" Text="Monitoreo Activo" Foreground="#27AE60" FontWeight="SemiBold"/>
                         </StackPanel>
                         
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Content="⚙️ Configuración" Background="Transparent" 
-                                    Foreground="#7EB8DC" BorderThickness="0" Cursor="Hand" 
-                                    Margin="0,0,15,0" Click="Settings_Click" FontWeight="SemiBold"/>
-                            <Button Content="📥 Minimizar" Background="Transparent" 
-                                    Foreground="#7EB8DC" BorderThickness="0" Cursor="Hand"
-                                    Margin="0,0,15,0" Click="MinimizeToTray_Click" FontWeight="SemiBold"/>
-                            <Button Click="ExitApp_Click" Background="Transparent" 
-                                    BorderThickness="0" Cursor="Hand" FontWeight="Bold">
+                            <Button x:Name="ExitDefenseBtn" Click="ExitApp_Click" Background="Transparent" 
+                                    BorderThickness="0" Cursor="Hand" FontWeight="Bold" Margin="0,0,20,0">
                                 <Button.Content>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="✖" Foreground="#F43F5E" FontWeight="Bold" Margin="0,0,5,0"/>
-                                        <TextBlock Text="Detener Defensa" Foreground="#F43F5E" FontWeight="Bold"/>
+                                        <TextBlock Text="Detener Defensa" Foreground="#F43F5E" FontWeight="Bold" FontSize="12"/>
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
+                            
+                            <Button Content="⚙️ Configuración" Background="Transparent" 
+                                    Foreground="#7EB8DC" BorderThickness="0" Cursor="Hand" 
+                                    Margin="0,0,20,0" Click="Settings_Click" FontWeight="SemiBold" FontSize="11"/>
+                                    
+                            <Button Content="📥 Minimizar" Background="Transparent" 
+                                    Foreground="#7EB8DC" BorderThickness="0" Cursor="Hand"
+                                    Click="MinimizeToTray_Click" FontWeight="SemiBold" FontSize="11"/>
                         </StackPanel>
                     </Grid>
                 </Border>

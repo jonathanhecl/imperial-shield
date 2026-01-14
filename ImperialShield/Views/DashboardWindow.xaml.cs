@@ -65,13 +65,22 @@ public partial class DashboardWindow : Window
                 UpdateOverallStatus(defenderInfo, suspiciousConnections.Count);
                 
                 // Update Last Checks List
-                UpdateCheckItem(CheckDefenseTime, CheckDefenseStatus, defenseTime, 0, "", false);
-                UpdateCheckItem(CheckHostsTime, CheckHostsCount, hostsTime, hostsCount, "hosts", false); 
-                UpdateCheckItem(CheckExclusionsTime, CheckExclusionsCount, exclusionsTime, exclusionsCount, "items");
-                UpdateCheckItem(CheckConnectionsTime, CheckConnectionsCount, netTime, suspiciousConnections.Count, "items");
-                UpdateCheckItem(CheckStartupTime, CheckStartupCount, startupTime, startupCount, "items");
-                UpdateCheckItem(CheckTasksTime, CheckTasksCount, tasksTime, tasksCount, "active");
-                UpdateCheckItem(CheckPrivacyTime, CheckPrivacyCount, privacyTime, privacyCount, "riesgos", true);
+                UpdateCheckItem(CheckDefenseTime, CheckDefenseStatus, defenseTime, 0, "active", false, CheckDefenseDot, CheckDefenseBadge);
+                UpdateCheckItem(CheckHostsTime, CheckHostsCount, hostsTime, hostsCount, "hosts", false, CheckHostsDot, CheckHostsBadge); 
+                UpdateCheckItem(CheckExclusionsTime, CheckExclusionsCount, exclusionsTime, exclusionsCount, "items", false, CheckExclusionsDot, CheckExclusionsBadge);
+                UpdateCheckItem(CheckConnectionsTime, CheckConnectionsCount, netTime, suspiciousConnections.Count, "ddos", false, CheckConnectionsDot, CheckConnectionsBadge);
+                UpdateCheckItem(CheckStartupTime, CheckStartupCount, startupTime, startupCount, "items", false, CheckStartupDot, CheckStartupBadge);
+                UpdateCheckItem(CheckTasksTime, CheckTasksCount, tasksTime, tasksCount, "active", false, CheckTasksDot, CheckTasksBadge);
+                UpdateCheckItem(CheckWshTime, CheckWshStatus, DateTime.Now, QuarantineService.IsVBSEnabled() ? 1 : 0, "wsh", false, CheckWshDot, CheckWshBadge);
+                UpdateCheckItem(CheckPrivacyTime, CheckPrivacyStatus, privacyTime, privacyCount, "riesgos", true, CheckPrivacyDot, CheckPrivacyBadge);
+
+                // Update Arsenal Counters
+                ArsenalProcessCount.Text = $"{Process.GetProcesses().Length} en ejecución";
+                ArsenalNetCount.Text = $"{connections.Count} conexiones";
+                ArsenalStartupCount.Text = $"{startupCount} elementos";
+                ArsenalTasksCount.Text = $"{tasksCount} tareas activas";
+                ArsenalPrivacyCount.Text = privacyCount > 0 ? $"{privacyCount} riesgos" : "Protegido";
+                ArsenalQuarantineCount.Text = $"{QuarantineService.GetQuarantinedApps().Count} elementos";
 
                 // Update Pause Button State
                 UpdatePauseButtonState();
@@ -81,7 +90,12 @@ public partial class DashboardWindow : Window
 
 
 
-    private void UpdateCheckItem(System.Windows.Controls.TextBlock timeBlock, System.Windows.Controls.TextBlock? countBlock, DateTime time, int count, string unit = "", bool isRisk = false)
+    private void UpdateCheckItem(System.Windows.Controls.TextBlock timeBlock, 
+                                 System.Windows.Controls.TextBlock? countBlock, 
+                                 DateTime time, int count, string unit = "", 
+                                 bool isRisk = false,
+                                 System.Windows.Shapes.Ellipse? dot = null,
+                                 System.Windows.Controls.Border? badge = null)
     {
         if (time == DateTime.MinValue)
         {
@@ -90,27 +104,77 @@ public partial class DashboardWindow : Window
             return;
         }
 
-        // Format time: "14:30" with AM/PM style
         timeBlock.Text = time.ToString("hh:mm tt").Replace(".", "").ToUpper();
 
         if (countBlock != null)
         {
-            // For status monitors (Defender = "Active", Privacy with 0 risks = "Blocked")
-            if (unit == "")
+            var greenBadge = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#27AE60"));
+            var greenDot = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5CFF5C"));
+            var blueBadge = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E3A5F"));
+            var blueDot = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4DA8DA"));
+            var redBadge = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E74C3C"));
+            var redDot = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF4C4C"));
+
+            if (unit == "active") // Defender, Tasks, etc.
             {
-                countBlock.Text = isRisk ? "Blocked" : "Active";
+                countBlock.Text = "Active";
+                if (dot != null) dot.Fill = greenDot;
+                if (badge != null) badge.Background = greenBadge;
             }
             else if (unit == "hosts")
             {
                 countBlock.Text = count > 0 ? $"Active ({count})" : "Active";
+                if (dot != null) dot.Fill = greenDot;
+                if (badge != null) badge.Background = greenBadge;
+            }
+            else if (unit == "ddos")
+            {
+                if (count == 0)
+                {
+                    countBlock.Text = "Active";
+                    if (dot != null) dot.Fill = greenDot;
+                    if (badge != null) badge.Background = greenBadge;
+                }
+                else
+                {
+                    countBlock.Text = $"{count} items";
+                    if (dot != null) dot.Fill = blueDot;
+                    if (badge != null) badge.Background = blueBadge;
+                }
+            }
+            else if (unit == "wsh")
+            {
+                // count 0 = Disabled (Secure), count 1 = Enabled (At risk)
+                if (count == 0)
+                {
+                    countBlock.Text = "Active"; // En realidad significa "Protección Activa"
+                    if (dot != null) dot.Fill = greenDot;
+                    if (badge != null) badge.Background = greenBadge;
+                }
+                else
+                {
+                    countBlock.Text = "Riesgo"; // Scripts habilitados
+                    if (dot != null) dot.Fill = blueDot;
+                    if (badge != null) badge.Background = blueBadge;
+                }
+            }
+            else if (isRisk && count > 0)
+            {
+                countBlock.Text = $"{count} {unit}";
+                if (dot != null) dot.Fill = redDot;
+                if (badge != null) badge.Background = redBadge;
             }
             else if (unit == "riesgos" && count == 0)
             {
-                countBlock.Text = "Blocked";
+                countBlock.Text = "Active";
+                if (dot != null) dot.Fill = greenDot;
+                if (badge != null) badge.Background = greenBadge;
             }
             else
             {
                 countBlock.Text = $"{count} {unit}";
+                if (dot != null) dot.Fill = blueDot;
+                if (badge != null) badge.Background = blueBadge;
             }
         }
     }
@@ -155,9 +219,27 @@ public partial class DashboardWindow : Window
 
     private void UpdateOverallStatus(DefenderInfo defenderInfo, int suspiciousConnections)
     {
-        if (App.CurrentApp.IsMonitoringPaused)
+        bool isPaused = App.CurrentApp.IsMonitoringPaused;
+
+        // Footer status sync
+        if (isPaused)
         {
-            StatusText.Text = "⏸️ SISTEMA PAUSADO";
+            FooterStatusText.Text = "Monitoreo Pausado";
+            FooterStatusText.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9CA3AF")); // Gray
+            FooterStatusDot.Fill = new SolidColorBrush(Colors.DimGray);
+            if (FooterStatusGlow != null) FooterStatusGlow.Color = Colors.Transparent;
+        }
+        else
+        {
+            FooterStatusText.Text = "Monitoreo Activo";
+            FooterStatusText.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#27AE60")); // Green
+            FooterStatusDot.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#27AE60"));
+            if (FooterStatusGlow != null) FooterStatusGlow.Color = (Color)ColorConverter.ConvertFromString("#27AE60");
+        }
+
+        if (isPaused)
+        {
+            StatusText.Text = "SISTEMA PAUSADO";
             StatusBadge.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#374151")); // Grey
             StatusBadge.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9CA3AF"));
             StatusDot.Fill = new SolidColorBrush(Colors.Gray);
@@ -169,18 +251,27 @@ public partial class DashboardWindow : Window
 
         if (isSecure)
         {
-            StatusText.Text = "🟢 Sistema Protegido";
+            StatusText.Text = "PROTEGIDO";
             StatusBadge.Background = FindResource("SuccessBrush") as SolidColorBrush;
+            StatusBadge.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#27AE60"));
+            StatusDot.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5CFF5C"));
+            StatusGlow.Color = (Color)ColorConverter.ConvertFromString("#27AE60");
         }
         else if (!defenderInfo.RealTimeProtectionEnabled)
         {
-            StatusText.Text = "🔴 Defender Desactivado";
+            StatusText.Text = "DEFENDER DESACTIVADO";
             StatusBadge.Background = FindResource("DangerBrush") as SolidColorBrush;
+            StatusBadge.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E74C3C"));
+            StatusDot.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF4C4C"));
+            StatusGlow.Color = (Color)ColorConverter.ConvertFromString("#E74C3C");
         }
         else
         {
-            StatusText.Text = "🟡 Revisar Conexiones";
+            StatusText.Text = "REVISAR CONEXIONES";
             StatusBadge.Background = FindResource("WarningBrush") as SolidColorBrush;
+            StatusBadge.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F39C12"));
+            StatusDot.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFD166"));
+            StatusGlow.Color = (Color)ColorConverter.ConvertFromString("#F39C12");
         }
     }
 
