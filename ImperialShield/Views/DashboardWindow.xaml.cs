@@ -117,13 +117,13 @@ public partial class DashboardWindow : Window
 
             if (unit == "active") // Defender, Tasks, etc.
             {
-                countBlock.Text = "Active";
+                countBlock.Text = "Activo";
                 if (dot != null) dot.Fill = greenDot;
                 if (badge != null) badge.Background = greenBadge;
             }
             else if (unit == "hosts")
             {
-                countBlock.Text = count > 0 ? $"Active ({count})" : "Active";
+                countBlock.Text = count > 0 ? $"Activo ({count})" : "Activo";
                 if (dot != null) dot.Fill = greenDot;
                 if (badge != null) badge.Background = greenBadge;
             }
@@ -131,13 +131,13 @@ public partial class DashboardWindow : Window
             {
                 if (count == 0)
                 {
-                    countBlock.Text = "Active";
+                    countBlock.Text = "Activo";
                     if (dot != null) dot.Fill = greenDot;
                     if (badge != null) badge.Background = greenBadge;
                 }
                 else
                 {
-                    countBlock.Text = $"{count} items";
+                    countBlock.Text = $"{count} elem.";
                     if (dot != null) dot.Fill = blueDot;
                     if (badge != null) badge.Background = blueBadge;
                 }
@@ -147,15 +147,15 @@ public partial class DashboardWindow : Window
                 // count 0 = Disabled (Secure), count 1 = Enabled (At risk)
                 if (count == 0)
                 {
-                    countBlock.Text = "Active"; // En realidad significa "Protección Activa"
+                    countBlock.Text = "Seguro";
                     if (dot != null) dot.Fill = greenDot;
                     if (badge != null) badge.Background = greenBadge;
                 }
                 else
                 {
-                    countBlock.Text = "Riesgo"; // Scripts habilitados
-                    if (dot != null) dot.Fill = blueDot;
-                    if (badge != null) badge.Background = blueBadge;
+                    countBlock.Text = "Riesgo";
+                    if (dot != null) dot.Fill = redDot;
+                    if (badge != null) badge.Background = redBadge;
                 }
             }
             else if (isRisk && count > 0)
@@ -166,13 +166,14 @@ public partial class DashboardWindow : Window
             }
             else if (unit == "riesgos" && count == 0)
             {
-                countBlock.Text = "Active";
+                countBlock.Text = "Activo";
                 if (dot != null) dot.Fill = greenDot;
                 if (badge != null) badge.Background = greenBadge;
             }
             else
             {
-                countBlock.Text = $"{count} {unit}";
+                string label = unit == "items" ? "elem." : unit;
+                countBlock.Text = $"{count} {label}";
                 if (dot != null) dot.Fill = blueDot;
                 if (badge != null) badge.Background = blueBadge;
             }

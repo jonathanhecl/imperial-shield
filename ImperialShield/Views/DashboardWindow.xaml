@@ -268,7 +268,7 @@
                             </StackPanel>
 
                             <!-- 2x3 Grid of Buttons -->
-                            <ScrollViewer VerticalScrollBarVisibility="Auto" Height="380">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <UniformGrid Columns="2" Rows="3">
                                     <Button x:Name="ArsenalProcessBtn" Style="{StaticResource RPGButton}" Height="100" Margin="4"
                                             Click="ProcessViewer_Click" ToolTip="Visor de Procesos">
@@ -344,9 +344,9 @@
                                             Click="Quarantine_Click" ToolTip="Centro de Cuarentena">
                                         <StackPanel HorizontalAlignment="Center">
                                             <TextBlock Text="&#xE730;" FontFamily="Segoe MDL2 Assets" FontSize="36" 
-                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#F39C12">
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
                                                 <TextBlock.Effect>
-                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#F39C12" Opacity="0.8"/>
+                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
                                                 </TextBlock.Effect>
                                             </TextBlock>
                                             <TextBlock Text="CUARENTENA" FontSize="11" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
@@ -370,7 +370,7 @@
                             </StackPanel>
 
                             <!-- Monitoring List -->
-                            <ScrollViewer VerticalScrollBarVisibility="Auto" Height="380">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel>
                                     <!-- Windows Defender -->
                                     <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
