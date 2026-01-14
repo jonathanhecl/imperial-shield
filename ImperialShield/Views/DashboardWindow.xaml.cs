@@ -82,6 +82,10 @@ public partial class DashboardWindow : Window
                 UpdateCheckItem(CheckWshTime, CheckWshStatus, DateTime.Now, QuarantineService.IsVBSEnabled() ? 1 : 0, "wsh", false, CheckWshDot, CheckWshBadge);
                 UpdateCheckItem(CheckPrivacyTime, CheckPrivacyStatus, privacyTime, privacyCount, "riesgos", true, CheckPrivacyDot, CheckPrivacyBadge);
 
+                // Update dynamic titles with counts
+                StartupTitleText.Text = $"Programas al Inicio ({startupCount} elementos)";
+                TasksTitleText.Text = $"Tareas Programadas ({tasksCount} elementos)";
+
                 // Update Arsenal Counters
                 ArsenalProcessCount.Text = $"{Process.GetProcesses().Length} en ejecución";
                 ArsenalNetCount.Text = $"{connections.Count} conexiones";

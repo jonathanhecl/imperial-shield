@@ -497,7 +497,7 @@
                                                 <TextBlock Text="&#xE7B8;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="Programas al Inicio" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                                <TextBlock x:Name="StartupTitleText" Text="Programas al Inicio" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
                                                 <TextBlock Text="Auto-arranque de Apps" Foreground="#7EB8DC" FontSize="11"/>
                                             </StackPanel>
                                             <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
@@ -525,7 +525,7 @@
                                                 <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="Tareas Programadas" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                                <TextBlock x:Name="TasksTitleText" Text="Tareas Programadas" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
                                                 <TextBlock Text="Ejecución en segundo plano" Foreground="#7EB8DC" FontSize="11"/>
                                             </StackPanel>
                                             <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
