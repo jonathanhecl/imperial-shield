@@ -248,206 +248,307 @@
                     <Border Grid.Column="0" Style="{StaticResource RPGCard}" Margin="0,0,10,0">
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                                <TextBlock Text="⚔️" FontSize="24" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                <TextBlock Text="ARSENAL DE INVESTIGACIÓN" FontSize="18" FontWeight="Bold" 
+                                <Border Width="32" Height="32" CornerRadius="6" Background="#1E3A5F" Margin="0,0,10,0" Padding="4">
+                                    <TextBlock Text="⚔️" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <TextBlock Text="ARSENAL DE INVESTIGACIÓN" FontSize="16" FontWeight="Bold" 
                                            Foreground="#4DA8DA" VerticalAlignment="Center" />
                             </StackPanel>
 
-                        <WrapPanel HorizontalAlignment="Center">
-                            <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
-                                    Click="ProcessViewer_Click" ToolTip="Visor de Procesos">
-                                <StackPanel>
-                                    <TextBlock Text="⚙️" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                                    <TextBlock Text="PROCESOS" FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
-                                </StackPanel>
-                            </Button>
-                            
-                            <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
-                                    Click="NetworkViewer_Click" ToolTip="Monitor de Conexiones">
-                                <StackPanel>
-                                    <TextBlock Text="🌐" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                                    <TextBlock Text="CONEXIONES" FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
-                                </StackPanel>
-                            </Button>
+                            <!-- 2x4 Grid of Buttons -->
+                            <UniformGrid Columns="2" Rows="4">
+                                <Button Style="{StaticResource RPGButton}" Height="90" Margin="4"
+                                        Click="ProcessViewer_Click" ToolTip="Visor de Procesos">
+                                    <StackPanel HorizontalAlignment="Center">
+                                        <TextBlock Text="⚙️" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,5">
+                                            <TextBlock.Effect>
+                                                <DropShadowEffect BlurRadius="8" ShadowDepth="0" Color="#4DA8DA"/>
+                                            </TextBlock.Effect>
+                                        </TextBlock>
+                                        <TextBlock Text="PROCESOS" FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                </Button>
+                                
+                                <Button Style="{StaticResource RPGButton}" Height="90" Margin="4"
+                                        Click="NetworkViewer_Click" ToolTip="Monitor de Conexiones">
+                                    <StackPanel HorizontalAlignment="Center">
+                                        <TextBlock Text="🌐" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,5">
+                                            <TextBlock.Effect>
+                                                <DropShadowEffect BlurRadius="8" ShadowDepth="0" Color="#4DA8DA"/>
+                                            </TextBlock.Effect>
+                                        </TextBlock>
+                                        <TextBlock Text="CONEXIONES" FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                </Button>
 
-                            <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
-                                    Click="StartupManager_Click" ToolTip="Gestor de Inicio">
-                                <StackPanel>
-                                    <TextBlock Text="🚀" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                                    <TextBlock Text="INICIO" FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
-                                </StackPanel>
-                            </Button>
+                                <Button Style="{StaticResource RPGButton}" Height="90" Margin="4"
+                                        Click="StartupManager_Click" ToolTip="Gestor de Inicio">
+                                    <StackPanel HorizontalAlignment="Center">
+                                        <TextBlock Text="🚀" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,5">
+                                            <TextBlock.Effect>
+                                                <DropShadowEffect BlurRadius="8" ShadowDepth="0" Color="#4DA8DA"/>
+                                            </TextBlock.Effect>
+                                        </TextBlock>
+                                        <TextBlock Text="INICIO" FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                </Button>
 
-                            <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
-                                    Click="ScheduledTasks_Click" ToolTip="Monitor de Tareas">
-                                <StackPanel>
-                                    <TextBlock Text="📅" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                                    <TextBlock Text="TAREAS" FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
-                                </StackPanel>
-                            </Button>
-                            
-                            <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
-                                    Click="ViewHosts_Click" ToolTip="Archivo HOSTS">
-                                <StackPanel>
-                                    <TextBlock Text="📜" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                                    <TextBlock Text="HOSTS" FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
-                                </StackPanel>
-                            </Button>
-                            
-                            <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
-                                    Click="ViewExclusions_Click" ToolTip="Exclusiones Defender">
-                                <StackPanel>
-                                    <TextBlock Text="🛡️" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                                    <TextBlock Text="EXCLUSIONES" FontSize="9" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
-                                </StackPanel>
-                            </Button>
+                                <Button Style="{StaticResource RPGButton}" Height="90" Margin="4"
+                                        Click="ScheduledTasks_Click" ToolTip="Monitor de Tareas">
+                                    <StackPanel HorizontalAlignment="Center">
+                                        <TextBlock Text="📋" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,5">
+                                            <TextBlock.Effect>
+                                                <DropShadowEffect BlurRadius="8" ShadowDepth="0" Color="#4DA8DA"/>
+                                            </TextBlock.Effect>
+                                        </TextBlock>
+                                        <TextBlock Text="TAREAS" FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                </Button>
+                                
+                                <Button Style="{StaticResource RPGButton}" Height="90" Margin="4"
+                                        Click="ViewHosts_Click" ToolTip="Archivo HOSTS">
+                                    <StackPanel HorizontalAlignment="Center">
+                                        <TextBlock Text="🌍" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,5">
+                                            <TextBlock.Effect>
+                                                <DropShadowEffect BlurRadius="8" ShadowDepth="0" Color="#4DA8DA"/>
+                                            </TextBlock.Effect>
+                                        </TextBlock>
+                                        <TextBlock Text="HOSTS" FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                </Button>
+                                
+                                <Button Style="{StaticResource RPGButton}" Height="90" Margin="4"
+                                        Click="ViewExclusions_Click" ToolTip="Exclusiones Defender">
+                                    <StackPanel HorizontalAlignment="Center">
+                                        <TextBlock Text="🛡️" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,5">
+                                            <TextBlock.Effect>
+                                                <DropShadowEffect BlurRadius="8" ShadowDepth="0" Color="#4DA8DA"/>
+                                            </TextBlock.Effect>
+                                        </TextBlock>
+                                        <TextBlock Text="EXCLUSIONES" FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                </Button>
 
-                            <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
-                                    Click="Privacy_Click" ToolTip="Centro de Privacidad">
-                                <StackPanel>
-                                    <TextBlock Text="👁️" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                                    <TextBlock Text="PRIVACIDAD" FontSize="9" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
-                                </StackPanel>
-                            </Button>
+                                <Button Style="{StaticResource RPGButton}" Height="90" Margin="4"
+                                        Click="Privacy_Click" ToolTip="Centro de Privacidad">
+                                    <StackPanel HorizontalAlignment="Center">
+                                        <TextBlock Text="👁️" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,5">
+                                            <TextBlock.Effect>
+                                                <DropShadowEffect BlurRadius="8" ShadowDepth="0" Color="#4DA8DA"/>
+                                            </TextBlock.Effect>
+                                        </TextBlock>
+                                        <TextBlock Text="PRIVACIDAD" FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                </Button>
 
-                            <Button Style="{StaticResource RPGButton}" Width="100" Height="100" Margin="5"
-                                    Click="Quarantine_Click" ToolTip="Centro de Cuarentena">
-                                <StackPanel>
-                                    <TextBlock Text="🔒" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                                    <TextBlock Text="CUARENTENA" FontSize="9" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
-                                </StackPanel>
-                            </Button>
-
-
-                        </WrapPanel>
+                                <Button Style="{StaticResource RPGButton}" Height="90" Margin="4"
+                                        Click="Quarantine_Click" ToolTip="Centro de Cuarentena">
+                                    <StackPanel HorizontalAlignment="Center">
+                                        <TextBlock Text="☣️" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,5">
+                                            <TextBlock.Effect>
+                                                <DropShadowEffect BlurRadius="8" ShadowDepth="0" Color="#F39C12"/>
+                                            </TextBlock.Effect>
+                                        </TextBlock>
+                                        <TextBlock Text="CUARENTENA" FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC" FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                </Button>
+                            </UniformGrid>
                         </StackPanel>
                     </Border>
 
                     <!-- Monitoring Status Panel -->
                     <Border Grid.Column="1" Style="{StaticResource RPGCard}" Margin="10,0,0,0">
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                                <TextBlock Text="h" FontFamily="Webdings" FontSize="24" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#4DA8DA"/>
-                                <TextBlock Text="MONITOREO ACTIVO" FontSize="18" FontWeight="Bold" 
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                                <Border Width="32" Height="32" CornerRadius="6" Background="#1E3A5F" Margin="0,0,10,0" Padding="4">
+                                    <TextBlock Text="📡" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <TextBlock Text="MONITOREO ACTIVO" FontSize="16" FontWeight="Bold" 
                                            Foreground="#4DA8DA" VerticalAlignment="Center" />
                             </StackPanel>
 
-                            <!-- Check List -->
+                            <!-- Monitoring List -->
                             <StackPanel>
-                                <!-- Defensa -->
-                                <Border Background="#0D1B2A" CornerRadius="6" Padding="12,8" Margin="0,0,0,6">
+                                <!-- Windows Defender -->
+                                <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="🛡️" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Monitoreo de Windows Defender" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
-                                        <StackPanel Grid.Column="2" HorizontalAlignment="Right">
-                                            <TextBlock x:Name="CheckDefenseTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                                        <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
+                                            <TextBlock Text="🛡️" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="Monitoreo de Windows Defender" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                            <TextBlock x:Name="CheckDefenseTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                            <Border x:Name="CheckDefenseBadge" CornerRadius="10" Background="#27AE60" Padding="10,3">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Ellipse Width="6" Height="6" Fill="#5CFF5C" Margin="0,0,5,0"/>
+                                                    <TextBlock x:Name="CheckDefenseStatus" Text="Active" Foreground="White" FontSize="10" FontWeight="SemiBold"/>
+                                                </StackPanel>
+                                            </Border>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
 
-                                <!-- Hosts -->
-                                <Border Background="#0D1B2A" CornerRadius="6" Padding="12,8" Margin="0,0,0,6">
+                                <!-- HOSTS Mapping -->
+                                <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="📜" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Mapeo de Nombres de Dominio (HOSTS)" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
-                                        <StackPanel Grid.Column="2" HorizontalAlignment="Right">
-                                            <TextBlock x:Name="CheckHostsTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
-                                            <TextBlock x:Name="CheckHostsCount" Text="0 ítems" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right"/>
+                                        <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
+                                            <TextBlock Text="🌍" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="Monitoreo de Mapeo de" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                            <TextBlock Text="Nombres de Dominio (HOSTS)" Foreground="#7EB8DC" FontSize="11"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                            <TextBlock x:Name="CheckHostsTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                            <Border x:Name="CheckHostsBadge" CornerRadius="10" Background="#27AE60" Padding="10,3">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Ellipse Width="6" Height="6" Fill="#5CFF5C" Margin="0,0,5,0"/>
+                                                    <TextBlock x:Name="CheckHostsCount" Text="Active" Foreground="White" FontSize="10" FontWeight="SemiBold"/>
+                                                </StackPanel>
+                                            </Border>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
 
-                                <!-- Exclusiones -->
-                                <Border Background="#0D1B2A" CornerRadius="6" Padding="12,8" Margin="0,0,0,6">
+                                <!-- Exclusiones de Defender -->
+                                <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="🚫" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Exclusiones de Defender" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
-                                        <StackPanel Grid.Column="2" HorizontalAlignment="Right">
-                                            <TextBlock x:Name="CheckExclusionsTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
-                                            <TextBlock x:Name="CheckExclusionsCount" Text="0 ítems" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right"/>
+                                        <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
+                                            <TextBlock Text="🚫" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="Exclusiones de Defender" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                            <TextBlock x:Name="CheckExclusionsTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                            <Border x:Name="CheckExclusionsBadge" CornerRadius="10" Background="#1E3A5F" Padding="10,3">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Ellipse Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
+                                                    <TextBlock x:Name="CheckExclusionsCount" Text="0 items" Foreground="White" FontSize="10" FontWeight="SemiBold"/>
+                                                </StackPanel>
+                                            </Border>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
 
-                                <!-- Conexiones (Ahora DDoS Watchdog) -->
-                                <Border Background="#0D1B2A" CornerRadius="6" Padding="12,8" Margin="0,0,0,6">
+                                <!-- Ataques DDoS -->
+                                <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="🔥" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Ataques DDoS salientes" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
-                                        <StackPanel Grid.Column="2" HorizontalAlignment="Right">
-                                            <TextBlock x:Name="CheckConnectionsTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
-                                            <TextBlock x:Name="CheckConnectionsCount" Text="0 eventos" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right"/>
+                                        <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
+                                            <TextBlock Text="🔥" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="Ataques DDoS salientes" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                            <TextBlock x:Name="CheckConnectionsTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                            <Border x:Name="CheckConnectionsBadge" CornerRadius="10" Background="#1E3A5F" Padding="10,3">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Ellipse Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
+                                                    <TextBlock x:Name="CheckConnectionsCount" Text="0 items" Foreground="White" FontSize="10" FontWeight="SemiBold"/>
+                                                </StackPanel>
+                                            </Border>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
 
-                                <!-- Inicio -->
-                                <Border Background="#0D1B2A" CornerRadius="6" Padding="12,8" Margin="0,0,0,6">
+                                <!-- Programas al Inicio -->
+                                <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="🚀" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Programas al Inicio" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
-                                        <StackPanel Grid.Column="2" HorizontalAlignment="Right">
-                                            <TextBlock x:Name="CheckStartupTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
-                                            <TextBlock x:Name="CheckStartupCount" Text="0 apps" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right"/>
+                                        <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
+                                            <TextBlock Text="🚀" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="Programas al Inicio" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                            <TextBlock x:Name="CheckStartupTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                            <Border x:Name="CheckStartupBadge" CornerRadius="10" Background="#1E3A5F" Padding="10,3">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Ellipse Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
+                                                    <TextBlock x:Name="CheckStartupCount" Text="0 items" Foreground="White" FontSize="10" FontWeight="SemiBold"/>
+                                                </StackPanel>
+                                            </Border>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
 
-                                <!-- Tareas -->
-                                <Border Background="#0D1B2A" CornerRadius="6" Padding="12,8" Margin="0,0,0,6">
+                                <!-- Tareas Programadas -->
+                                <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="📅" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Tareas Programadas" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
-                                        <StackPanel Grid.Column="2" HorizontalAlignment="Right">
-                                            <TextBlock x:Name="CheckTasksTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
-                                            <TextBlock x:Name="CheckTasksCount" Text="0 tareas" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right"/>
+                                        <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
+                                            <TextBlock Text="📋" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="Tareas Programadas" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                            <TextBlock x:Name="CheckTasksTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                            <Border x:Name="CheckTasksBadge" CornerRadius="10" Background="#1E3A5F" Padding="10,3">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Ellipse Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
+                                                    <TextBlock x:Name="CheckTasksCount" Text="0 active" Foreground="White" FontSize="10" FontWeight="SemiBold"/>
+                                                </StackPanel>
+                                            </Border>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
 
-                                <!-- Privacidad -->
-                                <Border Background="#0D1B2A" CornerRadius="6" Padding="12,8">
+                                <!-- Acceso a Cámara y Micrófono -->
+                                <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="👁️" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Acceso a Cámara y Micrófono" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
-                                        <StackPanel Grid.Column="2" HorizontalAlignment="Right">
-                                            <TextBlock x:Name="CheckPrivacyTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
-                                            <TextBlock x:Name="CheckPrivacyCount" Text="0 riesgos" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right"/>
+                                        <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
+                                            <TextBlock Text="👁️" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="Acceso a Cámara y" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                            <TextBlock Text="Micrófono" Foreground="#7EB8DC" FontSize="11"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                            <TextBlock x:Name="CheckPrivacyTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                            <Border x:Name="CheckPrivacyBadge" CornerRadius="10" Background="#27AE60" Padding="10,3">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Ellipse Width="6" Height="6" Fill="#5CFF5C" Margin="0,0,5,0"/>
+                                                    <TextBlock x:Name="CheckPrivacyCount" Text="Blocked" Foreground="White" FontSize="10" FontWeight="SemiBold"/>
+                                                </StackPanel>
+                                            </Border>
                                         </StackPanel>
                                     </Grid>
                                 </Border>

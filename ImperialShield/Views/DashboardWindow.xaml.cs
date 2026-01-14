@@ -65,12 +65,12 @@ public partial class DashboardWindow : Window
                 UpdateOverallStatus(defenderInfo, suspiciousConnections.Count);
                 
                 // Update Last Checks List
-                UpdateCheckItem(CheckDefenseTime, null, defenseTime, 0);
-                UpdateCheckItem(CheckHostsTime, CheckHostsCount, hostsTime, hostsCount, "items");
+                UpdateCheckItem(CheckDefenseTime, CheckDefenseStatus, defenseTime, 0, "", false);
+                UpdateCheckItem(CheckHostsTime, CheckHostsCount, hostsTime, 0, "", false); // Always "Active" for hosts monitoring
                 UpdateCheckItem(CheckExclusionsTime, CheckExclusionsCount, exclusionsTime, exclusionsCount, "items");
-                UpdateCheckItem(CheckConnectionsTime, CheckConnectionsCount, netTime, suspiciousConnections.Count, "riesgos");
-                UpdateCheckItem(CheckStartupTime, CheckStartupCount, startupTime, startupCount, "apps");
-                UpdateCheckItem(CheckTasksTime, CheckTasksCount, tasksTime, tasksCount, "tareas");
+                UpdateCheckItem(CheckConnectionsTime, CheckConnectionsCount, netTime, suspiciousConnections.Count, "items");
+                UpdateCheckItem(CheckStartupTime, CheckStartupCount, startupTime, startupCount, "items");
+                UpdateCheckItem(CheckTasksTime, CheckTasksCount, tasksTime, tasksCount, "active");
                 UpdateCheckItem(CheckPrivacyTime, CheckPrivacyCount, privacyTime, privacyCount, "riesgos", true);
 
                 // Update Pause Button State
@@ -85,22 +85,25 @@ public partial class DashboardWindow : Window
     {
         if (time == DateTime.MinValue)
         {
-            timeBlock.Text = "--";
-            if (countBlock != null) countBlock.Text = "";
+            timeBlock.Text = "--:--";
+            if (countBlock != null) countBlock.Text = "--";
             return;
         }
 
-        // Format time: "14:30:05"
-        timeBlock.Text = time.ToString("HH:mm:ss");
+        // Format time: "14:30"
+        timeBlock.Text = time.ToString("HH:mm");
 
         if (countBlock != null)
         {
-            countBlock.Text = $"{count} {unit}";
-            // Risky items red if > 0
-            if (isRisk && count > 0) 
-                countBlock.Foreground = FindResource("DangerBrush") as SolidColorBrush;
+            // For status monitors (Defender, Hosts, Privacy with 0 risks = "Active"/"Blocked")
+            if (unit == "" || (unit == "riesgos" && count == 0))
+            {
+                countBlock.Text = isRisk ? "Blocked" : "Active";
+            }
             else
-                countBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7EB8DC"));
+            {
+                countBlock.Text = $"{count} {unit}";
+            }
         }
     }
 
