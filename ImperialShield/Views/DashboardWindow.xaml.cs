@@ -66,7 +66,7 @@ public partial class DashboardWindow : Window
                 
                 // Update Last Checks List
                 UpdateCheckItem(CheckDefenseTime, CheckDefenseStatus, defenseTime, 0, "", false);
-                UpdateCheckItem(CheckHostsTime, CheckHostsCount, hostsTime, 0, "", false); // Always "Active" for hosts monitoring
+                UpdateCheckItem(CheckHostsTime, CheckHostsCount, hostsTime, hostsCount, "hosts", false); 
                 UpdateCheckItem(CheckExclusionsTime, CheckExclusionsCount, exclusionsTime, exclusionsCount, "items");
                 UpdateCheckItem(CheckConnectionsTime, CheckConnectionsCount, netTime, suspiciousConnections.Count, "items");
                 UpdateCheckItem(CheckStartupTime, CheckStartupCount, startupTime, startupCount, "items");
@@ -95,10 +95,14 @@ public partial class DashboardWindow : Window
 
         if (countBlock != null)
         {
-            // For status monitors (Defender, Hosts = "Active", Privacy with 0 risks = "Blocked")
+            // For status monitors (Defender = "Active", Privacy with 0 risks = "Blocked")
             if (unit == "")
             {
                 countBlock.Text = isRisk ? "Blocked" : "Active";
+            }
+            else if (unit == "hosts")
+            {
+                countBlock.Text = count > 0 ? $"Active ({count})" : "Active";
             }
             else if (unit == "riesgos" && count == 0)
             {
@@ -180,13 +184,13 @@ public partial class DashboardWindow : Window
         }
     }
 
-    private void ProcessViewer_Click(object sender, RoutedEventArgs e)
+    private void ProcessViewer_Click(object sender, EventArgs e)
     {
         var window = new ProcessViewerWindow();
         window.Show();
     }
 
-    private void NetworkViewer_Click(object sender, RoutedEventArgs e)
+    private void NetworkViewer_Click(object sender, EventArgs e)
     {
         var window = new NetworkViewerWindow();
         window.Show();
@@ -197,13 +201,33 @@ public partial class DashboardWindow : Window
         NetworkViewer_Click(sender, e);
     }
 
-    private void StartupManager_Click(object sender, RoutedEventArgs e)
+    private void StartupManager_Click(object sender, EventArgs e)
     {
         var window = new StartupManagerWindow();
         window.Show();
     }
 
-    private void ViewHosts_Click(object sender, RoutedEventArgs e)
+    private void ViewDefenderHome_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "windowsdefender:",
+                UseShellExecute = true
+            });
+        }
+        catch
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "ms-settings:windowsdefender",
+                UseShellExecute = true
+            });
+        }
+    }
+
+    private void ViewHosts_Click(object sender, EventArgs e)
     {
         try
         {
@@ -226,43 +250,25 @@ public partial class DashboardWindow : Window
         }
     }
 
-    private void ViewExclusions_Click(object sender, RoutedEventArgs e)
+    private void ViewExclusions_Click(object sender, EventArgs e)
     {
-        var exclusions = _defenderMonitor.GetCurrentExclusions();
-        
-        if (exclusions.Count == 0)
+        try
         {
-            MessageBox.Show("No hay exclusiones configuradas en Windows Defender.", 
-                "Exclusiones", MessageBoxButton.OK, MessageBoxImage.Information);
-            return;
+            // Intentar abrir directamente la sección de exclusiones si es posible, 
+            // si no, ir a la configuración de protección contra amenazas
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "windowsdefender://threatsettings",
+                UseShellExecute = true
+            });
         }
-
-        var message = "=== Exclusiones de Windows Defender ===\n\n" +
-                     string.Join("\n", exclusions.Select((e, i) => $"{i + 1}. {e}")) +
-                     "\n\n¿Deseas abrir la configuración de Windows Defender?";
-
-        var result = MessageBox.Show(message, "Exclusiones", 
-            MessageBoxButton.YesNo, MessageBoxImage.Information);
-
-        if (result == MessageBoxResult.Yes)
+        catch
         {
-            try
+            Process.Start(new ProcessStartInfo
             {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = "windowsdefender://threatsettings",
-                    UseShellExecute = true
-                });
-            }
-            catch
-            {
-                // Fallback a Windows Security
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = "ms-settings:windowsdefender",
-                    UseShellExecute = true
-                });
-            }
+                FileName = "ms-settings:windowsdefender",
+                UseShellExecute = true
+            });
         }
     }
 
@@ -277,14 +283,14 @@ public partial class DashboardWindow : Window
         }
     }
 
-    private void Privacy_Click(object sender, RoutedEventArgs e)
+    private void Privacy_Click(object sender, EventArgs e)
     {
         var win = new PrivacyManagerWindow();
         win.Show();
     }
 
-    private void Quarantine_Click(object sender, RoutedEventArgs e) => new QuarantineWindow().Show();
-    private void ScheduledTasks_Click(object sender, RoutedEventArgs e) => new ScheduledTasksWindow().Show();
+    private void Quarantine_Click(object sender, EventArgs e) => new QuarantineWindow().Show();
+    private void ScheduledTasks_Click(object sender, EventArgs e) => new ScheduledTasksWindow().Show();
 
     private void MinimizeToTray_Click(object sender, RoutedEventArgs e)
     {
