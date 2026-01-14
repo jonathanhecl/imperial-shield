@@ -35,10 +35,15 @@ public partial class App : Application
 
     private void Application_Startup(object sender, StartupEventArgs e)
     {
+        // Asegurar modo de cierre explícito para evitar cierres prematuros
+        ShutdownMode = ShutdownMode.OnExplicitShutdown;
+        
         Logger.Log("=== Imperial Shield Starting ===");
+        Logger.Log($"Arguments: {string.Join(" ", e.Args)}");
         
         try
         {
+            Logger.Log("Checking single instance lock...");
             // Verificar si ya hay una instancia corriendo
             if (!SingleInstanceManager.TryAcquireLock())
             {
@@ -49,11 +54,13 @@ public partial class App : Application
                 return;
             }
 
+            Logger.Log("Showing splash screen...");
             // Mostrar splash screen
             _splashWindow = new SplashWindow();
             _splashWindow.Show();
             _splashWindow.UpdateStatus("Inicializando...");
 
+            Logger.Log("Queuing initialization...");
             // Inicializar en background para no bloquear la splash
             Dispatcher.BeginInvoke(new Action(() =>
             {
@@ -96,7 +103,9 @@ public partial class App : Application
         _splashWindow?.UpdateStatus("Configurando systray...");
         try
         {
+            Logger.Log("Initializing TaskbarIcon...");
             _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
+            if (_notifyIcon == null) Logger.Log("WARNING: NotifyIcon resource not found!");
             _notifyIcon.TrayMouseDoubleClick += (s, e) => ShowDashboard();
             
             // Cargar icono programáticamente
@@ -142,6 +151,7 @@ public partial class App : Application
             _defenderMonitor = new DefenderMonitor();
             _defenderMonitor.DefenderStatusChanged += OnDefenderStatusChanged;
             _defenderMonitor.ExclusionAdded += OnExclusionAdded;
+            Logger.Log("Starting DefenderMonitor...");
             _defenderMonitor.Start();
             Logger.Log("DefenderMonitor started");
         }
