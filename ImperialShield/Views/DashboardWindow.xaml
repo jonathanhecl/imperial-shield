@@ -441,7 +441,7 @@
                                                 <TextBlock Text="&#xED1A;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="Exclusiones de Defender" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                                <TextBlock x:Name="ExclusionsTitleText" Text="Exclusiones de Defender" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
                                                 <TextBlock Text="Rutas Permitidas" Foreground="#7EB8DC" FontSize="11"/>
                                             </StackPanel>
                                             <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">

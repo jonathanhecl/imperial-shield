@@ -75,7 +75,7 @@ public partial class DashboardWindow : Window
                 // Update Last Checks List
                 UpdateCheckItem(CheckDefenseTime, CheckDefenseStatus, defenseTime, 0, "active", false, CheckDefenseDot, CheckDefenseBadge);
                 UpdateCheckItem(CheckHostsTime, CheckHostsCount, hostsTime, hostsCount, "hosts", false, CheckHostsDot, CheckHostsBadge); 
-                UpdateCheckItem(CheckExclusionsTime, CheckExclusionsCount, exclusionsTime, exclusionsCount, "items", false, CheckExclusionsDot, CheckExclusionsBadge);
+                UpdateCheckItem(CheckExclusionsTime, CheckExclusionsCount, exclusionsTime, exclusionsCount, "active", false, CheckExclusionsDot, CheckExclusionsBadge);
                 UpdateCheckItem(CheckConnectionsTime, CheckConnectionsCount, netTime, suspiciousConnections.Count, "ddos", false, CheckConnectionsDot, CheckConnectionsBadge);
                 UpdateCheckItem(CheckStartupTime, CheckStartupCount, startupTime, startupCount, "items", false, CheckStartupDot, CheckStartupBadge);
                 UpdateCheckItem(CheckTasksTime, CheckTasksCount, tasksTime, tasksCount, "active", false, CheckTasksDot, CheckTasksBadge);
@@ -85,6 +85,7 @@ public partial class DashboardWindow : Window
                 // Update dynamic titles with counts
                 StartupTitleText.Text = $"Programas al Inicio ({startupCount} elementos)";
                 TasksTitleText.Text = $"Tareas Programadas ({tasksCount} elementos)";
+                ExclusionsTitleText.Text = $"Exclusiones de Defender ({exclusionsCount} elementos)";
 
                 // Update Arsenal Counters
                 ArsenalProcessCount.Text = $"{Process.GetProcesses().Length} en ejecución";
