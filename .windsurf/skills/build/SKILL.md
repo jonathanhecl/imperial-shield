@@ -1,14 +1,19 @@
 ---
 name: build-debug
-description: Build the debug version of the project
+description: Build the debug version of the project with cleanup and process handling
 ---
 
-To compile the project, we use debug with:
+To compile the project in debug mode, it is recommended to clean first and ensure the process is not running:
+
+1. Terminate the process if it's running (requires admin):
 ```bash
+taskkill -f -im ImperialShield.exe 2>nul
+```
+
+2. Clean and compile:
+```bash
+dotnet clean
 dotnet build --configuration Debug
 ```
 
-If you cannot compile because the file is in use, it is because the user forgot to close it. To close it, do the following (requires admin permissions):
-```bash
-taskkill -f -im ImperialShield.exe
-```
+Note: If compilation fails due to "file in use", make sure to close any instance of the application or the debugger.
