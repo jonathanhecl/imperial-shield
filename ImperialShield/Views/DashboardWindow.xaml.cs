@@ -62,16 +62,13 @@ public partial class DashboardWindow : Window
 
             Dispatcher.Invoke(() =>
             {
-                UpdateDefenderStatus(defenderInfo);
-                UpdateExclusionsStatus(exclusionsCount);
-                UpdateConnectionsStatus(connections.Count, suspiciousConnections.Count);
                 UpdateOverallStatus(defenderInfo, suspiciousConnections.Count);
                 
                 // Update Last Checks List
                 UpdateCheckItem(CheckDefenseTime, null, defenseTime, 0);
                 UpdateCheckItem(CheckHostsTime, CheckHostsCount, hostsTime, hostsCount, "items");
                 UpdateCheckItem(CheckExclusionsTime, CheckExclusionsCount, exclusionsTime, exclusionsCount, "items");
-                UpdateCheckItem(CheckConnectionsTime, CheckConnectionsCount, netTime, connections.Count, "activas");
+                UpdateCheckItem(CheckConnectionsTime, CheckConnectionsCount, netTime, suspiciousConnections.Count, "riesgos");
                 UpdateCheckItem(CheckStartupTime, CheckStartupCount, startupTime, startupCount, "apps");
                 UpdateCheckItem(CheckTasksTime, CheckTasksCount, tasksTime, tasksCount, "tareas");
                 UpdateCheckItem(CheckPrivacyTime, CheckPrivacyCount, privacyTime, privacyCount, "riesgos", true);
@@ -82,59 +79,7 @@ public partial class DashboardWindow : Window
         });
     }
 
-    private void UpdateDefenderStatus(DefenderInfo info)
-    {
-        // Estado principal
-        if (info.RealTimeProtectionEnabled)
-        {
-            DefenderStatus.Text = "Activo";
-            DefenderStatus.Foreground = FindResource("SuccessBrush") as SolidColorBrush;
-            DefenderIcon.Text = "🛡️";
-        }
-        else
-        {
-            DefenderStatus.Text = "⚠️ DESACTIVADO";
-            DefenderStatus.Foreground = FindResource("DangerBrush") as SolidColorBrush;
-            DefenderIcon.Text = "⚠️";
-        }
-    }
 
-    private void UpdateExclusionsStatus(int count)
-    {
-        ExclusionsCount.Text = count.ToString();
-        
-        if (count == 0)
-        {
-            ExclusionsStatus.Text = "Sin exclusiones";
-            ExclusionsStatus.Foreground = FindResource("SuccessBrush") as SolidColorBrush;
-        }
-        else if (count <= 5)
-        {
-            ExclusionsStatus.Text = "Normal";
-            ExclusionsStatus.Foreground = FindResource("SuccessBrush") as SolidColorBrush;
-        }
-        else
-        {
-            ExclusionsStatus.Text = "⚠️ Revisar";
-            ExclusionsStatus.Foreground = FindResource("WarningBrush") as SolidColorBrush;
-        }
-    }
-
-    private void UpdateConnectionsStatus(int total, int suspicious)
-    {
-        ConnectionsCount.Text = total.ToString();
-        
-        if (suspicious == 0)
-        {
-            ConnectionsStatus.Text = "✅ Normal";
-            ConnectionsStatus.Foreground = FindResource("SuccessBrush") as SolidColorBrush;
-        }
-        else
-        {
-            ConnectionsStatus.Text = $"⚠️ {suspicious} sospechosa(s)";
-            ConnectionsStatus.Foreground = FindResource("DangerBrush") as SolidColorBrush;
-        }
-    }
 
     private void UpdateCheckItem(System.Windows.Controls.TextBlock timeBlock, System.Windows.Controls.TextBlock? countBlock, DateTime time, int count, string unit = "", bool isRisk = false)
     {

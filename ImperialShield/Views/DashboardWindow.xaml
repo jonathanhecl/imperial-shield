@@ -155,7 +155,6 @@
             <Grid Margin="25">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
@@ -238,96 +237,8 @@
                     </Grid>
                 </Border>
 
-                <!-- ═══════════════════ STATS ROW ═══════════════════ -->
-                <Grid Grid.Row="1" Margin="0,0,0,20">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <!-- Defender Stat -->
-                    <Border Grid.Column="0" Style="{StaticResource StatCard}" Margin="0,0,10,0">
-                        <StackPanel HorizontalAlignment="Center">
-                            <TextBlock x:Name="DefenderIcon" Text="🛡️" FontSize="40" HorizontalAlignment="Center">
-                                <TextBlock.Effect>
-                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="#4DA8DA"/>
-                                </TextBlock.Effect>
-                            </TextBlock>
-                            <TextBlock Text="DEFENSOR" HorizontalAlignment="Center" 
-                                       Foreground="#7EB8DC" Margin="0,10,0,5" FontWeight="SemiBold"
-                                       FontSize="11" />
-                            <TextBlock x:Name="DefenderStatus" Text="ACTIVO" 
-                                       FontWeight="Bold" HorizontalAlignment="Center" FontSize="16"
-                                       Foreground="#5CFF5C"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Hosts Stat -->
-                    <Border Grid.Column="1" Style="{StaticResource StatCard}" Margin="5,0">
-                        <StackPanel HorizontalAlignment="Center">
-                            <TextBlock x:Name="HostsIcon" Text="📜" FontSize="40" HorizontalAlignment="Center">
-                                <TextBlock.Effect>
-                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="#F39C12"/>
-                                </TextBlock.Effect>
-                            </TextBlock>
-                            <TextBlock Text="ARCHIVO HOSTS" HorizontalAlignment="Center" 
-                                       Foreground="#7EB8DC" Margin="0,10,0,5" FontWeight="SemiBold"
-                                       FontSize="11" />
-                            <TextBlock x:Name="HostsStatus" Text="INTACTO" 
-                                       FontWeight="Bold" HorizontalAlignment="Center" FontSize="16"
-                                       Foreground="#5CFF5C"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Exclusions Stat -->
-                    <Border Grid.Column="2" Style="{StaticResource StatCard}" Margin="5,0">
-                        <StackPanel HorizontalAlignment="Center">
-                            <TextBlock x:Name="ExclusionsCount" Text="0" FontSize="40" 
-                                       HorizontalAlignment="Center" Foreground="#4DA8DA" FontWeight="Bold">
-                                <TextBlock.Effect>
-                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="#4DA8DA"/>
-                                </TextBlock.Effect>
-                            </TextBlock>
-                            <TextBlock Text="EXCLUSIONES" HorizontalAlignment="Center" 
-                                       Foreground="#7EB8DC" Margin="0,10,0,5" FontWeight="SemiBold"
-                                       FontSize="11" />
-                            <TextBlock x:Name="ExclusionsStatus" Text="NORMAL" 
-                                       FontWeight="Bold" HorizontalAlignment="Center" FontSize="16"
-                                       Foreground="#5CFF5C"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Connections Stat -->
-                    <Border Grid.Column="3" Style="{StaticResource StatCard}" Margin="10,0,0,0" Cursor="Hand" MouseLeftButtonDown="NetworkStat_MouseDown">
-                        <Border.ToolTip>
-                            <ToolTip Background="#0A0F1E" Foreground="White" BorderBrush="#E11D48" BorderThickness="1">
-                                <StackPanel Margin="5">
-                                    <TextBlock Text="Sistema de Alerta de Red" FontWeight="Bold" Margin="0,0,0,5" Foreground="#F43F5E"/>
-                                    <TextBlock Text="Se considera sospechosa si procesos de sistema (CMD, PowerShell) o puertos inusuales tienen conexiones activas hacia el exterior." 
-                                               TextWrapping="Wrap" Width="250" FontSize="11"/>
-                                </StackPanel>
-                            </ToolTip>
-                        </Border.ToolTip>
-                        <StackPanel HorizontalAlignment="Center">
-                            <TextBlock x:Name="ConnectionsCount" Text="0" FontSize="40" 
-                                       HorizontalAlignment="Center" Foreground="#4DA8DA" FontWeight="Bold">
-                                <TextBlock.Effect>
-                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="#4DA8DA"/>
-                                </TextBlock.Effect>
-                            </TextBlock>
-                            <TextBlock Text="CONEXIONES" HorizontalAlignment="Center" 
-                                       Foreground="#7EB8DC" Margin="0,10,0,5" FontWeight="SemiBold"
-                                       FontSize="11" />
-                            <TextBlock x:Name="ConnectionsStatus" Text="..." 
-                                       FontWeight="Bold" HorizontalAlignment="Center" FontSize="16"/>
-                        </StackPanel>
-                    </Border>
-                </Grid>
-
                 <!-- ═══════════════════ MAIN PANELS ═══════════════════ -->
-                <Grid Grid.Row="2">
+                <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -417,7 +328,7 @@
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
                                 <TextBlock Text="h" FontFamily="Webdings" FontSize="24" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#4DA8DA"/>
-                                <TextBlock Text="ÚLTIMAS REVISIONES" FontSize="18" FontWeight="Bold" 
+                                <TextBlock Text="MONITOREO ACTIVO" FontSize="18" FontWeight="Bold" 
                                            Foreground="#4DA8DA" VerticalAlignment="Center" />
                             </StackPanel>
 
@@ -432,7 +343,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="🛡️" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Defensa" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
+                                        <TextBlock Text="Monitoreo de Windows Defender" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
                                         <StackPanel Grid.Column="2" HorizontalAlignment="Right">
                                             <TextBlock x:Name="CheckDefenseTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
                                         </StackPanel>
@@ -448,7 +359,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="📜" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Archivo Hosts" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
+                                        <TextBlock Text="Mapeo de Nombres de Dominio (HOSTS)" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
                                         <StackPanel Grid.Column="2" HorizontalAlignment="Right">
                                             <TextBlock x:Name="CheckHostsTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
                                             <TextBlock x:Name="CheckHostsCount" Text="0 ítems" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right"/>
@@ -465,7 +376,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="🚫" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Exclusiones" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
+                                        <TextBlock Text="Exclusiones de Defender" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
                                         <StackPanel Grid.Column="2" HorizontalAlignment="Right">
                                             <TextBlock x:Name="CheckExclusionsTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
                                             <TextBlock x:Name="CheckExclusionsCount" Text="0 ítems" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right"/>
@@ -473,7 +384,7 @@
                                     </Grid>
                                 </Border>
 
-                                <!-- Conexiones -->
+                                <!-- Conexiones (Ahora DDoS Watchdog) -->
                                 <Border Background="#0D1B2A" CornerRadius="6" Padding="12,8" Margin="0,0,0,6">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -481,11 +392,11 @@
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Text="🌐" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Conexiones" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
+                                        <TextBlock Text="🔥" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Ataques DDoS salientes" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
                                         <StackPanel Grid.Column="2" HorizontalAlignment="Right">
                                             <TextBlock x:Name="CheckConnectionsTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
-                                            <TextBlock x:Name="CheckConnectionsCount" Text="0 activas" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right"/>
+                                            <TextBlock x:Name="CheckConnectionsCount" Text="0 eventos" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>
@@ -499,7 +410,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="🚀" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Inicio" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
+                                        <TextBlock Text="Programas al Inicio" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
                                         <StackPanel Grid.Column="2" HorizontalAlignment="Right">
                                             <TextBlock x:Name="CheckStartupTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
                                             <TextBlock x:Name="CheckStartupCount" Text="0 apps" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right"/>
@@ -516,7 +427,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="📅" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Tareas" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
+                                        <TextBlock Text="Tareas Programadas" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
                                         <StackPanel Grid.Column="2" HorizontalAlignment="Right">
                                             <TextBlock x:Name="CheckTasksTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
                                             <TextBlock x:Name="CheckTasksCount" Text="0 tareas" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right"/>
@@ -533,7 +444,7 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <TextBlock Text="👁️" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                        <TextBlock Text="Privacidad" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
+                                        <TextBlock Text="Acceso a Cámara y Micrófono" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
                                         <StackPanel Grid.Column="2" HorizontalAlignment="Right">
                                             <TextBlock x:Name="CheckPrivacyTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
                                             <TextBlock x:Name="CheckPrivacyCount" Text="0 riesgos" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right"/>
@@ -546,7 +457,7 @@
                 </Grid>
 
                 <!-- ═══════════════════ FOOTER ═══════════════════ -->
-                <Border Grid.Row="3" Margin="0,20,0,0" Padding="18,12" 
+                <Border Grid.Row="2" Margin="0,20,0,0" Padding="18,12" 
                         Background="#0A1525" CornerRadius="8"
                         BorderBrush="#1E3A5F" BorderThickness="1">
                     <Grid>
