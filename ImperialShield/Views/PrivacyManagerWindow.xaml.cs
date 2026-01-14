@@ -168,10 +168,10 @@ public partial class PrivacyManagerWindow : Window
         }
         
         return result
-            .OrderByDescending(x => x.IsActiveRisk)
-            .ThenByDescending(x => x.IsRunning)
-            .ThenBy(x => x.ThreatLevel)
-            .ThenByDescending(x => x.LastUsedStop)
+            .OrderByDescending(x => x.IsActiveRisk || x.IsRunning) // Primero todo lo que está activo (Rojo o Azul)
+            .ThenByDescending(x => x.IsActiveRisk)               // De lo activo, primero lo que usa hardware (Rojo)
+            .ThenByDescending(x => x.ThreatLevel)                // Luego por nivel de riesgo
+            .ThenByDescending(x => x.LastUsedStart)              // Finalmente por actividad reciente
             .ToList();
     }
 

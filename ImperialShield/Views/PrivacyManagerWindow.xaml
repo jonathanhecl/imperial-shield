@@ -488,9 +488,30 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button Content="🔄 Actualizar" Click="Refresh_Click" Style="{StaticResource ModernButton}" 
-                            Background="#1E293B" BorderBrush="#334155" BorderThickness="1" Foreground="#4DA8DA"
-                            Width="140" Height="38" Margin="0,0,12,0" FontWeight="Bold"/>
+                    <Button Content="🔄 Actualizar" Click="Refresh_Click"
+                            Width="120" Height="38" Margin="0,0,12,0" FontWeight="Bold">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="border" CornerRadius="6" Background="#1E293B" BorderBrush="#334155" BorderThickness="1">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="border" Property="Background" Value="#2E5077"/>
+                                                    <Setter TargetName="border" Property="BorderBrush" Value="#4DA8DA"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Foreground" Value="#4DA8DA"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Style>
+                        </Button.Style>
+                    </Button>
                     <Button Content="Cerrar" Click="Close_Click" Style="{StaticResource ModernButton}" 
                             Width="110" Height="38" FontWeight="Bold"/>
                 </StackPanel>
