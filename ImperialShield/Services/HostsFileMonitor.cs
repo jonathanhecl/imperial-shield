@@ -20,6 +20,9 @@ public class HostsFileMonitor : IDisposable
     public event EventHandler<HostsFileChangedEventArgs>? HostsFileChanged;
     public DateTime LastChecked { get; private set; }
     public int EntryCount { get; private set; }
+    
+    // Checks if backup content exists and is not empty
+    public bool CanRestoreBackup => !string.IsNullOrEmpty(_backupContent);
 
     public HostsFileMonitor()
     {

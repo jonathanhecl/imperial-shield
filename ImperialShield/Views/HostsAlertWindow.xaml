@@ -58,7 +58,7 @@
             </TextBlock>
             
             <!-- Warning Title -->
-            <TextBlock Grid.Row="1" Text="¡ARCHIVO HOSTS MODIFICADO!" 
+            <TextBlock Grid.Row="1" Text="¡MAPEO DE DOMINIOS MODIFICADO!" 
                        Foreground="#F39C12" 
                        FontWeight="ExtraBold" FontSize="26" 
                        HorizontalAlignment="Center"
@@ -80,22 +80,22 @@
                            Margin="0,0,0,15"/>
                 
                 <Border Background="#1B2838" CornerRadius="10" Padding="15" Margin="0,0,0,10">
-                    <TextBlock Text="⚠️ El archivo HOSTS puede redirigir sitios web legítimos a páginas falsas para robar credenciales o bloquear actualizaciones de antivirus." 
+                    <TextBlock Text="⚠️ El archivo de mapeo (HOSTS) puede redirigir sitios web legítimos a páginas falsas para robar credenciales o bloquear actualizaciones de antivirus." 
                                Foreground="#94A3B8" FontSize="12" TextWrapping="Wrap" TextAlignment="Center"/>
                 </Border>
             </StackPanel>
             
             <!-- Action Buttons -->
             <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Center">
-                <Button Click="CleanHosts_Click" 
+                <Button x:Name="CleanButton" Click="CleanHosts_Click" 
                         Width="420" Height="55" Margin="0,0,0,10"
                         FontSize="18" FontWeight="Bold"
                         Background="#E11D48" Foreground="White" 
                         BorderThickness="0" Cursor="Hand">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="🧹" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="LIMPIAR ARCHIVO HOSTS" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="CleanButtonIcon" Text="🧹" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="CleanButtonText" Text="LIMPIAR MAPEO DE DOMINIOS" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button.Content>
                     <Button.Style>
@@ -129,7 +129,7 @@
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="📂" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="ABRIR ARCHIVO HOSTS" VerticalAlignment="Center"/>
+                            <TextBlock Text="ABRIR ARCHIVO DE MAPEO" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button.Content>
                     <Button.Style>

@@ -40,16 +40,95 @@ public partial class HostsAlertWindow : Window
         MessageText.Text = message;
         
         System.Media.SystemSounds.Hand.Play();
+
+        // Verificar si tenemos un backup en memoria válido para restaurar
+        // TODO: This logic assumes we can verify the backup quality. Currently we assume app.HostsMonitor has it.
+        // We will update button content in Loaded event or here if possible.
+        
+        CheckBackupStatus();
+    }
+
+    private void CheckBackupStatus()
+    {
+        // Default text is "LIMPIAR ARCHIVO HOSTS" (Reset to default)
+        
+        var app = Application.Current as App;
+        // Si hay un backup en memoria y es DIFERENTE al contenido actual (lo cual asumimos si saltó la alerta)
+        // Y no está vacío.
+        
+        // Note: HostsFileMonitor stores the backup of the "Last Known Good" state.
+        
+        if (app?.HostsMonitor != null)
+        {
+            // Use Dispatcher to ensure UI thread access if called from bg
+            Dispatcher.Invoke(() => 
+            {
+               // Change button text/tag based on logic
+               // For now, simpler approach: The button calls "CleanHosts_Click". 
+               // We will modify that method to ask the user.
+               
+               // But wait, the user wants two options: "Restore from Backup" (if avail) OR "Reset to Default" (if no backup)
+               // Or maybe "Restore" is preferred.
+               
+               // Let's modify the UI button text to reflect what we can do.
+               if (app.HostsMonitor.CanRestoreBackup) // We need to add this property or check
+               {
+                   CleanButtonText.Text = "RESTAURAR RESPALDO ANTERIOR";
+                   CleanButtonIcon.Text = "⏪";
+                   CleanButton.Tag = "RESTORE"; 
+               }
+               else
+               {
+                    CleanButtonText.Text = "LIMPIAR ARCHIVO MAPEO";
+                    CleanButtonIcon.Text = "🧹";
+                    CleanButton.Tag = "RESET";
+               }
+            });
+        }
     }
 
     private void CleanHosts_Click(object sender, RoutedEventArgs e)
     {
+        string mode = (CleanButton.Tag as string) ?? "RESET";
+
+        if (mode == "RESTORE")
+        {
+            var result = MessageBox.Show(
+                "¿Deseas restaurar el Mapeo de Dominios (HOSTS) a su estado anterior conocido?\n\n" +
+                "Esto recuperará la configuración que tenías antes de la última modificación detectada.",
+                "Restaurar Respaldo",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                var app = Application.Current as App;
+                if (app?.HostsMonitor != null && app.HostsMonitor.RestoreBackup())
+                {
+                    MessageBox.Show("✅ Archivo restaurado correctamente desde la memoria.", "Éxito");
+                    Close();
+                }
+                else
+                {
+                    MessageBox.Show("❌ No se pudo restaurar el respaldo. Se intentará limpiar a cero.", "Error");
+                    // Fallback to reset logic
+                    PerformReset();
+                }
+            }
+        }
+        else
+        {
+            PerformReset();
+        }
+    }
+
+    private void PerformReset()
+    {
         var result = MessageBox.Show(
-            "¿Estás seguro de que deseas restaurar el archivo HOSTS a su estado predeterminado?\n\n" +
-            "⚠️ ADVERTENCIA: Esto eliminará TODAS las entradas personalizadas que hayas añadido " +
-            "(como bloqueos de publicidad, redirecciones locales, etc.).\n\n" +
+            "¿Estás seguro de que deseas limpiar el Mapeo de Dominios (HOSTS) a cero?\n\n" +
+            "⚠️ ADVERTENCIA: Esto eliminará TODAS las entradas personalizadas.\n" +
             "Se recomienda hacer un respaldo antes de continuar.",
-            "Confirmar Limpieza de HOSTS",
+            "Confirmar Limpieza",
             MessageBoxButton.YesNo,
             MessageBoxImage.Warning);
 
@@ -67,7 +146,7 @@ public partial class HostsAlertWindow : Window
                 Logger.Log("HOSTS file restored to default");
 
                 MessageBox.Show(
-                    "✅ El archivo HOSTS ha sido restaurado correctamente.\n\n" +
+                    "✅ El archivo ha sido limpiado correctamente.\n\n" +
                     $"Se creó un respaldo en:\n{backupPath}",
                     "Limpieza Completada",
                     MessageBoxButton.OK,
@@ -78,17 +157,17 @@ public partial class HostsAlertWindow : Window
             catch (UnauthorizedAccessException)
             {
                 MessageBox.Show(
-                    "❌ No se pudo modificar el archivo HOSTS.\n\n" +
-                    "Imperial Shield necesita ejecutarse como Administrador para realizar esta acción.",
+                    "❌ No se pudo modificar el archivo.\n\n" +
+                    "Imperial Shield necesita ejecutarse como Administrador.",
                     "Permisos Insuficientes",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
-                Logger.LogException(ex, "CleanHosts_Click");
+                Logger.LogException(ex, "PerformReset");
                 MessageBox.Show(
-                    $"❌ Error al limpiar el archivo HOSTS:\n\n{ex.Message}",
+                    $"❌ Error al limpiar:\n\n{ex.Message}",
                     "Error",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
