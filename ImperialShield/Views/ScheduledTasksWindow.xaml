@@ -216,36 +216,37 @@
                         </DataGridTemplateColumn>
 
                         <!-- Actions -->
-                        <DataGridTemplateColumn Header="ACCIONES" Width="240">
+                        <DataGridTemplateColumn Header="ACCIONES" Width="200">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                         <!-- Run/Stop Button -->
-                                        <Button Click="RunOrStop_Click" Width="90" Height="28"
+                                        <Button Click="RunOrStop_Click" Width="85" Height="28"
                                                 FontSize="11" FontWeight="Bold" Margin="0,0,6,0" Tag="{Binding}">
                                             <Button.Style>
                                                 <Style TargetType="Button">
+                                                    <Setter Property="Foreground" Value="#4DA8DA"/>
+                                                    <Setter Property="Content" Value="Ejecutar"/>
+                                                    <Setter Property="Cursor" Value="Hand"/>
                                                     <Setter Property="Template">
                                                         <Setter.Value>
                                                             <ControlTemplate TargetType="Button">
-                                                                <Border x:Name="border" CornerRadius="6" Background="#1E293B" BorderBrush="#334155" BorderThickness="1">
+                                                                <Border x:Name="border" CornerRadius="6" Background="#1E293B" BorderBrush="#1E3A5F" BorderThickness="1">
                                                                     <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                                 </Border>
                                                                 <ControlTemplate.Triggers>
                                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                                        <Setter TargetName="border" Property="Background" Value="#4DA8DA"/>
-                                                                        <Setter Property="Foreground" Value="Black"/>
+                                                                        <Setter TargetName="border" Property="Background" Value="#2E5077"/>
+                                                                        <Setter TargetName="border" Property="BorderBrush" Value="#4DA8DA"/>
+                                                                        <Setter Property="Foreground" Value="White"/>
                                                                     </Trigger>
                                                                 </ControlTemplate.Triggers>
                                                             </ControlTemplate>
                                                         </Setter.Value>
                                                     </Setter>
-                                                    <Setter Property="Foreground" Value="#4DA8DA"/>
-                                                    <Setter Property="Content" Value="▶ Ejecutar"/>
-                                                    <Setter Property="Cursor" Value="Hand"/>
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding NormalizedState}" Value="Running">
-                                                            <Setter Property="Content" Value="⏹ Detener"/>
+                                                            <Setter Property="Content" Value="Detener"/>
                                                             <Setter Property="Foreground" Value="#EF4444"/>
                                                             <Setter Property="Template">
                                                                 <Setter.Value>
@@ -270,31 +271,32 @@
                                         </Button>
 
                                         <!-- Enable/Disable Button -->
-                                        <Button Click="ToggleEnabled_Click" Width="90" Height="28"
+                                        <Button Click="ToggleEnabled_Click" Width="85" Height="28"
                                                 FontSize="11" FontWeight="Bold" Margin="0,0,0,0" Tag="{Binding}">
                                             <Button.Style>
                                                 <Style TargetType="Button">
+                                                    <Setter Property="Foreground" Value="#F59E0B"/>
+                                                    <Setter Property="Content" Value="Deshabilitar"/>
+                                                    <Setter Property="Cursor" Value="Hand"/>
                                                     <Setter Property="Template">
                                                         <Setter.Value>
                                                             <ControlTemplate TargetType="Button">
-                                                                <Border x:Name="border" CornerRadius="6" Background="#1E293B" BorderBrush="#334155" BorderThickness="1">
+                                                                <Border x:Name="border" CornerRadius="6" Background="#1E293B" BorderBrush="#78350F" BorderThickness="1">
                                                                     <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                                 </Border>
                                                                 <ControlTemplate.Triggers>
                                                                     <Trigger Property="IsMouseOver" Value="True">
-                                                                        <Setter TargetName="border" Property="Background" Value="#EAB308"/>
-                                                                        <Setter Property="Foreground" Value="Black"/>
+                                                                        <Setter TargetName="border" Property="Background" Value="#B45309"/>
+                                                                        <Setter TargetName="border" Property="BorderBrush" Value="#F59E0B"/>
+                                                                        <Setter Property="Foreground" Value="White"/>
                                                                     </Trigger>
                                                                 </ControlTemplate.Triggers>
                                                             </ControlTemplate>
                                                         </Setter.Value>
                                                     </Setter>
-                                                    <Setter Property="Foreground" Value="#EAB308"/>
-                                                    <Setter Property="Content" Value="❌ Deshabilitar"/>
-                                                    <Setter Property="Cursor" Value="Hand"/>
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding NormalizedState}" Value="Disabled">
-                                                            <Setter Property="Content" Value="✅ Habilitar"/>
+                                                            <Setter Property="Content" Value="Habilitar"/>
                                                             <Setter Property="Foreground" Value="#22C55E"/>
                                                             <Setter Property="Template">
                                                                 <Setter.Value>
@@ -304,7 +306,8 @@
                                                                         </Border>
                                                                         <ControlTemplate.Triggers>
                                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                                <Setter TargetName="border" Property="Background" Value="#22C55E"/>
+                                                                                <Setter TargetName="border" Property="Background" Value="#15803D"/>
+                                                                                <Setter TargetName="border" Property="BorderBrush" Value="#22C55E"/>
                                                                                 <Setter Property="Foreground" Value="White"/>
                                                                             </Trigger>
                                                                         </ControlTemplate.Triggers>

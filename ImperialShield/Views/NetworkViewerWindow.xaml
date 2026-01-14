@@ -9,6 +9,10 @@
         WindowStartupLocation="CenterScreen"
         Style="{StaticResource ModernWindow}">
 
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
+
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -133,19 +137,30 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Proceso" Binding="{Binding ProcessName}" Width="160"/>
-                    <DataGridTextColumn Header="PID" Binding="{Binding ProcessId}" Width="80"/>
-                    <DataGridTextColumn Header="Dirección Local" Binding="{Binding LocalEndpoint}" Width="200"/>
-                    <DataGridTextColumn Header="Dirección Remota" Binding="{Binding RemoteEndpoint}" Width="200"/>
-                    <DataGridTextColumn Header="Estado" Binding="{Binding State}" Width="120"/>
-                    <DataGridTextColumn Header="Descripción" Binding="{Binding ThreatDescription}" Width="*"/>
+                    <DataGridTextColumn Header="Proceso" Binding="{Binding ProcessName}" Width="140"/>
+                    <DataGridTextColumn Header="PID" Binding="{Binding ProcessId}" Width="70"/>
+                    <DataGridTextColumn Header="Ruta" Binding="{Binding ProcessPath}" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                <Setter Property="ToolTip" Value="{Binding ProcessPath}"/>
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Dirección Local" Binding="{Binding LocalEndpoint}" Width="160"/>
+                    <DataGridTextColumn Header="Dirección Remota" Binding="{Binding RemoteEndpoint}" Width="160"/>
+                    <DataGridTextColumn Header="Estado" Binding="{Binding State}" Width="100"/>
+                    <DataGridTextColumn Header="Descripción" Binding="{Binding ThreatDescription}" Width="150"/>
                     
                     <!-- Actions Column -->
-                    <DataGridTemplateColumn Header="ACCIONES" Width="100">
+                    <DataGridTemplateColumn Header="ACCIONES" Width="120">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <Button Content="Terminar" Click="KillProcess_Click"
                                         Style="{StaticResource TerminateButton}"
+                                        Width="90" Height="26"
+                                        Visibility="{Binding CanTerminate, Converter={StaticResource BooleanToVisibilityConverter}}"
                                         Tag="{Binding}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -171,6 +186,7 @@
                 <DataGrid.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="🔍 Ver Proceso" Click="ViewProcess_Click"/>
+                        <MenuItem Header="📁 Abrir ubicación del archivo" Click="OpenLocation_Click"/>
                         <MenuItem Header="📋 Copiar IP Remota" Click="CopyRemoteIP_Click"/>
                         <MenuItem Header="🌐 Buscar IP en Web" Click="SearchIP_Click"/>
                         <Separator/>

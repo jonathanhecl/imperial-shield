@@ -75,6 +75,20 @@ public partial class NetworkViewerWindow : Window, INotifyPropertyChanged
             !c.RemoteAddress.StartsWith("10.")).ToString();
     }
 
+    private void UpdateStatistics()
+    {
+        // Actualizar estadísticas con la lista actual de conexiones
+        TotalConnectionsText.Text = _allConnections.Count.ToString();
+        EstablishedText.Text = _allConnections.Count(c => c.State == "ESTABLISHED").ToString();
+        ListeningText.Text = _allConnections.Count(c => c.State == "LISTEN").ToString();
+        SuspiciousText.Text = _allConnections.Count(c => c.ThreatLevel >= ConnectionThreatLevel.High).ToString();
+        ExternalText.Text = _allConnections.Count(c => 
+            c.RemoteAddress != "0.0.0.0" && 
+            c.RemoteAddress != "127.0.0.1" && 
+            !c.RemoteAddress.StartsWith("192.168.") &&
+            !c.RemoteAddress.StartsWith("10.")).ToString();
+    }
+
     private void UpdateAlert()
     {
         var criticalConnections = _allConnections
@@ -105,6 +119,21 @@ public partial class NetworkViewerWindow : Window, INotifyPropertyChanged
     private void RefreshButton_Click(object sender, RoutedEventArgs e)
     {
         RefreshConnections();
+    }
+
+    private void OpenLocation_Click(object sender, RoutedEventArgs e)
+    {
+        if (SelectedConnection == null || string.IsNullOrEmpty(SelectedConnection.ProcessPath)) return;
+
+        try
+        {
+            string argument = $"/select, \"{SelectedConnection.ProcessPath}\"";
+            Process.Start("explorer.exe", argument);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"No se pudo abrir la ubicación: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     private void FilterButton_Click(object sender, RoutedEventArgs e)
@@ -180,13 +209,17 @@ public partial class NetworkViewerWindow : Window, INotifyPropertyChanged
     {
         if (SelectedConnection == null) return;
 
+        var message = $"¿Estás seguro de que deseas terminar este proceso?\n\n" +
+                     $"📁 Ejecutable: {SelectedConnection.ProcessName}\n" +
+                     $"📍 Ruta: {SelectedConnection.ProcessPath}\n" +
+                     $"🆔 PID: {SelectedConnection.ProcessId}\n" +
+                     $"🌐 Conexión: {SelectedConnection.LocalEndpoint} → {SelectedConnection.RemoteEndpoint}\n" +
+                     $"⚠️ Nivel de Amenaza: {SelectedConnection.ThreatLevel}\n\n" +
+                     $"⚠️ ADVERTENCIA: Esto cerrará TODAS las conexiones de este proceso y puede afectar la estabilidad del sistema.";
+
         var result = MessageBox.Show(
-            $"¿Estás seguro de que deseas terminar el proceso?\n\n" +
-            $"Nombre: {SelectedConnection.ProcessName}\n" +
-            $"PID: {SelectedConnection.ProcessId}\n" +
-            $"Conexión: {SelectedConnection.RemoteEndpoint}\n\n" +
-            $"⚠️ Esto cerrará TODAS las conexiones de este proceso.",
-            "Confirmar Terminación",
+            message,
+            $"⚠️ Confirmar Terminación - {SelectedConnection.ProcessName}",
             MessageBoxButton.YesNo,
             MessageBoxImage.Warning);
 
@@ -194,13 +227,34 @@ public partial class NetworkViewerWindow : Window, INotifyPropertyChanged
         {
             if (_processAnalyzer.KillProcess(SelectedConnection.ProcessId))
             {
-                StatusText.Text = $"Proceso {SelectedConnection.ProcessName} terminado exitosamente.";
-                RefreshConnections();
+                StatusText.Text = $"Proceso {SelectedConnection.ProcessName} (PID: {SelectedConnection.ProcessId}) terminado exitosamente.";
+                
+                // Eliminar inmediatamente todas las conexiones del proceso terminado
+                var terminatedPid = SelectedConnection.ProcessId;
+                var connectionsToRemove = Connections.Where(c => c.ProcessId == terminatedPid).ToList();
+                foreach (var conn in connectionsToRemove)
+                {
+                    Connections.Remove(conn);
+                }
+                
+                // También eliminar de la lista original
+                _allConnections.RemoveAll(c => c.ProcessId == terminatedPid);
+                
+                // Actualizar estadísticas
+                UpdateStatistics();
+                
+                // Refrescar completo después de un breve retraso para asegurar limpieza completa
+                Task.Run(async () =>
+                {
+                    await Task.Delay(1000); // Esperar 1 segundo
+                    Dispatcher.Invoke(RefreshConnections);
+                });
             }
             else
             {
-                MessageBox.Show("No se pudo terminar el proceso.", 
-                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"No se pudo terminar el proceso {SelectedConnection.ProcessName}.\n\n" +
+                    $"Es posible que sea un proceso protegido del sistema o que ya no esté en ejecución.", 
+                    "Error al Terminar Proceso", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }
@@ -220,12 +274,40 @@ public class ConnectionDisplayItem
 
     public int ProcessId => SourceInfo.ProcessId;
     public string ProcessName => SourceInfo.ProcessName;
+    public string ProcessPath => SourceInfo.ProcessPath;
     public string State => SourceInfo.State;
     public ConnectionThreatLevel ThreatLevel => SourceInfo.ThreatLevel;
     public string ThreatDescription => SourceInfo.ThreatDescription;
 
     public string LocalEndpoint => $"{SourceInfo.LocalAddress}:{SourceInfo.LocalPort}";
     public string RemoteEndpoint => $"{SourceInfo.RemoteAddress}:{SourceInfo.RemotePort}";
+
+    // Determinar si el proceso puede ser terminado (no es proceso del sistema)
+    public bool CanTerminate => !IsSystemProcess();
+
+    private bool IsSystemProcess()
+    {
+        if (ProcessId <= 4) return true; // System process (PID 0 or 4)
+
+        var systemProcesses = new[] { 
+            "system", "svchost", "csrss", "wininit", "winlogon", "lsass", "services", 
+            "smss", "dwm", "explorer", "spoolsv", "audiodg", "msdtc", "vmms", "vmcompute",
+            "registry", "memory compression"
+        };
+        
+        string nameLower = ProcessName.ToLower();
+        if (systemProcesses.Contains(nameLower)) return true;
+
+        if (!string.IsNullOrEmpty(ProcessPath))
+        {
+            string pathLower = ProcessPath.ToLower();
+            if (pathLower.Contains("c:\\windows\\system32") || 
+                pathLower.Contains("c:\\windows\\syswow64"))
+                return true;
+        }
+        
+        return false;
+    }
 
     public string ThreatLevelIcon => ThreatLevel switch
     {
