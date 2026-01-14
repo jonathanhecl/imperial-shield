@@ -418,6 +418,12 @@ public partial class App : Application
         window.Show();
     }
 
+    private void ShowScheduledTasks_Click(object sender, RoutedEventArgs e)
+    {
+        var window = new ScheduledTasksWindow();
+        window.Show();
+    }
+
     private void ShowPrivacy_Click(object sender, RoutedEventArgs e)
     {
         var window = new PrivacyManagerWindow();

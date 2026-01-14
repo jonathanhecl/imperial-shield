@@ -21,6 +21,7 @@
                         <MenuItem Header="🔍 Visor de Procesos" Click="ShowProcessViewer_Click"/>
                         <MenuItem Header="🌐 Monitor de Conexiones" Click="ShowNetworkViewer_Click"/>
                         <MenuItem Header="🚀 Gestor de Inicio" Click="ShowStartupManager_Click"/>
+                        <MenuItem Header="📅 Monitor de Tareas" Click="ShowScheduledTasks_Click"/>
                         <MenuItem Header="👁️ Centro de Privacidad" Click="ShowPrivacy_Click"/>
                         <MenuItem Header="🔒 Centro de Cuarentena" Click="ShowQuarantine_Click"/>
                         <Separator/>

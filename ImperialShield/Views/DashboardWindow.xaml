@@ -285,7 +285,7 @@
                     </Border>
 
                     <!-- Connections Stat -->
-                    <Border Grid.Column="3" Style="{StaticResource StatCard}" Margin="10,0,0,0" Cursor="Help">
+                    <Border Grid.Column="3" Style="{StaticResource StatCard}" Margin="10,0,0,0" Cursor="Hand" MouseLeftButtonDown="NetworkStat_MouseDown">
                         <Border.ToolTip>
                             <ToolTip Background="#0A0F1E" Foreground="White" BorderBrush="#E11D48" BorderThickness="1">
                                 <StackPanel Margin="5">
@@ -340,7 +340,7 @@
                                     Click="NetworkViewer_Click" ToolTip="Monitor de Conexiones">
                                 <StackPanel>
                                     <TextBlock Text="🌐" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,5"/>
-                                    <TextBlock Text="RED" FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                    <TextBlock Text="CONEXIONES" FontSize="10" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
                                 </StackPanel>
                             </Button>
 

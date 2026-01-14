@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Input;
 using ImperialShield.Services;
 
 namespace ImperialShield.Views;
@@ -166,6 +167,11 @@ public partial class DashboardWindow : Window
     {
         var window = new NetworkViewerWindow();
         window.Show();
+    }
+
+    private void NetworkStat_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        NetworkViewer_Click(sender, e);
     }
 
     private void StartupManager_Click(object sender, RoutedEventArgs e)
