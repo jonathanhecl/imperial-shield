@@ -228,58 +228,13 @@
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                <Button Content="Revocar" Click="Revoke_Click" Width="85" Height="28"
-                                                        FontSize="11" FontWeight="Bold"
-                                                        Margin="0,0,6,0" Tag="{Binding}">
-                                                    <Button.Style>
-                                                        <Style TargetType="Button">
-                                                            <Setter Property="Template">
-                                                                <Setter.Value>
-                                                                    <ControlTemplate TargetType="Button">
-                                                                        <Border x:Name="border" CornerRadius="6" Background="#1E293B" BorderBrush="#451A1A" BorderThickness="1">
-                                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                                        </Border>
-                                                                        <ControlTemplate.Triggers>
-                                                                            <Trigger Property="IsMouseOver" Value="True">
-                                                                                <Setter TargetName="border" Property="Background" Value="#B91C1C"/>
-                                                                                <Setter TargetName="border" Property="BorderBrush" Value="#EF4444"/>
-                                                                                <Setter Property="Foreground" Value="White"/>
-                                                                            </Trigger>
-                                                                        </ControlTemplate.Triggers>
-                                                                    </ControlTemplate>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                            <Setter Property="Foreground" Value="#EF4444"/>
-                                                            <Setter Property="Cursor" Value="Hand"/>
-                                                        </Style>
-                                                    </Button.Style>
-                                                </Button>
+                                                <Button Content="Revocar" Click="Revoke_Click" 
+                                                        Style="{StaticResource RevokeButton}"
+                                                        Margin="0,0,6,0" Tag="{Binding}"/>
                                                 <Button Content="Terminar" Click="Terminate_Click"
-                                                        Width="85" Height="28" FontSize="11" FontWeight="Bold"
+                                                        Style="{StaticResource TerminateButton}"
                                                         Visibility="{Binding IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                        Tag="{Binding}">
-                                                    <Button.Style>
-                                                        <Style TargetType="Button">
-                                                            <Setter Property="Template">
-                                                                <Setter.Value>
-                                                                    <ControlTemplate TargetType="Button">
-                                                                        <Border x:Name="border" CornerRadius="6" Background="#1E293B" BorderBrush="#334155" BorderThickness="1">
-                                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                                        </Border>
-                                                                        <ControlTemplate.Triggers>
-                                                                            <Trigger Property="IsMouseOver" Value="True">
-                                                                                <Setter TargetName="border" Property="Background" Value="#4DA8DA"/>
-                                                                                <Setter Property="Foreground" Value="Black"/>
-                                                                            </Trigger>
-                                                                        </ControlTemplate.Triggers>
-                                                                    </ControlTemplate>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                            <Setter Property="Foreground" Value="#4DA8DA"/>
-                                                            <Setter Property="Cursor" Value="Hand"/>
-                                                        </Style>
-                                                    </Button.Style>
-                                                </Button>
+                                                        Tag="{Binding}"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>
@@ -411,58 +366,13 @@
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                <Button Content="Revocar" Click="Revoke_Click" Width="85" Height="28"
-                                                        FontSize="11" FontWeight="Bold"
-                                                        Margin="0,0,6,0" Tag="{Binding}">
-                                                    <Button.Style>
-                                                        <Style TargetType="Button">
-                                                            <Setter Property="Template">
-                                                                <Setter.Value>
-                                                                    <ControlTemplate TargetType="Button">
-                                                                        <Border x:Name="border" CornerRadius="6" Background="#1E293B" BorderBrush="#451A1A" BorderThickness="1">
-                                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                                        </Border>
-                                                                        <ControlTemplate.Triggers>
-                                                                            <Trigger Property="IsMouseOver" Value="True">
-                                                                                <Setter TargetName="border" Property="Background" Value="#B91C1C"/>
-                                                                                <Setter TargetName="border" Property="BorderBrush" Value="#EF4444"/>
-                                                                                <Setter Property="Foreground" Value="White"/>
-                                                                            </Trigger>
-                                                                        </ControlTemplate.Triggers>
-                                                                    </ControlTemplate>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                            <Setter Property="Foreground" Value="#EF4444"/>
-                                                            <Setter Property="Cursor" Value="Hand"/>
-                                                        </Style>
-                                                    </Button.Style>
-                                                </Button>
+                                                <Button Content="Revocar" Click="Revoke_Click" 
+                                                        Style="{StaticResource RevokeButton}"
+                                                        Margin="0,0,6,0" Tag="{Binding}"/>
                                                 <Button Content="Terminar" Click="Terminate_Click"
-                                                        Width="85" Height="28" FontSize="11" FontWeight="Bold"
+                                                        Style="{StaticResource TerminateButton}"
                                                         Visibility="{Binding IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                        Tag="{Binding}">
-                                                    <Button.Style>
-                                                        <Style TargetType="Button">
-                                                            <Setter Property="Template">
-                                                                <Setter.Value>
-                                                                    <ControlTemplate TargetType="Button">
-                                                                        <Border x:Name="border" CornerRadius="6" Background="#1E293B" BorderBrush="#334155" BorderThickness="1">
-                                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                                        </Border>
-                                                                        <ControlTemplate.Triggers>
-                                                                            <Trigger Property="IsMouseOver" Value="True">
-                                                                                <Setter TargetName="border" Property="Background" Value="#4DA8DA"/>
-                                                                                <Setter Property="Foreground" Value="Black"/>
-                                                                            </Trigger>
-                                                                        </ControlTemplate.Triggers>
-                                                                    </ControlTemplate>
-                                                                </Setter.Value>
-                                                            </Setter>
-                                                            <Setter Property="Foreground" Value="#4DA8DA"/>
-                                                            <Setter Property="Cursor" Value="Hand"/>
-                                                        </Style>
-                                                    </Button.Style>
-                                                </Button>
+                                                        Tag="{Binding}"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </DataGridTemplateColumn.CellTemplate>

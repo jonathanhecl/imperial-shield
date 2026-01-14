@@ -139,6 +139,17 @@
                     <DataGridTextColumn Header="Dirección Remota" Binding="{Binding RemoteEndpoint}" Width="200"/>
                     <DataGridTextColumn Header="Estado" Binding="{Binding State}" Width="120"/>
                     <DataGridTextColumn Header="Descripción" Binding="{Binding ThreatDescription}" Width="*"/>
+                    
+                    <!-- Actions Column -->
+                    <DataGridTemplateColumn Header="ACCIONES" Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="Terminar" Click="KillProcess_Click"
+                                        Style="{StaticResource TerminateButton}"
+                                        Tag="{Binding}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                 </DataGrid.Columns>
 
                 <DataGrid.RowStyle>

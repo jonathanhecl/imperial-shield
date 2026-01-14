@@ -227,34 +227,8 @@
                                     <!-- Kill -->
                                     <Button Content="Terminar" 
                                             Click="KillProcess_Click"
-                                            Width="85" Height="32"
-                                            FontSize="11" FontWeight="Bold"
-                                            Cursor="Hand"
-                                            Visibility="{Binding IsRunning, Converter={StaticResource BoolToVis}}">
-                                        <Button.Style>
-                                            <Style TargetType="Button">
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="Button">
-                                                            <Border x:Name="border" CornerRadius="6" Background="#334155" BorderBrush="#475569" BorderThickness="1">
-                                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                                    <TextBlock Text="✕ " FontSize="12" FontWeight="Bold"/>
-                                                                    <ContentPresenter/>
-                                                                </StackPanel>
-                                                            </Border>
-                                                            <ControlTemplate.Triggers>
-                                                                <Trigger Property="IsMouseOver" Value="True">
-                                                                    <Setter TargetName="border" Property="Background" Value="#991B1B"/>
-                                                                    <Setter TargetName="border" Property="BorderBrush" Value="#B91C1C"/>
-                                                                </Trigger>
-                                                            </ControlTemplate.Triggers>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Setter Property="Foreground" Value="White"/>
-                                            </Style>
-                                        </Button.Style>
-                                    </Button>
+                                            Style="{StaticResource TerminateButton}"
+                                            Visibility="{Binding IsRunning, Converter={StaticResource BoolToVis}}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
@@ -277,30 +251,9 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button Content="🔄 Actualizar" Click="Refresh_Click"
-                            Width="120" Height="38" Margin="0,0,12,0" FontWeight="Bold">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border x:Name="border" CornerRadius="6" Background="#1E293B" BorderBrush="#334155" BorderThickness="1">
-                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="border" Property="Background" Value="#2E5077"/>
-                                                    <Setter TargetName="border" Property="BorderBrush" Value="#4DA8DA"/>
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                                <Setter Property="Foreground" Value="#4DA8DA"/>
-                                <Setter Property="Cursor" Value="Hand"/>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+                    <Button Content="🔄 Actualizar" Click="Refresh_Click" Style="{StaticResource ModernButton}" 
+                            Background="#1E293B" BorderBrush="#334155" BorderThickness="1" Foreground="#4DA8DA"
+                            Width="140" Height="38" Margin="0,0,12,0" FontWeight="Bold"/>
                     <Button Content="Cerrar" Click="Close_Click" Style="{StaticResource ModernButton}" 
                             Width="110" Height="38" FontWeight="Bold"/>
                 </StackPanel>
