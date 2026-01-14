@@ -100,7 +100,7 @@ public partial class DashboardWindow : Window
         if (time == DateTime.MinValue)
         {
             timeBlock.Text = "--:--";
-            if (countBlock != null) countBlock.Text = "...";
+            if (countBlock != null) countBlock.Text = "Cargando";
             return;
         }
 
