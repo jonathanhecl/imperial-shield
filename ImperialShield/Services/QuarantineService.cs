@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.Win32;
@@ -25,13 +26,52 @@ public class QuarantineService
     {
         try
         {
+            // 1. Verificar configuración directa en registro de usuario
             using var key = Registry.CurrentUser.OpenSubKey(WSH_PATH);
-            if (key == null) return true; // Si no existe la clave, está habilitado por defecto
+            if (key != null)
+            {
+                var value = key.GetValue("Enabled");
+                if (value != null)
+                {
+                    return Convert.ToInt32(value) != 0;
+                }
+            }
+
+            // 2. Verificar políticas de grupo en registro local
+            using var policyKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows Script Host\Settings");
+            if (policyKey != null)
+            {
+                var policyValue = policyKey.GetValue("Enabled");
+                if (policyValue != null)
+                {
+                    return Convert.ToInt32(policyValue) != 0;
+                }
+            }
+
+            // 3. Verificar si existe la clave de desactivación por IFEO (Image File Execution Options)
+            // Este es un método común para desactivar wscript.exe y cscript.exe
+            using var wscriptIfeo = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\wscript.exe");
+            using var cscriptIfeo = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\cscript.exe");
             
-            var value = key.GetValue("Enabled");
-            if (value == null) return true;
-            
-            return Convert.ToInt32(value) != 0;
+            if (wscriptIfeo != null || cscriptIfeo != null)
+            {
+                return false; // Si están en IFEO, están deshabilitados
+            }
+
+            // 4. Verificar asociaciones de archivos (si están redirigidos)
+            try
+            {
+                var vbsAssociation = GetVBSAssociation();
+                if (vbsAssociation != "VBSFile")
+                    return false; // Si la asociación fue modificada, está deshabilitado
+            }
+            catch
+            {
+                // Si no podemos verificar la asociación, continuamos
+            }
+
+            // 5. Si no encontramos ninguna evidencia de desactivación, asumimos que está habilitado
+            return true;
         }
         catch (Exception ex)
         {
