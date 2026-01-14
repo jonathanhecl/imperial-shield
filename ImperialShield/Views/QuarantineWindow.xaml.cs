@@ -30,15 +30,15 @@ public partial class QuarantineWindow : Window
         {
             VBSStatusText.Text = "🟢 HABILITADO - Los scripts .vbs/.js pueden ejecutarse";
             VBSStatusText.Foreground = System.Windows.Media.Brushes.LightGreen;
-            VBSToggleButton.Content = "DESACTIVAR";
-            VBSToggleButton.Style = (Style)FindResource("DangerButton");
+            VBSToggleButton.Content = "⚠️ ACTIVAR";
+            VBSToggleButton.Style = (Style)FindResource("DangerButton"); // Rojo = peligro
         }
         else
         {
             VBSStatusText.Text = "🔴 BLOQUEADO - Los scripts .vbs/.js NO pueden ejecutarse";
             VBSStatusText.Foreground = System.Windows.Media.Brushes.Tomato;
-            VBSToggleButton.Content = "ACTIVAR";
-            VBSToggleButton.Style = (Style)FindResource("ModernButton");
+            VBSToggleButton.Content = "✅ DESACTIVAR";
+            VBSToggleButton.Style = (Style)FindResource("SafeButton"); // Verde = seguro
         }
     }
 
@@ -108,6 +108,35 @@ public partial class QuarantineWindow : Window
         }
         
         RefreshVBSStatus();
+        
+        // Notificar al Dashboard para actualización inmediata
+        NotifyDashboardRefresh();
+    }
+
+    /// <summary>
+    /// Notifica al Dashboard para que se actualice inmediatamente
+    /// </summary>
+    private void NotifyDashboardRefresh()
+    {
+        try
+        {
+            var app = App.CurrentApp;
+            var dashboard = app.DashboardWindow;
+            
+            if (dashboard != null && dashboard.IsLoaded)
+            {
+                // Usar Dispatcher para evitar problemas de thread
+                dashboard.Dispatcher.InvokeAsync(async () => 
+                {
+                    await dashboard.ForceRefreshAsync();
+                });
+            }
+        }
+        catch
+        {
+            // Si no podemos notificar al Dashboard, no es crítico
+            // La actualización programada de 30 segundos ocurrirá eventualmente
+        }
     }
 
     #endregion

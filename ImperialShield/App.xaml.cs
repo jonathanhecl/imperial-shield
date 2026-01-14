@@ -28,6 +28,11 @@ public partial class App : Application
     private DashboardWindow? _dashboardWindow;
     private SplashWindow? _splashWindow;
 
+    /// <summary>
+    /// Obtiene la instancia actual del Dashboard (si está cargado)
+    /// </summary>
+    public DashboardWindow? DashboardWindow => _dashboardWindow;
+
     public static App CurrentApp => (App)Application.Current;
     public HostsFileMonitor? HostsMonitor => _hostsMonitor;
     public DefenderMonitor? DefenderMonitor => _defenderMonitor;

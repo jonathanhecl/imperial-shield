@@ -35,6 +35,14 @@ public partial class DashboardWindow : Window
         }, null, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30));
     }
 
+    /// <summary>
+    /// Fuerza una actualización inmediata del Dashboard
+    /// </summary>
+    public async Task ForceRefreshAsync()
+    {
+        await RefreshDashboardAsync();
+    }
+
     private async Task RefreshDashboardAsync()
     {
         await Task.Run(() =>
