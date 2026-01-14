@@ -26,7 +26,12 @@ public partial class DashboardWindow : Window
         var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
         VersionText.Text = $"Imperial Shield v{version?.Major}.{version?.Minor}.{version?.Build}";
 
-        Loaded += async (s, e) => await RefreshDashboardAsync();
+        Loaded += async (s, e) => 
+        {
+            // Forzar carga inicial inmediata de todos los monitores
+            await ForceInitialDataLoad();
+            await RefreshDashboardAsync();
+        };
         
         // Refrescar cada 30 segundos
         _refreshTimer = new Timer(async _ => 
@@ -41,6 +46,33 @@ public partial class DashboardWindow : Window
     public async Task ForceRefreshAsync()
     {
         await RefreshDashboardAsync();
+    }
+
+    /// <summary>
+    /// Fuerza la carga inicial inmediata de todos los monitores
+    /// </summary>
+    private async Task ForceInitialDataLoad()
+    {
+        await Task.Run(() =>
+        {
+            try
+            {
+                var app = App.CurrentApp;
+                
+                // Forzar carga inicial inmediata de todos los monitores
+                app.HostsMonitor?.ForceInitialLoad();
+                app.DefenderMonitor?.ForceInitialLoad();
+                app.StartupMonitor?.ForceInitialLoad();
+                app.TasksMonitor?.ForceInitialLoad();
+                app.PrivacyMonitor?.ForceInitialLoad();
+                
+                Logger.Log("Initial data load forced for all monitors");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex, "ForceInitialDataLoad");
+            }
+        });
     }
 
     private async Task RefreshDashboardAsync()
@@ -77,7 +109,7 @@ public partial class DashboardWindow : Window
                 UpdateCheckItem(CheckHostsTime, CheckHostsCount, hostsTime, hostsCount, "hosts", false, CheckHostsDot, CheckHostsBadge); 
                 UpdateCheckItem(CheckExclusionsTime, CheckExclusionsCount, exclusionsTime, exclusionsCount, "active", false, CheckExclusionsDot, CheckExclusionsBadge);
                 UpdateCheckItem(CheckConnectionsTime, CheckConnectionsCount, netTime, suspiciousConnections.Count, "ddos", false, CheckConnectionsDot, CheckConnectionsBadge);
-                UpdateCheckItem(CheckStartupTime, CheckStartupCount, startupTime, startupCount, startupCount == 0 ? "loading" : "items", false, CheckStartupDot, CheckStartupBadge);
+                UpdateCheckItem(CheckStartupTime, CheckStartupCount, startupTime, startupCount, "active", false, CheckStartupDot, CheckStartupBadge);
                 UpdateCheckItem(CheckTasksTime, CheckTasksCount, tasksTime, tasksCount, "active", false, CheckTasksDot, CheckTasksBadge);
                 UpdateCheckItem(CheckWshTime, CheckWshStatus, DateTime.Now, QuarantineService.IsVBSEnabled() ? 1 : 0, "wsh", false, CheckWshDot, CheckWshBadge);
                 UpdateCheckItem(CheckPrivacyTime, CheckPrivacyStatus, privacyTime, privacyCount, "riesgos", true, CheckPrivacyDot, CheckPrivacyBadge);

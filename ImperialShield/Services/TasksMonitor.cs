@@ -43,6 +43,22 @@ public class TasksMonitor : IDisposable
         Logger.Log("TasksMonitor started.");
     }
 
+    /// <summary>
+    /// Fuerza la carga inicial inmediata de datos
+    /// </summary>
+    public void ForceInitialLoad()
+    {
+        try
+        {
+            ScanTasks(isInitial: true);
+            Logger.Log($"TasksMonitor force loaded {_knownTasks.Count} tasks");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "ForceInitialLoad");
+        }
+    }
+
     public void Stop()
     {
         _timer?.Change(Timeout.Infinite, Timeout.Infinite);

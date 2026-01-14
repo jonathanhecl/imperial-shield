@@ -61,6 +61,24 @@ public class HostsFileMonitor : IDisposable
 
         _watcher.Changed += OnHostsFileChanged;
         _watcher.Deleted += OnHostsFileDeleted;
+        _watcher.Created += OnHostsFileChanged;
+    }
+
+    /// <summary>
+    /// Fuerza la carga inicial inmediata de datos
+    /// </summary>
+    public void ForceInitialLoad()
+    {
+        try
+        {
+            SaveInitialState();
+            LastChecked = DateTime.Now;
+            Logger.Log($"HostsFileMonitor force loaded {EntryCount} entries");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "ForceInitialLoad");
+        }
     }
 
     private void SaveInitialState()

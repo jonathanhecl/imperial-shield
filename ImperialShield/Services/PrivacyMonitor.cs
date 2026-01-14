@@ -74,9 +74,28 @@ public class PrivacyMonitor : IDisposable
         // Do initial scan to populate known apps (don't alert on startup)
         ScanAndPopulateKnownApps();
         _initialScanDone = true;
+        LastChecked = DateTime.Now;
 
         _timer = new Timer(CheckPrivacyStatus, null, interval, interval);
         Logger.Log($"PrivacyMonitor started with interval: {interval}ms");
+    }
+
+    /// <summary>
+    /// Fuerza la carga inicial inmediata de datos
+    /// </summary>
+    public void ForceInitialLoad()
+    {
+        try
+        {
+            ScanAndPopulateKnownApps();
+            _initialScanDone = true;
+            LastChecked = DateTime.Now;
+            Logger.Log($"PrivacyMonitor force loaded {_currentRisks.Count} risks");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "ForceInitialLoad");
+        }
     }
 
     public void Stop()

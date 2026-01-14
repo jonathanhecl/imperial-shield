@@ -18,10 +18,30 @@ public class StartupMonitor
     public void Start()
     {
         _knownStartupApps = GetCurrentStartupApps();
+        ItemCount = _knownStartupApps.Count;
+        LastChecked = DateTime.Now;
         
         int interval = SettingsManager.Current.PollingIntervalMs;
         _timer = new Timer(CheckStartupApps, null, 10000, interval);
         Logger.Log($"StartupMonitor started with interval: {interval}ms");
+    }
+
+    /// <summary>
+    /// Fuerza la carga inicial inmediata de datos
+    /// </summary>
+    public void ForceInitialLoad()
+    {
+        try
+        {
+            _knownStartupApps = GetCurrentStartupApps();
+            ItemCount = _knownStartupApps.Count;
+            LastChecked = DateTime.Now;
+            Logger.Log($"StartupMonitor force loaded {ItemCount} startup apps");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "ForceInitialLoad");
+        }
     }
 
     private void CheckStartupApps(object? state)

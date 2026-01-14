@@ -21,11 +21,30 @@ public class DefenderMonitor : IDisposable
         // Obtener estado inicial
         _lastKnownStatus = IsDefenderEnabled();
         _knownExclusions = GetCurrentExclusions();
+        LastChecked = DateTime.Now;
 
         // Iniciar el timer de polling con intervalo configurado
         int interval = SettingsManager.Current.PollingIntervalMs;
         _timer = new Timer(CheckDefenderStatus, null, 5000, interval);
         Logger.Log($"DefenderMonitor started with interval: {interval}ms");
+    }
+
+    /// <summary>
+    /// Fuerza la carga inicial inmediata de datos
+    /// </summary>
+    public void ForceInitialLoad()
+    {
+        try
+        {
+            _lastKnownStatus = IsDefenderEnabled();
+            _knownExclusions = GetCurrentExclusions();
+            LastChecked = DateTime.Now;
+            Logger.Log($"DefenderMonitor force loaded {_knownExclusions.Count} exclusions");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "ForceInitialLoad");
+        }
     }
 
     private void CheckDefenderStatus(object? state)
