@@ -86,19 +86,23 @@ public partial class DashboardWindow : Window
         if (time == DateTime.MinValue)
         {
             timeBlock.Text = "--:--";
-            if (countBlock != null) countBlock.Text = "--";
+            if (countBlock != null) countBlock.Text = "...";
             return;
         }
 
-        // Format time: "14:30"
-        timeBlock.Text = time.ToString("HH:mm");
+        // Format time: "14:30" with AM/PM style
+        timeBlock.Text = time.ToString("hh:mm tt").Replace(".", "").ToUpper();
 
         if (countBlock != null)
         {
-            // For status monitors (Defender, Hosts, Privacy with 0 risks = "Active"/"Blocked")
-            if (unit == "" || (unit == "riesgos" && count == 0))
+            // For status monitors (Defender, Hosts = "Active", Privacy with 0 risks = "Blocked")
+            if (unit == "")
             {
                 countBlock.Text = isRisk ? "Blocked" : "Active";
+            }
+            else if (unit == "riesgos" && count == 0)
+            {
+                countBlock.Text = "Blocked";
             }
             else
             {
