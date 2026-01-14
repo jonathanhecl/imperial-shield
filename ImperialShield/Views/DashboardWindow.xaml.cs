@@ -40,17 +40,46 @@ public partial class DashboardWindow : Window
         await Task.Run(() =>
         {
             var defenderInfo = _defenderMonitor.GetDefenderInfo();
-            var exclusions = _defenderMonitor.GetCurrentExclusions();
+            // Get references to app monitors for extra data
+            var app = App.CurrentApp;
+            
+            // Collect data for Last Checks list
+            var defenseTime = app.DefenderMonitor?.LastChecked ?? DateTime.MinValue;
+            var hostsTime = app.HostsMonitor?.LastChecked ?? DateTime.MinValue;
+            var hostsCount = app.HostsMonitor?.EntryCount ?? 0;
+            var exclusionsTime = app.DefenderMonitor?.LastChecked ?? DateTime.MinValue; // Defender monitor handles exclusions too
+            var exclusionsCount = app.DefenderMonitor?.GetCurrentExclusions().Count ?? 0;
+            var netTime = DateTime.Now; // Network is real-time, but we can use current time
+            var startupTime = app.StartupMonitor?.LastChecked ?? DateTime.MinValue;
+            var startupCount = app.StartupMonitor?.ItemCount ?? 0;
+            var tasksTime = app.TasksMonitor?.LastChecked ?? DateTime.MinValue;
+            var tasksCount = app.TasksMonitor?.ItemCount ?? 0;
+            var privacyTime = app.PrivacyMonitor?.LastChecked ?? DateTime.MinValue;
+            var privacyCount = app.PrivacyMonitor?.ActiveRiskCount ?? 0;
+
             var connections = _networkMonitor.GetTcpConnections();
             var suspiciousConnections = connections.Where(c => c.ThreatLevel >= ConnectionThreatLevel.High).ToList();
 
             Dispatcher.Invoke(() =>
             {
                 UpdateDefenderStatus(defenderInfo);
-                UpdateExclusionsStatus(exclusions.Count);
+                UpdateExclusionsStatus(exclusionsCount);
                 UpdateConnectionsStatus(connections.Count, suspiciousConnections.Count);
                 UpdateOverallStatus(defenderInfo, suspiciousConnections.Count);
+                
+                // Update Last Checks List
+                UpdateCheckItem(CheckDefenseTime, null, defenseTime, 0);
+                UpdateCheckItem(CheckHostsTime, CheckHostsCount, hostsTime, hostsCount, "items");
+                UpdateCheckItem(CheckExclusionsTime, CheckExclusionsCount, exclusionsTime, exclusionsCount, "items");
+                UpdateCheckItem(CheckConnectionsTime, CheckConnectionsCount, netTime, connections.Count, "activas");
+                UpdateCheckItem(CheckStartupTime, CheckStartupCount, startupTime, startupCount, "apps");
+                UpdateCheckItem(CheckTasksTime, CheckTasksCount, tasksTime, tasksCount, "tareas");
+                UpdateCheckItem(CheckPrivacyTime, CheckPrivacyCount, privacyTime, privacyCount, "riesgos", true);
+
+                // Update Pause Button State
+                UpdatePauseButtonState();
             });
+        });
         });
     }
 
@@ -136,8 +165,79 @@ public partial class DashboardWindow : Window
         }
     }
 
+    private void UpdateCheckItem(System.Windows.Controls.TextBlock timeBlock, System.Windows.Controls.TextBlock? countBlock, DateTime time, int count, string unit = "", bool isRisk = false)
+    {
+        if (time == DateTime.MinValue)
+        {
+            timeBlock.Text = "--";
+            if (countBlock != null) countBlock.Text = "";
+            return;
+        }
+
+        // Format time: "14:30:05"
+        timeBlock.Text = time.ToString("HH:mm:ss");
+
+        if (countBlock != null)
+        {
+            countBlock.Text = $"{count} {unit}";
+            // Risky items red if > 0
+            if (isRisk && count > 0) 
+                countBlock.Foreground = FindResource("DangerBrush") as SolidColorBrush;
+            else
+                countBlock.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7EB8DC"));
+        }
+    }
+
+    private void PauseButton_Click(object sender, RoutedEventArgs e)
+    {
+        var app = App.CurrentApp;
+        if (app.IsMonitoringPaused)
+        {
+            app.ResumeMonitoring();
+        }
+        else
+        {
+            app.PauseMonitoring();
+        }
+        UpdatePauseButtonState();
+        // Force immediate refresh to update status badge
+        _ = RefreshDashboardAsync(); 
+    }
+
+    private void UpdatePauseButtonState()
+    {
+        var isPaused = App.CurrentApp.IsMonitoringPaused;
+        
+        if (isPaused)
+        {
+            PauseText.Text = "REANUDAR";
+            PauseIcon.Text = "▶️"; // Play icon
+            PauseButtonBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3E2723")); // Dark Red/Brown
+            PauseButtonBorder.BorderBrush = FindResource("WarningBrush") as SolidColorBrush;
+            PauseButton.ToolTip = "Reanudar protección en tiempo real";
+        }
+        else
+        {
+            PauseText.Text = "PAUSAR";
+            PauseIcon.Text = "⏸️"; // Pause icon
+            PauseButtonBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E3A5F")); // Default Blue
+            PauseButtonBorder.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4DA8DA"));
+            PauseButton.ToolTip = "Detener temporalmente todos los monitores";
+        }
+    }
+
     private void UpdateOverallStatus(DefenderInfo defenderInfo, int suspiciousConnections)
     {
+        if (App.CurrentApp.IsMonitoringPaused)
+        {
+            StatusText.Text = "⏸️ SISTEMA PAUSADO";
+            StatusBadge.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#374151")); // Grey
+            StatusBadge.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9CA3AF"));
+            StatusDot.Fill = new SolidColorBrush(Colors.Gray);
+            StatusGlow.Color = Colors.Transparent;
+            return;
+        }
+
         bool isSecure = defenderInfo.RealTimeProtectionEnabled && suspiciousConnections == 0;
 
         if (isSecure)

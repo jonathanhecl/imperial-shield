@@ -12,6 +12,8 @@ public class StartupMonitor
     private readonly string _appName = "ImperialShield";
 
     public event EventHandler<string>? NewStartupAppDetected;
+    public DateTime LastChecked { get; private set; }
+    public int ItemCount { get; private set; }
 
     public void Start()
     {
@@ -26,7 +28,9 @@ public class StartupMonitor
     {
         try
         {
+            LastChecked = DateTime.Now;
             var currentApps = GetCurrentStartupApps();
+            ItemCount = currentApps.Count;
             var newApps = currentApps.Except(_knownStartupApps).ToList();
 
             foreach (var app in newApps)

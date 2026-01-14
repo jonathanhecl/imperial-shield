@@ -61,6 +61,8 @@ public class PrivacyMonitor : IDisposable
     private readonly HashSet<string> _currentRisks = new();
 
     public event EventHandler<PrivacyRiskEventArgs>? PrivacyRiskDetected;
+    public DateTime LastChecked { get; private set; }
+    public int ActiveRiskCount => _currentRisks.Count;
     public event EventHandler? SafeStateRestored;
     public event EventHandler<NewPrivacyAppEventArgs>? NewPrivacyAppDetected;
 
@@ -110,6 +112,7 @@ public class PrivacyMonitor : IDisposable
 
         try
         {
+            LastChecked = DateTime.Now;
             // Check for NEW apps added since last scan
             CheckForNewApps(DeviceType.Camera);
             CheckForNewApps(DeviceType.Microphone);

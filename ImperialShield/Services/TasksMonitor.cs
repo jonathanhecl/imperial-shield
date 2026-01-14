@@ -27,6 +27,8 @@ public class TasksMonitor : IDisposable
     private bool _isInitialized = false;
 
     public event EventHandler<NewTaskEventArgs>? NewTaskDetected;
+    public DateTime LastChecked { get; private set; }
+    public int ItemCount => _knownTasks.Count;
 
     public void Start()
     {
@@ -55,6 +57,7 @@ public class TasksMonitor : IDisposable
     {
         try
         {
+            LastChecked = DateTime.Now;
             var currentTasks = GetCurrentTasks();
             
             if (isInitial)

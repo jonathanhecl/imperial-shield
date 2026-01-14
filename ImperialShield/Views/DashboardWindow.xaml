@@ -193,33 +193,48 @@
                                        FontStyle="Italic"/>
                         </StackPanel>
 
-                        <!-- Status Badge -->
-                        <Border x:Name="StatusBadge" Grid.Column="2" CornerRadius="25" Padding="20,10"
-                                VerticalAlignment="Center"
-                                BorderThickness="2" BorderBrush="#27AE60">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                    <GradientStop Color="#1A4D2E" Offset="0"/>
-                                    <GradientStop Color="#0D2818" Offset="1"/>
-                                </LinearGradientBrush>
-                            </Border.Background>
-                            <StackPanel Orientation="Horizontal">
-                                <Ellipse x:Name="StatusDot" Width="12" Height="12" Margin="0,0,10,0">
-                                    <Ellipse.Fill>
-                                        <RadialGradientBrush>
-                                            <GradientStop Color="#5CFF5C" Offset="0"/>
-                                            <GradientStop Color="#27AE60" Offset="1"/>
-                                        </RadialGradientBrush>
-                                    </Ellipse.Fill>
-                                    <Ellipse.Effect>
-                                        <DropShadowEffect x:Name="StatusGlow" BlurRadius="8" ShadowDepth="0" Color="#27AE60"/>
-                                    </Ellipse.Effect>
-                                </Ellipse>
-                                <TextBlock x:Name="StatusText" Text="PROTEGIDO" 
-                                           Foreground="#5CFF5C" FontWeight="Bold" FontSize="14"
-                                           VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Border>
+                        <!-- Status Badge and Controls -->
+                        <StackPanel Grid.Column="2" VerticalAlignment="Center" Orientation="Horizontal">
+                             <!-- Pause/Resume Button -->
+                             <Button x:Name="PauseButton" Click="PauseButton_Click" Cursor="Hand"
+                                     Background="Transparent" BorderThickness="0" Margin="0,0,15,0"
+                                     ToolTip="Pausar/Reanudar Protección">
+                                 <Border x:Name="PauseButtonBorder" CornerRadius="20" Background="#1E3A5F" 
+                                         Padding="15,8" BorderBrush="#4DA8DA" BorderThickness="1">
+                                     <StackPanel Orientation="Horizontal">
+                                         <TextBlock x:Name="PauseIcon" Text="⏸️" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                                         <TextBlock x:Name="PauseText" Text="PAUSAR" Foreground="#7EB8DC" FontWeight="SemiBold"/>
+                                     </StackPanel>
+                                 </Border>
+                             </Button>
+
+                             <Border x:Name="StatusBadge" CornerRadius="25" Padding="20,10"
+                                     VerticalAlignment="Center"
+                                     BorderThickness="2" BorderBrush="#27AE60">
+                                 <Border.Background>
+                                     <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                         <GradientStop Color="#1A4D2E" Offset="0"/>
+                                         <GradientStop Color="#0D2818" Offset="1"/>
+                                     </LinearGradientBrush>
+                                 </Border.Background>
+                                 <StackPanel Orientation="Horizontal">
+                                     <Ellipse x:Name="StatusDot" Width="12" Height="12" Margin="0,0,10,0">
+                                         <Ellipse.Fill>
+                                             <RadialGradientBrush>
+                                                 <GradientStop Color="#5CFF5C" Offset="0"/>
+                                                 <GradientStop Color="#27AE60" Offset="1"/>
+                                             </RadialGradientBrush>
+                                         </Ellipse.Fill>
+                                         <Ellipse.Effect>
+                                             <DropShadowEffect x:Name="StatusGlow" BlurRadius="8" ShadowDepth="0" Color="#27AE60"/>
+                                         </Ellipse.Effect>
+                                     </Ellipse>
+                                     <TextBlock x:Name="StatusText" Text="PROTEGIDO" 
+                                                Foreground="#5CFF5C" FontWeight="Bold" FontSize="14"
+                                                VerticalAlignment="Center"/>
+                                 </StackPanel>
+                             </Border>
+                        </StackPanel>
                     </Grid>
                 </Border>
 
@@ -397,92 +412,135 @@
                         </StackPanel>
                     </Border>
 
-                    <!-- Defender Status Panel -->
+                    <!-- Monitoring Status Panel -->
                     <Border Grid.Column="1" Style="{StaticResource RPGCard}" Margin="10,0,0,0">
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
-                                <TextBlock Text="🏰" FontSize="24" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                <TextBlock Text="ESTADO DE LA FORTALEZA" FontSize="18" FontWeight="Bold" 
+                                <TextBlock Text="h" FontFamily="Webdings" FontSize="24" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#4DA8DA"/>
+                                <TextBlock Text="ÚLTIMAS REVISIONES" FontSize="18" FontWeight="Bold" 
                                            Foreground="#4DA8DA" VerticalAlignment="Center" />
                             </StackPanel>
 
-                            <!-- Status Rows -->
-                            <Border Background="#0D1B2A" CornerRadius="6" Padding="15,12" Margin="0,0,0,8">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Protección en Tiempo Real" Foreground="#94A3B8" VerticalAlignment="Center"/>
-                                    <TextBlock x:Name="RealTimeStatus" Grid.Column="1" Text="--" FontWeight="Bold" FontSize="13"/>
-                                </Grid>
-                            </Border>
+                            <!-- Check List -->
+                            <StackPanel>
+                                <!-- Defensa -->
+                                <Border Background="#0D1B2A" CornerRadius="6" Padding="12,8" Margin="0,0,0,6">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="🛡️" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Defensa" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
+                                        <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                                            <TextBlock x:Name="CheckDefenseTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
 
-                            <Border Background="#0D1B2A" CornerRadius="6" Padding="15,12" Margin="0,0,0,8">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Monitor de Comportamiento" Foreground="#94A3B8" VerticalAlignment="Center"/>
-                                    <TextBlock x:Name="BehaviorStatus" Grid.Column="1" Text="--" FontWeight="Bold" FontSize="13"/>
-                                </Grid>
-                            </Border>
+                                <!-- Hosts -->
+                                <Border Background="#0D1B2A" CornerRadius="6" Padding="12,8" Margin="0,0,0,6">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="📜" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Archivo Hosts" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
+                                        <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                                            <TextBlock x:Name="CheckHostsTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                                            <TextBlock x:Name="CheckHostsCount" Text="0 ítems" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
 
-                            <Border Background="#0D1B2A" CornerRadius="6" Padding="15,12" Margin="0,0,0,8">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Versión de Firmas" Foreground="#94A3B8" VerticalAlignment="Center"/>
-                                    <TextBlock x:Name="SignatureVersion" Grid.Column="1" Text="--" FontWeight="Bold" 
-                                               Foreground="#E8F4FC" FontSize="13"/>
-                                </Grid>
-                            </Border>
+                                <!-- Exclusiones -->
+                                <Border Background="#0D1B2A" CornerRadius="6" Padding="12,8" Margin="0,0,0,6">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="🚫" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Exclusiones" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
+                                        <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                                            <TextBlock x:Name="CheckExclusionsTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                                            <TextBlock x:Name="CheckExclusionsCount" Text="0 ítems" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
 
-                            <Border Background="#0D1B2A" CornerRadius="6" Padding="15,12" Margin="0,0,0,8">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Antigüedad de Firmas" Foreground="#94A3B8" VerticalAlignment="Center"/>
-                                    <TextBlock x:Name="SignatureAge" Grid.Column="1" Text="--" FontWeight="Bold" FontSize="13"/>
-                                </Grid>
-                            </Border>
+                                <!-- Conexiones -->
+                                <Border Background="#0D1B2A" CornerRadius="6" Padding="12,8" Margin="0,0,0,6">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="🌐" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Conexiones" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
+                                        <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                                            <TextBlock x:Name="CheckConnectionsTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                                            <TextBlock x:Name="CheckConnectionsCount" Text="0 activas" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
 
-                            <Border Background="#0D1B2A" CornerRadius="6" Padding="15,12">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Último Escaneo Completo" Foreground="#94A3B8" VerticalAlignment="Center"/>
-                                    <TextBlock x:Name="LastScan" Grid.Column="1" Text="--" FontWeight="Bold" 
-                                               Foreground="#E8F4FC" FontSize="13"/>
-                                </Grid>
-                            </Border>
+                                <!-- Inicio -->
+                                <Border Background="#0D1B2A" CornerRadius="6" Padding="12,8" Margin="0,0,0,6">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="🚀" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Inicio" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
+                                        <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                                            <TextBlock x:Name="CheckStartupTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                                            <TextBlock x:Name="CheckStartupCount" Text="0 apps" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
 
-                            <Border Background="#0D1B2A" CornerRadius="6" Padding="15,12" Margin="0,8,0,0">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="DDoS Watchdog" Foreground="#94A3B8" VerticalAlignment="Center"/>
-                                        <TextBlock Text=" (Activo)" Foreground="#00FF9D" FontSize="11" VerticalAlignment="Center" Margin="5,0,0,0"/>
-                                    </StackPanel>
-                                    
-                                    <TextBlock Grid.Column="1" Text="🟢 MONITOREANDO" FontWeight="Bold" 
-                                               Foreground="#27AE60" FontSize="12">
-                                        <TextBlock.Effect>
-                                            <DropShadowEffect Color="#27AE60" BlurRadius="5" ShadowDepth="0" Opacity="0.4"/>
-                                        </TextBlock.Effect>
-                                    </TextBlock>
-                                </Grid>
-                            </Border>
+                                <!-- Tareas -->
+                                <Border Background="#0D1B2A" CornerRadius="6" Padding="12,8" Margin="0,0,0,6">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="📅" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Tareas" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
+                                        <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                                            <TextBlock x:Name="CheckTasksTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                                            <TextBlock x:Name="CheckTasksCount" Text="0 tareas" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Privacidad -->
+                                <Border Background="#0D1B2A" CornerRadius="6" Padding="12,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="👁️" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Privacidad" Foreground="#94A3B8" VerticalAlignment="Center" Grid.Column="1"/>
+                                        <StackPanel Grid.Column="2" HorizontalAlignment="Right">
+                                            <TextBlock x:Name="CheckPrivacyTime" Text="--" Foreground="#E8F4FC" FontWeight="SemiBold" HorizontalAlignment="Right"/>
+                                            <TextBlock x:Name="CheckPrivacyCount" Text="0 riesgos" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
                         </StackPanel>
                     </Border>
                 </Grid>

@@ -14,6 +14,7 @@ public class DefenderMonitor : IDisposable
 
     public event EventHandler<DefenderStatusEventArgs>? DefenderStatusChanged;
     public event EventHandler<ExclusionAddedEventArgs>? ExclusionAdded;
+    public DateTime LastChecked { get; private set; }
 
     public void Start()
     {
@@ -31,6 +32,7 @@ public class DefenderMonitor : IDisposable
     {
         try
         {
+            LastChecked = DateTime.Now;
             // Verificar si Defender está activo
             var currentStatus = IsDefenderEnabled();
             if (currentStatus != _lastKnownStatus)

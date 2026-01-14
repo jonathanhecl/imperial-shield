@@ -22,8 +22,20 @@ public partial class App : Application
     private IFEOMonitor? _ifeoMonitor;
     private DDoSMonitor? _ddosMonitor;
     private TasksMonitor? _tasksMonitor;
+    private bool _isMonitoringPaused;
+
+    public bool IsMonitoringPaused => _isMonitoringPaused;
     private DashboardWindow? _dashboardWindow;
     private SplashWindow? _splashWindow;
+
+    public static App CurrentApp => (App)Application.Current;
+    public HostsFileMonitor? HostsMonitor => _hostsMonitor;
+    public DefenderMonitor? DefenderMonitor => _defenderMonitor;
+    public PrivacyMonitor? PrivacyMonitor => _privacyMonitor;
+    public StartupMonitor? StartupMonitor => _startupMonitor;
+    public TasksMonitor? TasksMonitor => _tasksMonitor;
+    public IFEOMonitor? IFEOMonitor => _ifeoMonitor;
+    public DDoSMonitor? DDoSMonitor => _ddosMonitor;
 
     public App()
     {
@@ -560,6 +572,50 @@ public partial class App : Application
             var alert = new NewTaskAlertWindow(e.TaskName, e.TaskPath);
             alert.Show();
         });
+    }
+
+    #endregion
+
+    #region Pause/Resume Logic
+
+    public void PauseMonitoring()
+    {
+        if (_isMonitoringPaused) return;
+
+        Logger.Log("Pausing all monitoring services...");
+        _isMonitoringPaused = true;
+
+        _hostsMonitor?.Stop();
+        _defenderMonitor?.Stop();
+        _privacyMonitor?.Stop();
+        _startupMonitor?.Stop();
+        _tasksMonitor?.Stop();
+        _ifeoMonitor?.Stop();
+        _ddosMonitor?.Stop();
+
+        ShowToastNotification("Protección Pausada", 
+            "Todos los monitores de seguridad han sido detenidos.", 
+            ToastNotificationType.Warning);
+    }
+
+    public void ResumeMonitoring()
+    {
+        if (!_isMonitoringPaused) return;
+
+        Logger.Log("Resuming all monitoring services...");
+        _isMonitoringPaused = false;
+
+        _hostsMonitor?.Start();
+        _defenderMonitor?.Start();
+        _privacyMonitor?.Start();
+        _startupMonitor?.Start();
+        _tasksMonitor?.Start();
+        _ifeoMonitor?.Start();
+        _ddosMonitor?.Start();
+
+        ShowToastNotification("Protección Reactivada", 
+            "Imperial Shield está protegiendo tu sistema nuevamente.", 
+            ToastNotificationType.Success);
     }
 
     #endregion

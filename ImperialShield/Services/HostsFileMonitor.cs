@@ -18,6 +18,8 @@ public class HostsFileMonitor : IDisposable
     private bool _isDisposed;
 
     public event EventHandler<HostsFileChangedEventArgs>? HostsFileChanged;
+    public DateTime LastChecked { get; private set; }
+    public int EntryCount { get; private set; }
 
     public HostsFileMonitor()
     {
@@ -41,6 +43,7 @@ public class HostsFileMonitor : IDisposable
 
         // Guardar el estado inicial del archivo hosts
         SaveInitialState();
+        LastChecked = DateTime.Now;
 
         // Configurar el FileSystemWatcher
         var directory = Path.GetDirectoryName(_hostsPath);
@@ -76,6 +79,7 @@ public class HostsFileMonitor : IDisposable
                 {
                     _backupContent = File.ReadAllText(_backupPath);
                 }
+                EntryCount = CountEntries(content);
             }
         }
         catch (Exception ex)
@@ -108,6 +112,8 @@ public class HostsFileMonitor : IDisposable
                     OriginalContent = _backupContent ?? "",
                     Timestamp = DateTime.Now
                 });
+                LastChecked = DateTime.Now;
+                EntryCount = CountEntries(content);
             }
         }
         catch (Exception ex)
@@ -210,6 +216,14 @@ public class HostsFileMonitor : IDisposable
         {
             System.Diagnostics.Debug.WriteLine($"Error al actualizar backup: {ex.Message}");
         }
+    }
+
+    private int CountEntries(string content)
+    {
+        if (string.IsNullOrWhiteSpace(content)) return 0;
+        return content.Split('\n')
+            .Select(l => l.Trim())
+            .Count(l => !string.IsNullOrEmpty(l) && !l.StartsWith("#"));
     }
 
     private static string ComputeHash(string content)
