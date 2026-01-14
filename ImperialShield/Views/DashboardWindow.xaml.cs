@@ -77,7 +77,7 @@ public partial class DashboardWindow : Window
                 UpdateCheckItem(CheckHostsTime, CheckHostsCount, hostsTime, hostsCount, "hosts", false, CheckHostsDot, CheckHostsBadge); 
                 UpdateCheckItem(CheckExclusionsTime, CheckExclusionsCount, exclusionsTime, exclusionsCount, "active", false, CheckExclusionsDot, CheckExclusionsBadge);
                 UpdateCheckItem(CheckConnectionsTime, CheckConnectionsCount, netTime, suspiciousConnections.Count, "ddos", false, CheckConnectionsDot, CheckConnectionsBadge);
-                UpdateCheckItem(CheckStartupTime, CheckStartupCount, startupTime, startupCount, "items", false, CheckStartupDot, CheckStartupBadge);
+                UpdateCheckItem(CheckStartupTime, CheckStartupCount, startupTime, startupCount, startupCount == 0 ? "loading" : "items", false, CheckStartupDot, CheckStartupBadge);
                 UpdateCheckItem(CheckTasksTime, CheckTasksCount, tasksTime, tasksCount, "active", false, CheckTasksDot, CheckTasksBadge);
                 UpdateCheckItem(CheckWshTime, CheckWshStatus, DateTime.Now, QuarantineService.IsVBSEnabled() ? 1 : 0, "wsh", false, CheckWshDot, CheckWshBadge);
                 UpdateCheckItem(CheckPrivacyTime, CheckPrivacyStatus, privacyTime, privacyCount, "riesgos", true, CheckPrivacyDot, CheckPrivacyBadge);
@@ -170,6 +170,12 @@ public partial class DashboardWindow : Window
                     if (dot != null) dot.Fill = redDot;
                     if (badge != null) badge.Background = redBadge;
                 }
+            }
+            else if (unit == "loading")
+            {
+                countBlock.Text = "Cargando";
+                if (dot != null) dot.Fill = blueDot;
+                if (badge != null) badge.Background = blueBadge;
             }
             else if (isRisk && count > 0)
             {
