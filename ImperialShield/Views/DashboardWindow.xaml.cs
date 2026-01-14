@@ -80,7 +80,6 @@ public partial class DashboardWindow : Window
                 UpdatePauseButtonState();
             });
         });
-        });
     }
 
     private void UpdateDefenderStatus(DefenderInfo info)
@@ -98,34 +97,6 @@ public partial class DashboardWindow : Window
             DefenderStatus.Foreground = FindResource("DangerBrush") as SolidColorBrush;
             DefenderIcon.Text = "⚠️";
         }
-
-        // Detalles
-        RealTimeStatus.Text = info.RealTimeProtectionEnabled ? "✅ Activo" : "❌ Inactivo";
-        RealTimeStatus.Foreground = info.RealTimeProtectionEnabled 
-            ? FindResource("SuccessBrush") as SolidColorBrush 
-            : FindResource("DangerBrush") as SolidColorBrush;
-
-        BehaviorStatus.Text = info.BehaviorMonitorEnabled ? "✅ Activo" : "❌ Inactivo";
-        BehaviorStatus.Foreground = info.BehaviorMonitorEnabled 
-            ? FindResource("SuccessBrush") as SolidColorBrush 
-            : FindResource("DangerBrush") as SolidColorBrush;
-
-        SignatureVersion.Text = info.SignatureVersion.Length > 20 
-            ? info.SignatureVersion.Substring(0, 20) + "..." 
-            : info.SignatureVersion;
-
-        SignatureAge.Text = info.SignatureAgeDays switch
-        {
-            0 => "✅ Actualizado hoy",
-            1 => "✅ 1 día",
-            <= 3 => $"🟡 {info.SignatureAgeDays} días",
-            _ => $"🔴 {info.SignatureAgeDays} días"
-        };
-        SignatureAge.Foreground = info.SignatureAgeDays <= 3 
-            ? FindResource("SuccessBrush") as SolidColorBrush 
-            : FindResource("DangerBrush") as SolidColorBrush;
-
-        LastScan.Text = info.LastFullScan?.ToString("dd/MM/yyyy HH:mm") ?? "Nunca";
     }
 
     private void UpdateExclusionsStatus(int count)

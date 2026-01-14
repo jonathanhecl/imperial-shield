@@ -35,6 +35,12 @@ public class IFEOMonitor : IDisposable
         _timer = new Timer(CheckIFEOStatus, null, 0, intervalMs);
     }
 
+    public void Stop()
+    {
+        _timer?.Dispose();
+        _timer = null;
+    }
+
     private void CheckIFEOStatus(object? state)
     {
         if (_isDisposed) return;
