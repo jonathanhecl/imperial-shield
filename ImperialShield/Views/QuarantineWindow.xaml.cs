@@ -30,15 +30,15 @@ public partial class QuarantineWindow : Window
         {
             VBSStatusText.Text = "🟢 HABILITADO - Los scripts .vbs/.js pueden ejecutarse";
             VBSStatusText.Foreground = System.Windows.Media.Brushes.LightGreen;
-            VBSToggleButton.Content = "⚠️ ACTIVAR";
-            VBSToggleButton.Style = (Style)FindResource("DangerButton"); // Rojo = peligro
+            VBSToggleButton.Content = "DESHABILITAR";
+            VBSToggleButton.Style = (Style)FindResource("SafeButton"); // Verde = acción segura
         }
         else
         {
             VBSStatusText.Text = "🔴 BLOQUEADO - Los scripts .vbs/.js NO pueden ejecutarse";
             VBSStatusText.Foreground = System.Windows.Media.Brushes.Tomato;
-            VBSToggleButton.Content = "✅ DESACTIVAR";
-            VBSToggleButton.Style = (Style)FindResource("SafeButton"); // Verde = seguro
+            VBSToggleButton.Content = "HABILITAR";
+            VBSToggleButton.Style = (Style)FindResource("DangerButton"); // Rojo = acción de riesgo
         }
     }
 

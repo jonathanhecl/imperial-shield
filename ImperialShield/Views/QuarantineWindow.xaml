@@ -62,9 +62,9 @@
                                 </StackPanel>
                                 
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                    <Button x:Name="VBSToggleButton" Content="DESACTIVAR" 
+                                    <Button x:Name="VBSToggleButton" Content="DESHABILITAR" 
                                             Click="ToggleVBS_Click" Width="150" Height="45"
-                                            Style="{StaticResource DangerButton}" FontSize="14"/>
+                                            Style="{StaticResource SafeButton}" FontSize="14"/>
                                 </StackPanel>
                             </Grid>
                         </Border>
