@@ -62,7 +62,18 @@ public class PrivacyMonitor : IDisposable
 
     public event EventHandler<PrivacyRiskEventArgs>? PrivacyRiskDetected;
     public DateTime LastChecked { get; private set; }
-    public int ActiveRiskCount => _currentRisks.Count;
+    public int ActiveRiskCount 
+    {
+        get
+        {
+            var camApps = GetActiveApps("webcam");
+            var micApps = GetActiveApps("microphone");
+            int count = 0;
+            foreach (var app in camApps) if (!IsWhitelisted(app, DeviceType.Camera)) count++;
+            foreach (var app in micApps) if (!IsWhitelisted(app, DeviceType.Microphone)) count++;
+            return count;
+        }
+    }
     public event EventHandler? SafeStateRestored;
     public event EventHandler<NewPrivacyAppEventArgs>? NewPrivacyAppDetected;
 
