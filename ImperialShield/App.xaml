@@ -9,6 +9,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Themes/DarkTheme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             
             <!-- Taskbar Icon - IconSource se configura en code-behind -->
             <tb:TaskbarIcon x:Key="NotifyIcon"

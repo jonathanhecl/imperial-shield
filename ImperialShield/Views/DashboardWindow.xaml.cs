@@ -18,26 +18,48 @@ public partial class DashboardWindow : Window
 
     public DashboardWindow()
     {
-        InitializeComponent();
-        _defenderMonitor = new DefenderMonitor();
-        _networkMonitor = new NetworkMonitor();
-        
-        // Establecer versión
-        var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
-        VersionText.Text = $"Imperial Shield v{version?.Major}.{version?.Minor}.{version?.Build}";
+        try
+        {
+            InitializeComponent();
+            _defenderMonitor = new DefenderMonitor();
+            _networkMonitor = new NetworkMonitor();
+            
+            // Establecer versión
+            var version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            VersionText.Text = $"Imperial Shield v{version?.Major}.{version?.Minor}.{version?.Build}";
 
-        Loaded += async (s, e) => 
+            Loaded += async (s, e) => 
+            {
+                try
+                {
+                    // Forzar carga inicial inmediata de todos los monitores
+                    await ForceInitialDataLoad();
+                    await RefreshDashboardAsync();
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogException(ex, "DashboardWindow_Loaded");
+                }
+            };
+            
+            // Refrescar cada 30 segundos
+            _refreshTimer = new Timer(async _ => 
+            {
+                try
+                {
+                    await Dispatcher.InvokeAsync(async () => await RefreshDashboardAsync());
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogException(ex, "DashboardWindow_RefreshTimer");
+                }
+            }, null, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30));
+        }
+        catch (Exception ex)
         {
-            // Forzar carga inicial inmediata de todos los monitores
-            await ForceInitialDataLoad();
-            await RefreshDashboardAsync();
-        };
-        
-        // Refrescar cada 30 segundos
-        _refreshTimer = new Timer(async _ => 
-        {
-            await Dispatcher.InvokeAsync(async () => await RefreshDashboardAsync());
-        }, null, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30));
+            Logger.LogCrash(ex);
+            MessageBox.Show($"Error al inicializar el Dashboard: {ex.Message}", "Error de Dashboard", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     /// <summary>
