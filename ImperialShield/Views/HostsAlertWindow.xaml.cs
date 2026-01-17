@@ -33,45 +33,38 @@ public partial class HostsAlertWindow : Window
 #	127.0.0.1       localhost
 #	::1             localhost
 ";
+    private bool _isTestMode = false;
 
-    public HostsAlertWindow(string message)
+    public HostsAlertWindow(string message, bool testMode = false)
     {
         InitializeComponent();
         MessageText.Text = message;
+        _isTestMode = testMode;
         
         System.Media.SystemSounds.Hand.Play();
 
         // Verificar si tenemos un backup en memoria válido para restaurar
-        // TODO: This logic assumes we can verify the backup quality. Currently we assume app.HostsMonitor has it.
-        // We will update button content in Loaded event or here if possible.
-        
         CheckBackupStatus();
     }
 
     private void CheckBackupStatus()
     {
-        // Default text is "LIMPIAR ARCHIVO HOSTS" (Reset to default)
+        // In test mode, always show RESTORE button so developers can see the real UI
+        if (_isTestMode)
+        {
+            CleanButtonText.Text = "RESTAURAR RESPALDO ANTERIOR";
+            CleanButtonIcon.Text = "⏪";
+            CleanButton.Tag = "RESTORE";
+            return;
+        }
         
         var app = Application.Current as App;
-        // Si hay un backup en memoria y es DIFERENTE al contenido actual (lo cual asumimos si saltó la alerta)
-        // Y no está vacío.
-        
-        // Note: HostsFileMonitor stores the backup of the "Last Known Good" state.
         
         if (app?.HostsMonitor != null)
         {
-            // Use Dispatcher to ensure UI thread access if called from bg
             Dispatcher.Invoke(() => 
             {
-               // Change button text/tag based on logic
-               // For now, simpler approach: The button calls "CleanHosts_Click". 
-               // We will modify that method to ask the user.
-               
-               // But wait, the user wants two options: "Restore from Backup" (if avail) OR "Reset to Default" (if no backup)
-               // Or maybe "Restore" is preferred.
-               
-               // Let's modify the UI button text to reflect what we can do.
-               if (app.HostsMonitor.CanRestoreBackup) // We need to add this property or check
+               if (app.HostsMonitor.CanRestoreBackup)
                {
                    CleanButtonText.Text = "RESTAURAR RESPALDO ANTERIOR";
                    CleanButtonIcon.Text = "⏪";

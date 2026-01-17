@@ -59,10 +59,12 @@ namespace ImperialShield.Views
 
         private void TestHosts_Click(object sender, RoutedEventArgs e)
         {
-            HostsAlertWindow.Show(
+            // Create the real alert window directly so we can see actual UI
+            var alert = new HostsAlertWindow(
                 "Se han detectado cambios en el archivo HOSTS del sistema.\n\n" +
                 "Nuevas entradas añadidas:\n• 127.0.0.1 → windowsupdate.microsoft.com\n• 127.0.0.1 → update.microsoft.com\n\n" +
                 "El archivo HOSTS puede ser usado por malware para redirigir sitios web legítimos a páginas falsas.");
+            alert.ShowDialog();
         }
 
         private void TestNewTask_Click(object sender, RoutedEventArgs e)
