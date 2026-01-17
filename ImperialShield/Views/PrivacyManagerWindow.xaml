@@ -190,7 +190,7 @@
                                         <!-- App Name -->
                                         <StackPanel VerticalAlignment="Center" Cursor="Hand">
                                             <StackPanel.ContextMenu>
-                                                <ContextMenu Background="#1E293B" BorderBrush="#334155">
+                                                <ContextMenu>
                                                     <MenuItem Header="📂 Abrir ubicación" Click="OpenFolder_Click"/>
                                                     <MenuItem Header="📋 Copiar ruta" Click="CopyPath_Click"/>
                                                 </ContextMenu>
