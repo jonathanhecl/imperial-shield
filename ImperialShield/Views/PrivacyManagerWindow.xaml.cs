@@ -49,7 +49,10 @@ public partial class PrivacyManagerWindow : Window
         public bool FileExists { get; set; } = true;
         
         // For sorting (higher = more priority)
-        public int SortPriority => IsInUse ? 3 : (IsRunning ? 2 : 1);
+        // 4 = In Use (Critical)
+        // 3 = Running (Terminable/Active)
+        // 1 = Stopped
+        public int SortPriority => IsInUse ? 4 : (IsRunning ? 3 : 1);
         
         // UI Bindings
         public string AppType => !FileExists ? "⚠️ Archivo no encontrado" : (IsNonPackaged ? "Aplicación de Escritorio" : "Microsoft Store");
@@ -153,9 +156,13 @@ public partial class PrivacyManagerWindow : Window
             vm.IsMicInUse = mic.IsActive;
         }
 
-        // Sort: InUse first, then Running, then Stopped
+        // Sort: 
+        // 1. By status (InUse > Running > Stopped)
+        // 2. Within each status, apps with "Terminate" button (IsRunning) go first
+        // 3. Then alphabetically
         _allApps = appDict.Values
             .OrderByDescending(x => x.SortPriority)
+            .ThenByDescending(x => x.IsRunning)
             .ThenBy(x => x.DisplayName)
             .ToList();
 
