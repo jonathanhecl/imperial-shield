@@ -188,11 +188,11 @@
                                         </Grid.ColumnDefinitions>
 
                                         <!-- App Name -->
-                                        <StackPanel VerticalAlignment="Center">
+                                        <StackPanel VerticalAlignment="Center" MouseLeftButtonDown="OpenFolder_DoubleClick" Cursor="Hand">
                                             <TextBlock Text="{Binding DisplayName}" FontWeight="Bold" Foreground="White" 
                                                        FontSize="13" TextTrimming="CharacterEllipsis"
-                                                       ToolTip="{Binding AppId}"/>
-                                            <TextBlock Text="{Binding AppType}" FontSize="10" Foreground="#64748B" Margin="0,2,0,0"/>
+                                                       ToolTip="Doble-click para abrir ubicación"/>
+                                            <TextBlock Text="{Binding AppId}" FontSize="10" Foreground="#64748B" Margin="0,2,0,0" TextTrimming="CharacterEllipsis"/>
                                         </StackPanel>
 
                                         <!-- Permission Badges -->

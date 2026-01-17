@@ -66,7 +66,7 @@ public partial class PrivacyManagerWindow : Window
             ? Brushes.White 
             : new SolidColorBrush(Color.FromRgb(71, 85, 105));
 
-        public string StatusText => IsInUse ? "En Uso" : (IsRunning ? "Abierto" : "Cerrado");
+        public string StatusText => IsInUse ? "En Uso" : (IsRunning ? "Ejecutando" : "Cerrado");
         public Brush StatusColor => IsInUse 
             ? new SolidColorBrush(Color.FromRgb(239, 68, 68))   // Red
             : IsRunning 
@@ -394,6 +394,27 @@ public partial class PrivacyManagerWindow : Window
         else
         {
             MessageBox.Show("No se encontraron procesos activos para esta aplicación.", "Sin Procesos", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+    }
+
+    private void OpenFolder_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        if (sender is FrameworkElement fe && fe.DataContext is UnifiedAppViewModel app)
+        {
+            if (app.IsNonPackaged && System.IO.File.Exists(app.AppId))
+            {
+                Process.Start("explorer.exe", $"/select,\"{app.AppId}\"");
+            }
+            else if (!app.IsNonPackaged)
+            {
+                MessageBox.Show("Esta es una aplicación de Microsoft Store. No tiene una ubicación de archivo tradicional.", 
+                    "Aplicación de Sistema", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("No se pudo encontrar el archivo ejecutable en el disco.", 
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
     }
 
