@@ -24,7 +24,6 @@ namespace ImperialShield.Views
             InitializeComponent();
             _appPath = risk.ApplicationPath;
 
-            DeviceIcon.Text = risk.Device == DeviceType.Camera ? "📷" : "🎤";
             AppNameText.Text = risk.ApplicationName;
             AppNameText.ToolTip = risk.ApplicationPath;
             
