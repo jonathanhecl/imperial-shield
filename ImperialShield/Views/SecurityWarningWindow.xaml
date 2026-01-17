@@ -10,11 +10,11 @@
         WindowStartupLocation="CenterScreen">
     
     <Window.Resources>
-        <Storyboard x:Key="PulseWarning">
-            <DoubleAnimation Storyboard.TargetName="IconText" 
+        <Storyboard x:Key="PulseIcon">
+            <DoubleAnimation Storyboard.TargetName="AlertIcon" 
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
                              From="1.0" To="1.2" Duration="0:0:0.5" AutoReverse="True" RepeatBehavior="Forever"/>
-            <DoubleAnimation Storyboard.TargetName="IconText" 
+            <DoubleAnimation Storyboard.TargetName="AlertIcon" 
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
                              From="1.0" To="1.2" Duration="0:0:0.5" AutoReverse="True" RepeatBehavior="Forever"/>
         </Storyboard>
@@ -22,7 +22,7 @@
 
     <Window.Triggers>
         <EventTrigger RoutedEvent="Window.Loaded">
-            <BeginStoryboard Storyboard="{StaticResource PulseWarning}"/>
+            <BeginStoryboard Storyboard="{StaticResource PulseIcon}"/>
         </EventTrigger>
     </Window.Triggers>
 
@@ -40,7 +40,7 @@
             </Grid.RowDefinitions>
             
             <!-- Alert Icon -->
-            <Image x:Name="IconText" Grid.Row="0" Source="/Resources/shield_alert_icon.png" 
+            <Image x:Name="AlertIcon" Source="/Resources/shield_alert_icon.png" 
                    Width="100" Height="100" 
                    HorizontalAlignment="Center" 
                    Margin="0,0,0,15">
@@ -94,14 +94,14 @@
             </StackPanel>
             
             <!-- Actions -->
-            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+            <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,10,0,0">
                 <Button Content="ELIMINAR REDIRECCIÓN" Click="Action_Click" 
-                        Width="280" Height="55"
+                        Width="420" Height="55" Margin="0,0,0,10"
                         FontSize="18" FontWeight="Bold"
                         Style="{StaticResource DangerButton}" Cursor="Hand"/>
                 
                 <Button Content="IGNORAR" Click="Ignore_Click" 
-                        Width="180" Height="55" Margin="15,0,0,0"
+                        Width="420" Height="55" 
                         FontSize="16" FontWeight="Bold"
                         Background="Transparent" Foreground="#94A3B8" 
                         BorderThickness="1" BorderBrush="#3A5F82" Cursor="Hand">
