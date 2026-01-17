@@ -14,10 +14,67 @@ namespace ImperialShield.Views
 {
     public partial class StartupManagerWindow : Window
     {
+        private List<StartupItem> _allItems = new();
+
         public StartupManagerWindow()
         {
             InitializeComponent();
             LoadStartupItems();
+        }
+
+        private void Filter_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is System.Windows.Controls.Primitives.ToggleButton clicked)
+            {
+                // Make filters mutually exclusive
+                var filters = new[] { FilterAll, FilterRunning, FilterEnabled, FilterDisabled, FilterSuspicious };
+                foreach (var f in filters)
+                {
+                    if (f != clicked) f.IsChecked = false;
+                }
+                
+                // Ensure at least one is checked
+                if (clicked.IsChecked != true)
+                    clicked.IsChecked = true;
+
+                ApplyFilter();
+            }
+        }
+
+        private void ApplyFilter()
+        {
+            if (_allItems == null || !_allItems.Any()) return;
+
+            IEnumerable<StartupItem> filtered = _allItems;
+
+            // Apply exclusive filter
+            if (FilterRunning.IsChecked == true)
+            {
+                filtered = filtered.Where(i => i.IsRunning);
+            }
+            else if (FilterEnabled.IsChecked == true)
+            {
+                filtered = filtered.Where(i => i.IsEnabled);
+            }
+            else if (FilterDisabled.IsChecked == true)
+            {
+                filtered = filtered.Where(i => !i.IsEnabled);
+            }
+            else if (FilterSuspicious.IsChecked == true)
+            {
+                filtered = filtered.Where(i => i.ThreatLevel >= StartupThreatLevel.Medium);
+            }
+            // FilterAll shows everything
+
+            // Sort: Running > Suspicious > Name
+            var sorted = filtered
+                .OrderByDescending(i => i.IsRunning)
+                .ThenByDescending(i => i.ThreatLevel)
+                .ThenBy(i => i.Name)
+                .ToList();
+
+            StartupGrid.ItemsSource = sorted;
+            StatsText.Text = $"{sorted.Count} apps";
         }
 
         private void LoadStartupItems()
