@@ -2,26 +2,92 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Centro de Privacidad - Imperial Shield" 
-        Height="750" Width="1200"
+        Height="750" Width="1000"
         WindowStartupLocation="CenterScreen"
         Style="{StaticResource ModernWindow}">
 
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         
-        <ContextMenu x:Key="RowContextMenu">
-            <MenuItem Header="📂 Ver ubicación del archivo" Click="OpenLocation_Click"/>
-            <MenuItem Header="❌ Terminar proceso" Click="Terminate_Click"/>
-            <Separator/>
-            <MenuItem Header="📋 Copiar ruta completa" Click="CopyPath_Click"/>
-        </ContextMenu>
-        
-        <Style x:Key="PrivacyRowStyle" TargetType="DataGridRow">
-            <Setter Property="ContextMenu" Value="{StaticResource RowContextMenu}"/>
+        <!-- Filter Toggle Button Style -->
+        <Style x:Key="FilterToggle" TargetType="ToggleButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#64748B"/>
+            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="20" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1E3A5F"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#4DA8DA"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1A2744"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Permission Badge Style -->
+        <Style x:Key="PermissionBadge" TargetType="Border">
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="6,3"/>
+            <Setter Property="Margin" Value="0,0,4,0"/>
+        </Style>
+
+        <!-- Action Button Style -->
+        <Style x:Key="ActionButton" TargetType="Button">
+            <Setter Property="Background" Value="#1E293B"/>
+            <Setter Property="Foreground" Value="#94A3B8"/>
+            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Margin" Value="0,0,6,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#2E4058"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#4DA8DA"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Terminate Button Style -->
+        <Style x:Key="TerminateBtn" TargetType="Button" BasedOn="{StaticResource ActionButton}">
+            <Setter Property="Background" Value="#2D1F1F"/>
+            <Setter Property="BorderBrush" Value="#7F1D1D"/>
+            <Setter Property="Foreground" Value="#FCA5A5"/>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding ThreatLevel}" Value="High">
-                    <Setter Property="Background" Value="#1A0F0F"/>
-                </DataTrigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#4A2525"/>
+                </Trigger>
             </Style.Triggers>
         </Style>
     </Window.Resources>
@@ -29,363 +95,158 @@
     <Grid Margin="25">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Grid Grid.Row="0" Margin="0,0,0,20">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            
-            <StackPanel>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="🛡️ Centro de Privacidad" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,0,15,0"/>
-                    <Border Background="#213346" CornerRadius="12" Padding="12,4" VerticalAlignment="Center">
-                        <TextBlock Text="Control de Hardware" Foreground="#4DA8DA" FontWeight="Bold" FontSize="12"/>
-                    </Border>
-                </StackPanel>
-                <TextBlock Text="Gestiona qué aplicaciones pueden acceder a tu cámara y micrófono. Verifica su firma digital y seguridad." 
-                           Foreground="{StaticResource TextSecondaryBrush}" FontSize="14" Margin="0,8,0,0"/>
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="🛡️ Centro de Privacidad" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,0,15,0"/>
+                <Border Background="#213346" CornerRadius="12" Padding="12,4" VerticalAlignment="Center">
+                    <TextBlock Text="Cámara y Micrófono" Foreground="#4DA8DA" FontWeight="Bold" FontSize="12"/>
+                </Border>
             </StackPanel>
+            <TextBlock Text="Control unificado de acceso a tus dispositivos de audio y video. Filtra y gestiona permisos fácilmente." 
+                       Foreground="{StaticResource TextSecondaryBrush}" FontSize="14" Margin="0,8,0,0"/>
+        </StackPanel>
 
-            <!-- Legend -->
-            <Border Grid.Column="1" Background="#111827" CornerRadius="8" Padding="15,10" VerticalAlignment="Center" BorderBrush="#1E293B" BorderThickness="1">
-                <StackPanel>
-                    <TextBlock Text="LEYENDA DE SEGURIDAD" Foreground="#64748B" FontSize="10" FontWeight="Bold" Margin="0,0,0,8"/>
-                    <StackPanel Orientation="Horizontal">
-                        <StackPanel Orientation="Horizontal" Margin="0,0,12,0">
-                            <TextBlock Text="🛡️" FontSize="11" Margin="0,0,3,0"/>
-                            <TextBlock Text="Confiable" Foreground="#4DA8DA" FontSize="10"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,12,0">
-                            <TextBlock Text="✅" FontSize="11" Margin="0,0,3,0"/>
-                            <TextBlock Text="Seguro" Foreground="#22C55E" FontSize="10"/>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Margin="0,0,12,0">
-                            <TextBlock Text="🟡" FontSize="11" Margin="0,0,3,0"/>
-                            <TextBlock Text="Sin Firma" Foreground="#EAB308" FontSize="10"/>
-                        </StackPanel>
+        <!-- Filter Bar -->
+        <Border Grid.Row="1" Background="#0F172A" CornerRadius="12" Padding="15,12" Margin="0,0,0,15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Orientation="Horizontal">
+                    <ToggleButton x:Name="FilterAll" Content="Todas" Style="{StaticResource FilterToggle}" 
+                                  IsChecked="True" Click="Filter_Click"/>
+                    <ToggleButton x:Name="FilterInUse" Style="{StaticResource FilterToggle}" Click="Filter_Click">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="🔴" FontSize="11" Margin="0,0,3,0"/>
-                            <TextBlock Text="Sospechoso" Foreground="#EF4444" FontSize="10"/>
+                            <Ellipse Width="8" Height="8" Fill="#EF4444" Margin="0,0,6,0"/>
+                            <TextBlock Text="En Uso"/>
                         </StackPanel>
-                    </StackPanel>
+                    </ToggleButton>
+                    <ToggleButton x:Name="FilterRunning" Style="{StaticResource FilterToggle}" Click="Filter_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse Width="8" Height="8" Fill="#4DA8DA" Margin="0,0,6,0"/>
+                            <TextBlock Text="Ejecutando"/>
+                        </StackPanel>
+                    </ToggleButton>
+                    <ToggleButton x:Name="FilterCamera" Content="📷 Cámara" Style="{StaticResource FilterToggle}" Click="Filter_Click"/>
+                    <ToggleButton x:Name="FilterMic" Content="🎤 Micrófono" Style="{StaticResource FilterToggle}" Click="Filter_Click"/>
                 </StackPanel>
-            </Border>
-        </Grid>
 
-        <!-- Main Content -->
-        <TabControl Grid.Row="1" Background="Transparent" BorderThickness="0">
-            <TabControl.Resources>
-                <Style TargetType="TabItem">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="TabItem">
-                                <Border Name="Border" BorderThickness="1,1,1,0" BorderBrush="#1E293B" CornerRadius="8,8,0,0" Margin="0,0,4,0">
-                                    <ContentPresenter x:Name="ContentSite"
-                                        VerticalAlignment="Center"
-                                        HorizontalAlignment="Center"
-                                        ContentSource="Header"
-                                        Margin="20,10"/>
+                <!-- Stats -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock x:Name="StatsText" Text="0 aplicaciones" Foreground="#64748B" FontSize="12" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- App List -->
+        <Border Grid.Row="2" Background="#0A0F1E" CornerRadius="12" BorderBrush="#1E293B" BorderThickness="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Column Headers -->
+                <Border Background="#111827" CornerRadius="12,12,0,0" Padding="20,12">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="220"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="APLICACIÓN" Foreground="#64748B" FontSize="11" FontWeight="Bold"/>
+                        <TextBlock Grid.Column="1" Text="PERMISOS" Foreground="#64748B" FontSize="11" FontWeight="Bold"/>
+                        <TextBlock Grid.Column="2" Text="ESTADO" Foreground="#64748B" FontSize="11" FontWeight="Bold"/>
+                        <TextBlock Grid.Column="3" Text="SEGURIDAD" Foreground="#64748B" FontSize="11" FontWeight="Bold"/>
+                        <TextBlock Grid.Column="4" Text="ACCIONES" Foreground="#64748B" FontSize="11" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    </Grid>
+                </Border>
+
+                <!-- Scrollable List -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl x:Name="AppList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="#0F172A" BorderBrush="#1E293B" BorderThickness="0,0,0,1" Padding="20,14">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="220"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <!-- App Name -->
+                                        <StackPanel VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding DisplayName}" FontWeight="Bold" Foreground="White" 
+                                                       FontSize="13" TextTrimming="CharacterEllipsis"
+                                                       ToolTip="{Binding AppId}"/>
+                                            <TextBlock Text="{Binding AppType}" FontSize="10" Foreground="#64748B" Margin="0,2,0,0"/>
+                                        </StackPanel>
+
+                                        <!-- Permission Badges -->
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Border Style="{StaticResource PermissionBadge}" 
+                                                    Background="{Binding CameraBadgeBg}">
+                                                <TextBlock Text="📷" FontSize="12" Foreground="{Binding CameraBadgeFg}"/>
+                                            </Border>
+                                            <Border Style="{StaticResource PermissionBadge}" 
+                                                    Background="{Binding MicBadgeBg}">
+                                                <TextBlock Text="🎤" FontSize="12" Foreground="{Binding MicBadgeFg}"/>
+                                            </Border>
+                                        </StackPanel>
+
+                                        <!-- Status -->
+                                        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <Ellipse Width="8" Height="8" Fill="{Binding StatusColor}" Margin="0,0,6,0"/>
+                                            <TextBlock Text="{Binding StatusText}" FontSize="11" Foreground="{Binding StatusColor}"/>
+                                        </StackPanel>
+
+                                        <!-- Security -->
+                                        <TextBlock Grid.Column="3" Text="{Binding SecurityText}" 
+                                                   Foreground="{Binding SecurityColor}" FontSize="11" 
+                                                   VerticalAlignment="Center" FontWeight="Medium"/>
+
+                                        <!-- Actions -->
+                                        <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Button Content="📷 Revocar" Style="{StaticResource ActionButton}" 
+                                                    Click="RevokeCamera_Click" Tag="{Binding}"
+                                                    Visibility="{Binding HasCameraAccess, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                            <Button Content="🎤 Revocar" Style="{StaticResource ActionButton}" 
+                                                    Click="RevokeMic_Click" Tag="{Binding}"
+                                                    Visibility="{Binding HasMicAccess, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                            <Button Content="⏹ Terminar" Style="{StaticResource TerminateBtn}" 
+                                                    Click="Terminate_Click" Tag="{Binding}"
+                                                    Visibility="{Binding IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="Border" Property="Background" Value="#1E293B" />
-                                        <Setter Property="Foreground" Value="White" />
-                                    </Trigger>
-                                    <Trigger Property="IsSelected" Value="False">
-                                        <Setter TargetName="Border" Property="Background" Value="#0A0F1E" />
-                                        <Setter Property="Foreground" Value="#64748B" />
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </TabControl.Resources>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
 
-            <!-- Cámara -->
-            <TabItem Header="📷 CÁMARA">
-                <Border Style="{StaticResource CardBorder}" Background="#0A0F1E" Padding="0" Margin="0,10,0,0">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        
-                        <Border Background="#111827" Padding="15,12" BorderBrush="#1E293B" BorderThickness="0,0,0,1">
-                            <TextBlock Text="APLICACIONES CON ACCESO A LA CÁMARA" Foreground="#64748B" FontSize="11" FontWeight="Bold"/>
-                        </Border>
-
-                        <DataGrid x:Name="CameraGrid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" 
-                                  Background="Transparent" RowBackground="Transparent" AlternatingRowBackground="#0F172A"
-                                  HeadersVisibility="Column" GridLinesVisibility="None" BorderThickness="0"
-                                  RowStyle="{StaticResource PrivacyRowStyle}" UseLayoutRounding="True">
-                            <DataGrid.Resources>
-                                <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="Background" Value="#111827"/>
-                                    <Setter Property="Foreground" Value="#94A3B8"/>
-                                    <Setter Property="Padding" Value="12,10"/>
-                                    <Setter Property="FontWeight" Value="SemiBold"/>
-                                    <Setter Property="FontSize" Value="11"/>
-                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                                    <Setter Property="BorderBrush" Value="#1E293B"/>
-                                </Style>
-                                <Style TargetType="DataGridCell">
-                                    <Setter Property="Padding" Value="12,10"/>
-                                    <Setter Property="BorderThickness" Value="0"/>
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="DataGridCell">
-                                                <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
-                                                    <ContentPresenter VerticalAlignment="Center"/>
-                                                </Border>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                    <Style.Triggers>
-                                        <Trigger Property="IsSelected" Value="True">
-                                            <Setter Property="Background" Value="#1E3A5F"/>
-                                            <Setter Property="Foreground" Value="White"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGrid.Resources>
-                            <DataGrid.Columns>
-                                <!-- Threat Icon -->
-                                <DataGridTemplateColumn Header="" Width="45">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding ThreatIcon}" FontSize="16" HorizontalAlignment="Center" 
-                                                       ToolTip="{Binding ThreatText}"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-
-                                <!-- Application Name -->
-                                <DataGridTemplateColumn Header="APLICACIÓN" Width="*">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <StackPanel VerticalAlignment="Center">
-                                                <TextBlock Text="{Binding DisplayName}" FontWeight="Bold" Foreground="White" 
-                                                           FontSize="13" Cursor="Hand" MouseLeftButtonDown="OpenLocation_Click"
-                                                           ToolTip="{Binding AppId}">
-                                                    <TextBlock.Style>
-                                                        <Style TargetType="TextBlock">
-                                                            <Style.Triggers>
-                                                                <Trigger Property="IsMouseOver" Value="True">
-                                                                    <Setter Property="TextDecorations" Value="Underline"/>
-                                                                </Trigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </TextBlock.Style>
-                                                </TextBlock>
-                                                <TextBlock Text="{Binding StatusText}" FontSize="11" Margin="0,2,0,0">
-                                                    <TextBlock.Style>
-                                                        <Style TargetType="TextBlock">
-                                                            <Setter Property="Foreground" Value="#64748B"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding IsActiveRisk}" Value="True">
-                                                                    <Setter Property="Foreground" Value="#EF4444"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding IsRunning}" Value="True">
-                                                                    <Setter Property="Foreground" Value="#4DA8DA"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </TextBlock.Style>
-                                                </TextBlock>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-
-                                <!-- Signature -->
-                                <DataGridTemplateColumn Header="FIRMA DIGITAL" Width="200">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding SignatureText}" Foreground="{Binding SignatureColor}" 
-                                                       VerticalAlignment="Center" FontSize="12" TextTrimming="CharacterEllipsis"
-                                                       ToolTip="{Binding Publisher}"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-
-                                <!-- Last Activity -->
-                                <DataGridTemplateColumn Header="ÚLTIMO USO" Width="140">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding LastActivity}" Foreground="#94A3B8" VerticalAlignment="Center" FontSize="12"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-
-                                <!-- Actions -->
-                                <DataGridTemplateColumn Header="ACCIONES" Width="200">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                <Button Content="Revocar" Click="Revoke_Click" 
-                                                        Style="{StaticResource RevokeButton}"
-                                                        Margin="0,0,6,0" Tag="{Binding}"/>
-                                                <Button Content="Terminar" Click="Terminate_Click"
-                                                        Style="{StaticResource TerminateButton}"
-                                                        Visibility="{Binding IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                        Tag="{Binding}"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </Grid>
-                </Border>
-            </TabItem>
-
-            <!-- Micrófono -->
-            <TabItem Header="🎤 MICRÓFONO">
-                <Border Style="{StaticResource CardBorder}" Background="#0A0F1E" Padding="0" Margin="0,10,0,0">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <Border Background="#111827" Padding="15,12" BorderBrush="#1E293B" BorderThickness="0,0,0,1">
-                            <TextBlock Text="APLICACIONES CON ACCESO AL MICRÓFONO" Foreground="#64748B" FontSize="11" FontWeight="Bold"/>
-                        </Border>
-
-                        <DataGrid x:Name="MicGrid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" 
-                                  Background="Transparent" RowBackground="Transparent" AlternatingRowBackground="#0F172A"
-                                  HeadersVisibility="Column" GridLinesVisibility="None" BorderThickness="0"
-                                  RowStyle="{StaticResource PrivacyRowStyle}" UseLayoutRounding="True">
-                            <DataGrid.Resources>
-                                <Style TargetType="DataGridColumnHeader">
-                                    <Setter Property="Background" Value="#111827"/>
-                                    <Setter Property="Foreground" Value="#94A3B8"/>
-                                    <Setter Property="Padding" Value="12,10"/>
-                                    <Setter Property="FontWeight" Value="SemiBold"/>
-                                    <Setter Property="FontSize" Value="11"/>
-                                    <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                                    <Setter Property="BorderBrush" Value="#1E293B"/>
-                                </Style>
-                                <Style TargetType="DataGridCell">
-                                    <Setter Property="Padding" Value="12,10"/>
-                                    <Setter Property="BorderThickness" Value="0"/>
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="DataGridCell">
-                                                <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
-                                                    <ContentPresenter VerticalAlignment="Center"/>
-                                                </Border>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                    <Style.Triggers>
-                                        <Trigger Property="IsSelected" Value="True">
-                                            <Setter Property="Background" Value="#1E3A5F"/>
-                                            <Setter Property="Foreground" Value="White"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGrid.Resources>
-                            <DataGrid.Columns>
-                                <!-- Threat Icon -->
-                                <DataGridTemplateColumn Header="" Width="45">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding ThreatIcon}" FontSize="16" HorizontalAlignment="Center" 
-                                                       ToolTip="{Binding ThreatText}"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-
-                                <!-- Application Name -->
-                                <DataGridTemplateColumn Header="APLICACIÓN" Width="*">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <StackPanel VerticalAlignment="Center">
-                                                <TextBlock Text="{Binding DisplayName}" FontWeight="Bold" Foreground="White" 
-                                                           FontSize="13" Cursor="Hand" MouseLeftButtonDown="OpenLocation_Click"
-                                                           ToolTip="{Binding AppId}">
-                                                    <TextBlock.Style>
-                                                        <Style TargetType="TextBlock">
-                                                            <Style.Triggers>
-                                                                <Trigger Property="IsMouseOver" Value="True">
-                                                                    <Setter Property="TextDecorations" Value="Underline"/>
-                                                                </Trigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </TextBlock.Style>
-                                                </TextBlock>
-                                                <TextBlock Text="{Binding StatusText}" FontSize="11" Margin="0,2,0,0">
-                                                    <TextBlock.Style>
-                                                        <Style TargetType="TextBlock">
-                                                            <Setter Property="Foreground" Value="#64748B"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding IsActiveRisk}" Value="True">
-                                                                    <Setter Property="Foreground" Value="#EF4444"/>
-                                                                </DataTrigger>
-                                                                <DataTrigger Binding="{Binding IsRunning}" Value="True">
-                                                                    <Setter Property="Foreground" Value="#4DA8DA"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </TextBlock.Style>
-                                                </TextBlock>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-
-                                <!-- Signature -->
-                                <DataGridTemplateColumn Header="FIRMA DIGITAL" Width="200">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding SignatureText}" Foreground="{Binding SignatureColor}" 
-                                                       VerticalAlignment="Center" FontSize="12" TextTrimming="CharacterEllipsis"
-                                                       ToolTip="{Binding Publisher}"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-
-                                <!-- Last Activity -->
-                                <DataGridTemplateColumn Header="ÚLTIMO USO" Width="140">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding LastActivity}" Foreground="#94A3B8" VerticalAlignment="Center" FontSize="12"/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-
-                                <!-- Actions -->
-                                <DataGridTemplateColumn Header="ACCIONES" Width="200">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                                <Button Content="Revocar" Click="Revoke_Click" 
-                                                        Style="{StaticResource RevokeButton}"
-                                                        Margin="0,0,6,0" Tag="{Binding}"/>
-                                                <Button Content="Terminar" Click="Terminate_Click"
-                                                        Style="{StaticResource TerminateButton}"
-                                                        Visibility="{Binding IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                        Tag="{Binding}"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                            </DataGrid.Columns>
-                        </DataGrid>
-                    </Grid>
-                </Border>
-            </TabItem>
-        </TabControl>
+                <!-- Empty State -->
+                <StackPanel x:Name="EmptyState" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
+                    <TextBlock Text="✨" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                    <TextBlock Text="No hay aplicaciones que coincidan con el filtro" Foreground="#64748B" FontSize="14" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </Border>
 
         <!-- Footer -->
-        <Border Grid.Row="2" Background="#111827" CornerRadius="0,0,8,8" Padding="20,15" Margin="0,15,0,0" BorderBrush="#1E293B" BorderThickness="1">
+        <Border Grid.Row="3" Background="#111827" CornerRadius="8" Padding="20,15" Margin="0,15,0,0" BorderBrush="#1E293B" BorderThickness="1">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -398,32 +259,10 @@
                 </StackPanel>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button Content="🔄 Actualizar" Click="Refresh_Click"
-                            Width="120" Height="38" Margin="0,0,12,0" FontWeight="Bold">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border x:Name="border" CornerRadius="6" Background="#1E293B" BorderBrush="#334155" BorderThickness="1">
-                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="border" Property="Background" Value="#2E5077"/>
-                                                    <Setter TargetName="border" Property="BorderBrush" Value="#4DA8DA"/>
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                                <Setter Property="Foreground" Value="#4DA8DA"/>
-                                <Setter Property="Cursor" Value="Hand"/>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+                    <Button Content="🔄 Actualizar" Click="Refresh_Click" Style="{StaticResource ModernButton}"
+                            Width="120" Height="38" Margin="0,0,12,0"/>
                     <Button Content="Cerrar" Click="Close_Click" Style="{StaticResource ModernButton}" 
-                            Width="110" Height="38" FontWeight="Bold"/>
+                            Width="100" Height="38"/>
                 </StackPanel>
             </Grid>
         </Border>

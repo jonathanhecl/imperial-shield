@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using ImperialShield.Services;
 
@@ -13,6 +14,7 @@ namespace ImperialShield.Views;
 public partial class PrivacyManagerWindow : Window
 {
     private PrivacyMonitor _monitor;
+    private List<UnifiedAppViewModel> _allApps = new();
 
     // Trusted publishers list
     private static readonly string[] TrustedPublishers = new[]
@@ -22,71 +24,70 @@ public partial class PrivacyManagerWindow : Window
         "OBS", "Corsair", "ASUS", "MSI", "Realtek", "Dell", "HP", "Lenovo", "Samsung"
     };
 
-    public enum ThreatLevel { Trusted, Safe, Medium, High }
+    public enum SecurityLevel { Verified, Unverified, Suspicious }
 
-    public class PrivacyAppViewModel
+    public class UnifiedAppViewModel
     {
         public string AppId { get; set; } = string.Empty;
         public string DisplayName { get; set; } = string.Empty;
         public bool IsNonPackaged { get; set; }
-        public DateTime LastUsedStart { get; set; }
-        public DateTime LastUsedStop { get; set; }
-        public bool IsActiveRisk { get; set; }
+        
+        // Permissions
+        public bool HasCameraAccess { get; set; }
+        public bool HasMicAccess { get; set; }
+        public bool IsCameraInUse { get; set; }
+        public bool IsMicInUse { get; set; }
+        
+        // State
         public bool IsRunning { get; set; }
-        public DeviceType DeviceType { get; set; }
+        public bool IsInUse => IsCameraInUse || IsMicInUse;
         
-        // Security properties
-        public bool IsSigned { get; set; }
+        // Security
+        public SecurityLevel Security { get; set; } = SecurityLevel.Verified;
         public string Publisher { get; set; } = string.Empty;
-        public ThreatLevel ThreatLevel { get; set; } = ThreatLevel.Safe;
-        public bool IsImperialShield { get; set; }
-        public bool IsStoreApp { get; set; }
         
-        // For UI Binding
-        public string LastActivity => LastUsedStop == DateTime.MinValue 
-            ? (IsActiveRisk ? "Ahora mismo" : "Nunca/Desconocido") 
-            : LastUsedStop.ToString("g");
-
-        public string StatusText => IsActiveRisk ? "🔴 En Uso" : (IsRunning ? "🔵 Ejecutando" : "⚫ Detenido");
+        // For sorting (higher = more priority)
+        public int SortPriority => IsInUse ? 3 : (IsRunning ? 2 : 1);
         
-        // Security UI Bindings
-        public string ThreatIcon => ThreatLevel switch
-        {
-            ThreatLevel.Trusted => "🛡️",
-            ThreatLevel.Safe => "✅",
-            ThreatLevel.Medium => "🟡",
-            ThreatLevel.High => "🔴",
-            _ => "❓"
-        };
+        // UI Bindings
+        public string AppType => IsNonPackaged ? "Aplicación de Escritorio" : "Microsoft Store";
+        
+        public Brush CameraBadgeBg => HasCameraAccess 
+            ? new SolidColorBrush(Color.FromArgb(40, 77, 168, 218)) 
+            : new SolidColorBrush(Color.FromArgb(20, 100, 116, 139));
+        public Brush CameraBadgeFg => HasCameraAccess 
+            ? Brushes.White 
+            : new SolidColorBrush(Color.FromRgb(71, 85, 105));
+            
+        public Brush MicBadgeBg => HasMicAccess 
+            ? new SolidColorBrush(Color.FromArgb(40, 239, 68, 68)) 
+            : new SolidColorBrush(Color.FromArgb(20, 100, 116, 139));
+        public Brush MicBadgeFg => HasMicAccess 
+            ? Brushes.White 
+            : new SolidColorBrush(Color.FromRgb(71, 85, 105));
 
-        public string ThreatText => ThreatLevel switch
+        public string StatusText => IsInUse ? "En Uso" : (IsRunning ? "Abierto" : "Cerrado");
+        public Brush StatusColor => IsInUse 
+            ? new SolidColorBrush(Color.FromRgb(239, 68, 68))   // Red
+            : IsRunning 
+                ? new SolidColorBrush(Color.FromRgb(77, 168, 218))  // Blue
+                : new SolidColorBrush(Color.FromRgb(100, 116, 139)); // Gray
+
+        public string SecurityText => Security switch
         {
-            ThreatLevel.Trusted => "Confiable",
-            ThreatLevel.Safe => "Seguro",
-            ThreatLevel.Medium => "Sin Firma",
-            ThreatLevel.High => "Sospechoso",
+            SecurityLevel.Verified => "Verificado",
+            SecurityLevel.Unverified => "Sin verificar",
+            SecurityLevel.Suspicious => "Sospechoso",
             _ => "Desconocido"
         };
-
-        public Brush ThreatColor => ThreatLevel switch
+        
+        public Brush SecurityColor => Security switch
         {
-            ThreatLevel.Trusted => new SolidColorBrush(Color.FromRgb(77, 168, 218)),
-            ThreatLevel.Safe => new SolidColorBrush(Color.FromRgb(34, 197, 94)),
-            ThreatLevel.Medium => new SolidColorBrush(Color.FromRgb(234, 179, 8)),
-            ThreatLevel.High => new SolidColorBrush(Color.FromRgb(239, 68, 68)),
+            SecurityLevel.Verified => new SolidColorBrush(Color.FromRgb(34, 197, 94)),    // Green
+            SecurityLevel.Unverified => new SolidColorBrush(Color.FromRgb(234, 179, 8)),  // Yellow
+            SecurityLevel.Suspicious => new SolidColorBrush(Color.FromRgb(239, 68, 68)),  // Red
             _ => new SolidColorBrush(Color.FromRgb(148, 163, 184))
         };
-
-        public string SignatureText => IsImperialShield ? "🛡️ Sistema (Verificado)" 
-            : IsStoreApp ? "📦 Microsoft Store" 
-            : IsSigned ? $"✓ {Publisher}" 
-            : "⚠️ Sin Firma";
-
-        public Brush SignatureColor => IsImperialShield || IsStoreApp ? new SolidColorBrush(Color.FromRgb(77, 168, 218))
-            : IsSigned ? new SolidColorBrush(Color.FromRgb(34, 197, 94))
-            : new SolidColorBrush(Color.FromRgb(234, 179, 8));
-        
-        public PrivacyMonitor.PrivacyAppHistory OriginalData { get; set; } = new();
     }
 
     public PrivacyManagerWindow()
@@ -103,112 +104,130 @@ public partial class PrivacyManagerWindow : Window
 
     private void RefreshData()
     {
-        // Get Camera Apps
+        var runningProcs = Process.GetProcesses();
+        
+        // Get all apps with camera access
         var camApps = _monitor.GetAllAppsWithPermission(DeviceType.Camera);
-        var camViewModels = MapToViewModel(camApps, DeviceType.Camera);
-        CameraGrid.ItemsSource = camViewModels;
-
-        // Get Mic Apps
         var micApps = _monitor.GetAllAppsWithPermission(DeviceType.Microphone);
-        var micViewModels = MapToViewModel(micApps, DeviceType.Microphone);
-        MicGrid.ItemsSource = micViewModels;
 
+        // Merge into unified list by AppId
+        var appDict = new Dictionary<string, UnifiedAppViewModel>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var cam in camApps)
+        {
+            if (!appDict.TryGetValue(cam.AppId, out var vm))
+            {
+                vm = CreateViewModel(cam, runningProcs);
+                appDict[cam.AppId] = vm;
+            }
+            vm.HasCameraAccess = true;
+            vm.IsCameraInUse = cam.IsActive;
+        }
+
+        foreach (var mic in micApps)
+        {
+            if (!appDict.TryGetValue(mic.AppId, out var vm))
+            {
+                vm = CreateViewModel(mic, runningProcs);
+                appDict[mic.AppId] = vm;
+            }
+            vm.HasMicAccess = true;
+            vm.IsMicInUse = mic.IsActive;
+        }
+
+        // Sort: InUse first, then Running, then Stopped
+        _allApps = appDict.Values
+            .OrderByDescending(x => x.SortPriority)
+            .ThenBy(x => x.DisplayName)
+            .ToList();
+
+        ApplyFilter();
         LastUpdatedText.Text = $"Última actualización: {DateTime.Now:HH:mm:ss}";
     }
 
-    private List<PrivacyAppViewModel> MapToViewModel(List<PrivacyMonitor.PrivacyAppHistory> history, DeviceType type)
+    private UnifiedAppViewModel CreateViewModel(PrivacyMonitor.PrivacyAppHistory app, Process[] runningProcs)
     {
-        var runningProcs = Process.GetProcesses();
+        bool isRunning = false;
         
-        var groupedHistory = history.GroupBy(h => h.AppId).Select(g => new PrivacyMonitor.PrivacyAppHistory
+        if (app.IsNonPackaged)
         {
-            AppId = g.Key,
-            DisplayName = g.First().DisplayName,
-            IsNonPackaged = g.First().IsNonPackaged,
-            LastUsedStart = g.Max(x => x.LastUsedStart),
-            LastUsedStop = g.Max(x => x.LastUsedStop),
-            IsActive = g.Any(x => x.IsActive),
-            PermissionStatus = g.First().PermissionStatus
-        });
-
-        var result = new List<PrivacyAppViewModel>();
-
-        foreach (var h in groupedHistory)
-        {
-            bool isRunning = false;
-            
-            if (h.IsNonPackaged)
-            {
-                string fileName = System.IO.Path.GetFileNameWithoutExtension(h.AppId);
-                isRunning = runningProcs.Any(p => p.ProcessName.Equals(fileName, StringComparison.OrdinalIgnoreCase));
-            }
-            else
-            {
-                isRunning = runningProcs.Any(p => p.ProcessName.Contains(h.DisplayName, StringComparison.OrdinalIgnoreCase));
-            }
-
-            var vm = new PrivacyAppViewModel
-            {
-                AppId = h.AppId,
-                DisplayName = h.DisplayName,
-                IsNonPackaged = h.IsNonPackaged,
-                LastUsedStart = h.LastUsedStart,
-                LastUsedStop = h.LastUsedStop,
-                IsActiveRisk = h.IsActive,
-                IsRunning = isRunning,
-                DeviceType = type,
-                OriginalData = h,
-                IsStoreApp = !h.IsNonPackaged
-            };
-
-            // Analyze security
-            AnalyzeSecurity(vm);
-
-            result.Add(vm);
+            string fileName = System.IO.Path.GetFileNameWithoutExtension(app.AppId);
+            isRunning = runningProcs.Any(p => p.ProcessName.Equals(fileName, StringComparison.OrdinalIgnoreCase));
         }
-        
-        return result
-            .OrderByDescending(x => x.IsActiveRisk || x.IsRunning) // Primero todo lo que está activo (Rojo o Azul)
-            .ThenByDescending(x => x.IsActiveRisk)               // De lo activo, primero lo que usa hardware (Rojo)
-            .ThenByDescending(x => x.ThreatLevel)                // Luego por nivel de riesgo
-            .ThenByDescending(x => x.LastUsedStart)              // Finalmente por actividad reciente
-            .ToList();
+        else
+        {
+            isRunning = runningProcs.Any(p => p.ProcessName.Contains(app.DisplayName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        var vm = new UnifiedAppViewModel
+        {
+            AppId = app.AppId,
+            DisplayName = app.DisplayName,
+            IsNonPackaged = app.IsNonPackaged,
+            IsRunning = isRunning
+        };
+
+        // Analyze security
+        AnalyzeSecurity(vm);
+
+        return vm;
     }
 
-    private void AnalyzeSecurity(PrivacyAppViewModel vm)
+    private void AnalyzeSecurity(UnifiedAppViewModel vm)
     {
+        // Store apps are considered verified
+        if (!vm.IsNonPackaged)
+        {
+            vm.Security = SecurityLevel.Verified;
+            vm.Publisher = "Microsoft Store";
+            return;
+        }
+
         // Check if it's Imperial Shield
         if (vm.DisplayName.Contains("ImperialShield", StringComparison.OrdinalIgnoreCase) ||
             vm.AppId.Contains("ImperialShield", StringComparison.OrdinalIgnoreCase))
         {
-            vm.IsImperialShield = true;
-            vm.IsSigned = true;
+            vm.Security = SecurityLevel.Verified;
             vm.Publisher = "Imperial Shield";
-            vm.ThreatLevel = ThreatLevel.Trusted;
-            return;
-        }
-
-        // Store apps are considered trusted (signed by Microsoft)
-        if (!vm.IsNonPackaged)
-        {
-            vm.IsSigned = true;
-            vm.Publisher = "Microsoft Store";
-            vm.ThreatLevel = ThreatLevel.Trusted;
             return;
         }
 
         // For non-packaged apps, verify signature
         if (System.IO.File.Exists(vm.AppId))
         {
-            vm.IsSigned = VerifySignature(vm.AppId);
-            vm.Publisher = GetPublisher(vm.AppId);
-            vm.ThreatLevel = AnalyzeThreat(vm);
+            bool isSigned = VerifySignature(vm.AppId);
+            string publisher = GetPublisher(vm.AppId);
+            vm.Publisher = publisher;
+
+            if (!isSigned)
+            {
+                // Check suspicious locations
+                string lowerPath = vm.AppId.ToLower();
+                if (lowerPath.Contains("\\temp\\") || 
+                    lowerPath.Contains("\\downloads\\") || 
+                    lowerPath.Contains("\\desktop\\") ||
+                    lowerPath.Contains("appdata\\local\\temp"))
+                {
+                    vm.Security = SecurityLevel.Suspicious;
+                }
+                else
+                {
+                    vm.Security = SecurityLevel.Unverified;
+                }
+            }
+            else if (TrustedPublishers.Any(p => publisher.Contains(p, StringComparison.OrdinalIgnoreCase)))
+            {
+                vm.Security = SecurityLevel.Verified;
+            }
+            else
+            {
+                vm.Security = SecurityLevel.Verified; // Signed = Verified
+            }
         }
         else
         {
-            vm.IsSigned = false;
+            vm.Security = SecurityLevel.Unverified;
             vm.Publisher = "Desconocido";
-            vm.ThreatLevel = ThreatLevel.Medium;
         }
     }
 
@@ -233,7 +252,6 @@ public partial class PrivacyManagerWindow : Window
             if (cert != null)
             {
                 string subject = cert.Subject;
-                // Extract CN (Common Name)
                 var cnStart = subject.IndexOf("CN=");
                 if (cnStart >= 0)
                 {
@@ -248,41 +266,80 @@ public partial class PrivacyManagerWindow : Window
         return "Desconocido";
     }
 
-    private ThreatLevel AnalyzeThreat(PrivacyAppViewModel vm)
+    private void ApplyFilter()
     {
-        // Unsigned + suspicious location = HIGH
-        if (!vm.IsSigned)
-        {
-            string lowerPath = vm.AppId.ToLower();
-            if (lowerPath.Contains("\\temp\\") || 
-                lowerPath.Contains("\\downloads\\") || 
-                lowerPath.Contains("\\desktop\\") ||
-                lowerPath.Contains("appdata\\local\\temp"))
-            {
-                return ThreatLevel.High;
-            }
-            return ThreatLevel.Medium;
-        }
+        IEnumerable<UnifiedAppViewModel> filtered = _allApps;
 
-        // Signed by trusted publisher
-        if (TrustedPublishers.Any(p => vm.Publisher.Contains(p, StringComparison.OrdinalIgnoreCase)))
+        // Apply exclusive filters
+        if (FilterInUse.IsChecked == true)
         {
-            return ThreatLevel.Trusted;
+            filtered = filtered.Where(x => x.IsInUse);
         }
+        else if (FilterRunning.IsChecked == true)
+        {
+            filtered = filtered.Where(x => x.IsRunning);
+        }
+        else if (FilterCamera.IsChecked == true)
+        {
+            filtered = filtered.Where(x => x.HasCameraAccess);
+        }
+        else if (FilterMic.IsChecked == true)
+        {
+            filtered = filtered.Where(x => x.HasMicAccess);
+        }
+        // FilterAll shows everything
 
-        // Signed but unknown publisher
-        return ThreatLevel.Safe;
+        var list = filtered.ToList();
+        AppList.ItemsSource = list;
+        
+        StatsText.Text = $"{list.Count} aplicaciones";
+        EmptyState.Visibility = list.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private void Revoke_Click(object sender, RoutedEventArgs e)
+    private void Filter_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is Button btn && btn.Tag is PrivacyAppViewModel app)
+        if (sender is ToggleButton clicked)
         {
-            if (MessageBox.Show($"¿Estás seguro de que quieres revocar el permiso de {app.DeviceType} para '{app.DisplayName}'?\n\nEsto modificará el registro de Windows.", 
-                "Revocar Permiso", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            // Make filters mutually exclusive
+            var filters = new[] { FilterAll, FilterInUse, FilterRunning, FilterCamera, FilterMic };
+            foreach (var f in filters)
             {
-                _monitor.RevokePermission(app.AppId, app.IsNonPackaged, app.DeviceType);
-                MessageBox.Show("Permiso revocado (establecido a 'Deny'). Reinicia la aplicación afectada para ver los cambios.");
+                if (f != clicked) f.IsChecked = false;
+            }
+            
+            // Ensure at least one is checked
+            if (clicked.IsChecked != true)
+                clicked.IsChecked = true;
+
+            ApplyFilter();
+        }
+    }
+
+    private void RevokeCamera_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.Tag is UnifiedAppViewModel app)
+        {
+            if (MessageBox.Show($"¿Revocar acceso a la CÁMARA para '{app.DisplayName}'?\n\nEsto modificará el registro de Windows.", 
+                "Revocar Cámara", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+                _monitor.RevokePermission(app.AppId, app.IsNonPackaged, DeviceType.Camera);
+                MessageBox.Show("Permiso de cámara revocado. Reinicia la aplicación para aplicar los cambios.", 
+                    "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                RefreshData();
+            }
+        }
+    }
+
+    private void RevokeMic_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.Tag is UnifiedAppViewModel app)
+        {
+            if (MessageBox.Show($"¿Revocar acceso al MICRÓFONO para '{app.DisplayName}'?\n\nEsto modificará el registro de Windows.", 
+                "Revocar Micrófono", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            {
+                _monitor.RevokePermission(app.AppId, app.IsNonPackaged, DeviceType.Microphone);
+                MessageBox.Show("Permiso de micrófono revocado. Reinicia la aplicación para aplicar los cambios.", 
+                    "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
                 RefreshData();
             }
         }
@@ -290,32 +347,36 @@ public partial class PrivacyManagerWindow : Window
 
     private void Terminate_Click(object sender, RoutedEventArgs e)
     {
-        PrivacyAppViewModel? app = null;
-        if (sender is Button btn) app = btn.Tag as PrivacyAppViewModel;
-        else if (sender is MenuItem mi) app = mi.DataContext as PrivacyAppViewModel;
-
-        if (app != null)
+        if (sender is Button btn && btn.Tag is UnifiedAppViewModel app)
         {
-            try
+            if (MessageBox.Show($"¿Terminar el proceso '{app.DisplayName}'?\n\nEsto cerrará la aplicación forzosamente.", 
+                "Terminar Proceso", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                TerminateProcessesForApp(app);
-                RefreshData();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error al terminar proceso: {ex.Message}");
+                try
+                {
+                    TerminateProcess(app);
+                    RefreshData();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al terminar proceso: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
     }
 
-    private void TerminateProcessesForApp(PrivacyAppViewModel app)
+    private void TerminateProcess(UnifiedAppViewModel app)
     {
-        string procName = app.IsNonPackaged ? System.IO.Path.GetFileNameWithoutExtension(app.AppId) : app.DisplayName;
+        string procName = app.IsNonPackaged 
+            ? System.IO.Path.GetFileNameWithoutExtension(app.AppId) 
+            : app.DisplayName;
         
         var procs = Process.GetProcessesByName(procName);
         if (procs.Length == 0)
         {
-            procs = Process.GetProcesses().Where(p => p.ProcessName.Contains(app.DisplayName, StringComparison.OrdinalIgnoreCase)).ToArray();
+            procs = Process.GetProcesses()
+                .Where(p => p.ProcessName.Contains(app.DisplayName, StringComparison.OrdinalIgnoreCase))
+                .ToArray();
         }
 
         if (procs.Length > 0)
@@ -325,42 +386,14 @@ public partial class PrivacyManagerWindow : Window
             {
                 try { p.Kill(); killed++; } catch { }
             }
+            if (killed > 0)
+            {
+                MessageBox.Show($"Se terminaron {killed} proceso(s).", "Proceso Terminado", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
         else
         {
-            MessageBox.Show("No se encontraron procesos activos para esta aplicación.");
-        }
-    }
-
-    private void OpenLocation_Click(object sender, RoutedEventArgs e)
-    {
-        PrivacyAppViewModel? app = null;
-        if (sender is MenuItem mi) app = mi.DataContext as PrivacyAppViewModel;
-        else if (sender is FrameworkElement fe) app = fe.DataContext as PrivacyAppViewModel;
-
-        if (app != null)
-        {
-            if (app.IsNonPackaged && System.IO.File.Exists(app.AppId))
-            {
-                Process.Start("explorer.exe", $"/select,\"{app.AppId}\"");
-            }
-            else if (!app.IsNonPackaged)
-            {
-                MessageBox.Show("Esta es una aplicación de Windows Store. No tiene una ubicación de archivo tradicional explorable.", "Aplicación de Sistema");
-            }
-            else
-            {
-                MessageBox.Show("No se pudo encontrar el archivo ejecutable en el disco.", "Error");
-            }
-        }
-    }
-
-    private void CopyPath_Click(object sender, RoutedEventArgs e)
-    {
-        if (sender is MenuItem mi && mi.DataContext is PrivacyAppViewModel app)
-        {
-            Clipboard.SetText(app.AppId);
-            MessageBox.Show("Ruta copiada al portapapeles.");
+            MessageBox.Show("No se encontraron procesos activos para esta aplicación.", "Sin Procesos", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 
