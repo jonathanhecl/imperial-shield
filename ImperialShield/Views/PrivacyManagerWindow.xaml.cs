@@ -401,25 +401,48 @@ public partial class PrivacyManagerWindow : Window
         }
     }
 
-    private void OpenFolder_DoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    private void OpenFolder_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement fe && fe.DataContext is UnifiedAppViewModel app)
+        UnifiedAppViewModel? app = null;
+        
+        if (sender is MenuItem mi)
+            app = mi.DataContext as UnifiedAppViewModel;
+        else if (sender is FrameworkElement fe)
+            app = fe.DataContext as UnifiedAppViewModel;
+
+        if (app == null) return;
+
+        if (!app.IsNonPackaged)
         {
-            if (app.IsNonPackaged && System.IO.File.Exists(app.AppId))
-            {
-                Process.Start("explorer.exe", $"/select,\"{app.AppId}\"");
-            }
-            else if (!app.IsNonPackaged)
-            {
-                MessageBox.Show("Esta es una aplicación de Microsoft Store. No tiene una ubicación de archivo tradicional.", 
-                    "Aplicación de Sistema", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            else
-            {
-                MessageBox.Show("No se pudo encontrar el archivo ejecutable en el disco.", 
-                    "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
+            MessageBox.Show("Esta es una aplicación de Microsoft Store. No tiene una ubicación de archivo tradicional.", 
+                "Aplicación de Sistema", MessageBoxButton.OK, MessageBoxImage.Information);
         }
+        else if (app.FileExists)
+        {
+            Process.Start("explorer.exe", $"/select,\"{app.AppId}\"");
+        }
+        else
+        {
+            MessageBox.Show($"El archivo ya no existe en:\n{app.AppId}\n\n" +
+                "Esta aplicación fue desinstalada o movida. " +
+                "Puedes revocar sus permisos para limpiar esta entrada.", 
+                "Archivo no encontrado", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
+    private void CopyPath_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuItem mi && mi.DataContext is UnifiedAppViewModel app)
+        {
+            Clipboard.SetText(app.AppId);
+            MessageBox.Show("Ruta copiada al portapapeles.", "Copiado", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+    }
+
+    // Overload for TextBlock MouseLeftButtonDown
+    private void OpenFolder_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        OpenFolder_Click(sender, (RoutedEventArgs)e);
     }
 
     private void Refresh_Click(object sender, RoutedEventArgs e) => RefreshData();
