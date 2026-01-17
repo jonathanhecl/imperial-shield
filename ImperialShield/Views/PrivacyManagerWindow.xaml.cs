@@ -91,6 +91,17 @@ public partial class PrivacyManagerWindow : Window
             SecurityLevel.Suspicious => new SolidColorBrush(Color.FromRgb(239, 68, 68)),  // Red
             _ => new SolidColorBrush(Color.FromRgb(148, 163, 184))
         };
+
+        public string RevokeTooltip
+        {
+            get
+            {
+                var perms = new List<string>();
+                if (HasCameraAccess) perms.Add("Cámara");
+                if (HasMicAccess) perms.Add("Micrófono");
+                return $"Revocar: {string.Join(" + ", perms)}";
+            }
+        }
     }
 
     public PrivacyManagerWindow()

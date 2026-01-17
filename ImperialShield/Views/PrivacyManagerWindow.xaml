@@ -227,12 +227,9 @@
 
                                         <!-- Actions -->
                                         <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <Button Content="📷 Revocar" Style="{StaticResource ActionButton}" 
-                                                    Click="RevokeCamera_Click" Tag="{Binding}"
-                                                    Visibility="{Binding HasCameraAccess, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                            <Button Content="🎤 Revocar" Style="{StaticResource ActionButton}" 
-                                                    Click="RevokeMic_Click" Tag="{Binding}"
-                                                    Visibility="{Binding HasMicAccess, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                            <Button Content="🚫 Revocar" Style="{StaticResource ActionButton}" 
+                                                    Click="RevokeAll_Click" Tag="{Binding}"
+                                                    ToolTip="{Binding RevokeTooltip}"/>
                                             <Button Content="⏹ Terminar" Style="{StaticResource TerminateBtn}" 
                                                     Click="Terminate_Click" Tag="{Binding}"
                                                     Visibility="{Binding IsRunning, Converter={StaticResource BooleanToVisibilityConverter}}"/>
