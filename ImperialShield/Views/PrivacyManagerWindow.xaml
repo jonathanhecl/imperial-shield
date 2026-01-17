@@ -188,11 +188,18 @@
                                         </Grid.ColumnDefinitions>
 
                                         <!-- App Name -->
-                                        <StackPanel VerticalAlignment="Center" MouseLeftButtonDown="OpenFolder_DoubleClick" Cursor="Hand">
+                                        <StackPanel VerticalAlignment="Center" Cursor="Hand">
+                                            <StackPanel.ContextMenu>
+                                                <ContextMenu Background="#1E293B" BorderBrush="#334155">
+                                                    <MenuItem Header="📂 Abrir ubicación" Click="OpenFolder_Click"/>
+                                                    <MenuItem Header="📋 Copiar ruta" Click="CopyPath_Click"/>
+                                                </ContextMenu>
+                                            </StackPanel.ContextMenu>
                                             <TextBlock Text="{Binding DisplayName}" FontWeight="Bold" Foreground="White" 
                                                        FontSize="13" TextTrimming="CharacterEllipsis"
-                                                       ToolTip="Doble-click para abrir ubicación"/>
-                                            <TextBlock Text="{Binding AppId}" FontSize="10" Foreground="#64748B" Margin="0,2,0,0" TextTrimming="CharacterEllipsis"/>
+                                                       MouseLeftButtonDown="OpenFolder_Click"
+                                                       ToolTip="Click derecho para opciones"/>
+                                            <TextBlock Text="{Binding AppType}" FontSize="10" Foreground="{Binding AppTypeColor}" Margin="0,2,0,0" TextTrimming="CharacterEllipsis"/>
                                         </StackPanel>
 
                                         <!-- Permission Badges -->

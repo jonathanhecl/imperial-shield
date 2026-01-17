@@ -45,12 +45,15 @@ public partial class PrivacyManagerWindow : Window
         // Security
         public SecurityLevel Security { get; set; } = SecurityLevel.Verified;
         public string Publisher { get; set; } = string.Empty;
+        // File existence
+        public bool FileExists { get; set; } = true;
         
         // For sorting (higher = more priority)
         public int SortPriority => IsInUse ? 3 : (IsRunning ? 2 : 1);
         
         // UI Bindings
-        public string AppType => IsNonPackaged ? "Aplicación de Escritorio" : "Microsoft Store";
+        public string AppType => !FileExists ? "⚠️ Archivo no encontrado" : (IsNonPackaged ? "Aplicación de Escritorio" : "Microsoft Store");
+        public Brush AppTypeColor => !FileExists ? new SolidColorBrush(Color.FromRgb(239, 68, 68)) : new SolidColorBrush(Color.FromRgb(100, 116, 139));
         
         public Brush CameraBadgeBg => HasCameraAccess 
             ? new SolidColorBrush(Color.FromArgb(40, 77, 168, 218)) 
@@ -164,7 +167,8 @@ public partial class PrivacyManagerWindow : Window
             AppId = app.AppId,
             DisplayName = app.DisplayName,
             IsNonPackaged = app.IsNonPackaged,
-            IsRunning = isRunning
+            IsRunning = isRunning,
+            FileExists = !app.IsNonPackaged || System.IO.File.Exists(app.AppId)
         };
 
         // Analyze security
