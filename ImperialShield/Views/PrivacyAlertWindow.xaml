@@ -75,16 +75,18 @@
                  </Border.Effect>
             </Border>
 
-            <!-- Device Icon -->
-            <TextBlock x:Name="DeviceIcon" Grid.Row="0" Text="📷" FontSize="80" 
-                       HorizontalAlignment="Center" Margin="0,0,0,15">
-                <TextBlock.RenderTransform>
-                    <ScaleTransform x:Name="AlertImage" CenterX="40" CenterY="40"/>
-                </TextBlock.RenderTransform>
-                <TextBlock.Effect>
-                    <DropShadowEffect BlurRadius="40" ShadowDepth="0" Color="#F43F5E" Opacity="1.0"/>
-                </TextBlock.Effect>
-            </TextBlock>
+            <!-- Alert Icon -->
+            <Image x:Name="DeviceIcon" Grid.Row="0" Source="/Resources/shield_alert_icon.png" 
+                   Width="100" Height="100" 
+                   HorizontalAlignment="Center" 
+                   Margin="0,0,0,15">
+                <Image.RenderTransform>
+                    <ScaleTransform x:Name="AlertImage" CenterX="50" CenterY="50"/>
+                </Image.RenderTransform>
+                <Image.Effect>
+                    <DropShadowEffect BlurRadius="30" ShadowDepth="0" Color="#F43F5E" Opacity="0.9"/>
+                </Image.Effect>
+            </Image>
             
             <!-- Warning Title Red -->
             <TextBlock Grid.Row="1" Text="¡ACCESO NO AUTORIZADO!" 

@@ -46,16 +46,18 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Warning Icon -->
-            <TextBlock x:Name="AlertIcon" Grid.Row="0" Text="📝" FontSize="60" 
-                       HorizontalAlignment="Center" Margin="0,0,0,10">
-                <TextBlock.RenderTransform>
-                    <ScaleTransform CenterX="30" CenterY="30"/>
-                </TextBlock.RenderTransform>
-                <TextBlock.Effect>
-                    <DropShadowEffect BlurRadius="35" ShadowDepth="0" Color="#F39C12" Opacity="1.0"/>
-                </TextBlock.Effect>
-            </TextBlock>
+            <!-- Alert Icon -->
+            <Image x:Name="AlertIcon" Grid.Row="0" Source="/Resources/shield_alert_icon.png" 
+                   Width="100" Height="100" 
+                   HorizontalAlignment="Center" 
+                   Margin="0,0,0,15">
+                <Image.RenderTransform>
+                    <ScaleTransform CenterX="50" CenterY="50"/>
+                </Image.RenderTransform>
+                <Image.Effect>
+                    <DropShadowEffect BlurRadius="30" ShadowDepth="0" Color="#F43F5E" Opacity="0.9"/>
+                </Image.Effect>
+            </Image>
             
             <!-- Warning Title -->
             <TextBlock Grid.Row="1" Text="¡MAPEO DE DOMINIOS MODIFICADO!" 

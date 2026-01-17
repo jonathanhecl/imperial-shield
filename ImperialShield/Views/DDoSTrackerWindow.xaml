@@ -10,11 +10,6 @@
         WindowStartupLocation="CenterScreen">
     
     <Window.Resources>
-        <Storyboard x:Key="RadarScan">
-            <DoubleAnimation Storyboard.TargetName="RadarSweep" 
-                             Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                             From="0" To="360" Duration="0:0:2" RepeatBehavior="Forever"/>
-        </Storyboard>
         <Storyboard x:Key="BlinkAlert">
              <DoubleAnimation Storyboard.TargetName="AlertText" 
                               Storyboard.TargetProperty="Opacity"
@@ -24,7 +19,6 @@
 
     <Window.Triggers>
         <EventTrigger RoutedEvent="Window.Loaded">
-            <BeginStoryboard Storyboard="{StaticResource RadarScan}"/>
             <BeginStoryboard Storyboard="{StaticResource BlinkAlert}"/>
         </EventTrigger>
     </Window.Triggers>
@@ -42,22 +36,15 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- Radar / Icon Header -->
-            <Grid Grid.Row="0" HorizontalAlignment="Center" Margin="0,0,0,10">
-                <Ellipse Width="100" Height="100" Stroke="#005533" StrokeThickness="2" Fill="#002211"/>
-                <Ellipse Width="70" Height="70" Stroke="#005533" StrokeThickness="1"/>
-                <Ellipse Width="30" Height="30" Stroke="#005533" StrokeThickness="1"/>
-                
-                <!-- Sweep Line -->
-                <Line x:Name="RadarSweep" X1="50" Y1="50" X2="50" Y2="0" Stroke="#00FF9D" StrokeThickness="2" Opacity="0.8">
-                    <Line.RenderTransform>
-                        <RotateTransform CenterX="50" CenterY="50"/>
-                    </Line.RenderTransform>
-                    <Line.Effect>
-                        <BlurEffect Radius="4"/>
-                    </Line.Effect>
-                </Line>
-            </Grid>
+            <!-- Alert Icon -->
+            <Image Source="/Resources/shield_alert_icon.png" 
+                   Width="100" Height="100" 
+                   HorizontalAlignment="Center" 
+                   Margin="0,0,0,15">
+                <Image.Effect>
+                    <DropShadowEffect BlurRadius="30" ShadowDepth="0" Color="#00FF9D" Opacity="0.9"/>
+                </Image.Effect>
+            </Image>
 
             <!-- Title -->
             <!-- Title -->

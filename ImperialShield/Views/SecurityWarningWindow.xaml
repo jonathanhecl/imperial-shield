@@ -39,16 +39,18 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             
-            <!-- Warning Icon -->
-            <TextBlock x:Name="IconText" Grid.Row="0" Text="⚠️" FontSize="80" 
-                       HorizontalAlignment="Center" Margin="0,0,0,15">
-                <TextBlock.RenderTransform>
-                    <ScaleTransform CenterX="40" CenterY="40"/>
-                </TextBlock.RenderTransform>
-                <TextBlock.Effect>
-                    <DropShadowEffect BlurRadius="40" ShadowDepth="0" Color="#E74C3C" Opacity="1.0"/>
-                </TextBlock.Effect>
-            </TextBlock>
+            <!-- Alert Icon -->
+            <Image x:Name="IconText" Grid.Row="0" Source="/Resources/shield_alert_icon.png" 
+                   Width="100" Height="100" 
+                   HorizontalAlignment="Center" 
+                   Margin="0,0,0,15">
+                <Image.RenderTransform>
+                    <ScaleTransform CenterX="50" CenterY="50"/>
+                </Image.RenderTransform>
+                <Image.Effect>
+                    <DropShadowEffect BlurRadius="30" ShadowDepth="0" Color="#E74C3C" Opacity="0.9"/>
+                </Image.Effect>
+            </Image>
             
             <!-- Title -->
             <TextBlock Grid.Row="1" Text="¡MODIFICACIÓN DEL SISTEMA DETECTADA!" 
