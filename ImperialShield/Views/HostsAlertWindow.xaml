@@ -156,10 +156,10 @@
                 </Button>
                 
                 <Button Click="Close_Click" 
-                        Width="420" Height="40"
+                        Width="420" Height="45"
                         FontSize="13" FontWeight="Bold"
-                        Background="Transparent" Foreground="#708090" 
-                        BorderThickness="0" Cursor="Hand">
+                        Background="Transparent" Foreground="#94A3B8" 
+                        BorderThickness="1" BorderBrush="#3A5F82" Cursor="Hand">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="✓" Margin="0,0,8,0" VerticalAlignment="Center"/>
@@ -171,7 +171,7 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="Button">
-                                        <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10">
                                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Border>
                                     </ControlTemplate>
@@ -180,6 +180,7 @@
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="BorderBrush" Value="White"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>

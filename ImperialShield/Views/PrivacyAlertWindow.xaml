@@ -10,11 +10,11 @@
         WindowStartupLocation="CenterScreen">
     
     <Window.Resources>
-        <Storyboard x:Key="PulseLogo">
-            <DoubleAnimation Storyboard.TargetName="AlertImage" 
+        <Storyboard x:Key="PulseIcon">
+            <DoubleAnimation Storyboard.TargetName="AlertIcon" 
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
                              From="1.0" To="1.1" Duration="0:0:0.8" AutoReverse="True" RepeatBehavior="Forever"/>
-            <DoubleAnimation Storyboard.TargetName="AlertImage" 
+            <DoubleAnimation Storyboard.TargetName="AlertIcon" 
                              Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
                              From="1.0" To="1.1" Duration="0:0:0.8" AutoReverse="True" RepeatBehavior="Forever"/>
         </Storyboard>
@@ -48,6 +48,7 @@
 
     <Window.Triggers>
         <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource PulseIcon}"/>
             <BeginStoryboard Storyboard="{StaticResource GlowBorder}"/>
             <BeginStoryboard Storyboard="{StaticResource WindowEntrance}"/>
         </EventTrigger>
@@ -76,12 +77,12 @@
             </Border>
 
             <!-- Alert Icon -->
-            <Image x:Name="DeviceIcon" Grid.Row="0" Source="/Resources/shield_alert_icon.png" 
+            <Image x:Name="AlertIcon" Grid.Row="0" Source="/Resources/shield_alert_icon.png" 
                    Width="100" Height="100" 
                    HorizontalAlignment="Center" 
                    Margin="0,0,0,15">
                 <Image.RenderTransform>
-                    <ScaleTransform x:Name="AlertImage" CenterX="50" CenterY="50"/>
+                    <ScaleTransform CenterX="50" CenterY="50"/>
                 </Image.RenderTransform>
                 <Image.Effect>
                     <DropShadowEffect BlurRadius="30" ShadowDepth="0" Color="#F43F5E" Opacity="0.9"/>
