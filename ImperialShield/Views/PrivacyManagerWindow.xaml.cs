@@ -330,31 +330,34 @@ public partial class PrivacyManagerWindow : Window
         }
     }
 
-    private void RevokeCamera_Click(object sender, RoutedEventArgs e)
+    private void RevokeAll_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button btn && btn.Tag is UnifiedAppViewModel app)
         {
-            if (MessageBox.Show($"¿Revocar acceso a la CÁMARA para '{app.DisplayName}'?\n\nEsto modificará el registro de Windows.", 
-                "Revocar Cámara", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+            var perms = new List<string>();
+            if (app.HasCameraAccess) perms.Add("Cámara");
+            if (app.HasMicAccess) perms.Add("Micrófono");
+            
+            string permList = string.Join(" y ", perms);
+            
+            if (MessageBox.Show($"¿Revocar acceso a {permList} para '{app.DisplayName}'?\n\n" +
+                $"Ruta: {app.AppId}\n\nEsto modificará el registro de Windows.", 
+                "Revocar Permisos", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                _monitor.RevokePermission(app.AppId, app.IsNonPackaged, DeviceType.Camera);
-                MessageBox.Show("Permiso de cámara revocado. Reinicia la aplicación para aplicar los cambios.", 
-                    "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-                RefreshData();
-            }
-        }
-    }
-
-    private void RevokeMic_Click(object sender, RoutedEventArgs e)
-    {
-        if (sender is Button btn && btn.Tag is UnifiedAppViewModel app)
-        {
-            if (MessageBox.Show($"¿Revocar acceso al MICRÓFONO para '{app.DisplayName}'?\n\nEsto modificará el registro de Windows.", 
-                "Revocar Micrófono", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-            {
-                _monitor.RevokePermission(app.AppId, app.IsNonPackaged, DeviceType.Microphone);
-                MessageBox.Show("Permiso de micrófono revocado. Reinicia la aplicación para aplicar los cambios.", 
-                    "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                int revoked = 0;
+                if (app.HasCameraAccess)
+                {
+                    _monitor.RevokePermission(app.AppId, app.IsNonPackaged, DeviceType.Camera);
+                    revoked++;
+                }
+                if (app.HasMicAccess)
+                {
+                    _monitor.RevokePermission(app.AppId, app.IsNonPackaged, DeviceType.Microphone);
+                    revoked++;
+                }
+                
+                MessageBox.Show($"Se revocaron {revoked} permiso(s). Reinicia la aplicación para aplicar los cambios.", 
+                    "Permisos Revocados", MessageBoxButton.OK, MessageBoxImage.Information);
                 RefreshData();
             }
         }
