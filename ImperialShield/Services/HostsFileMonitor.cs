@@ -16,6 +16,7 @@ public class HostsFileMonitor : IDisposable
     private readonly string _hostsPath;
     private readonly string _backupPath;
     private bool _isDisposed;
+    private bool _isMonitoringPaused;
 
     public event EventHandler<HostsFileChangedEventArgs>? HostsFileChanged;
     public DateTime LastChecked { get; private set; }
@@ -23,6 +24,9 @@ public class HostsFileMonitor : IDisposable
     
     // Checks if backup content exists and is not empty
     public bool CanRestoreBackup => !string.IsNullOrEmpty(_backupContent);
+    
+    // Indicates if monitoring is paused (waiting for user decision)
+    public bool IsMonitoringPaused => _isMonitoringPaused;
 
     public HostsFileMonitor()
     {
