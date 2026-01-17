@@ -120,9 +120,13 @@ public partial class PrivacyManagerWindow : Window
     {
         var runningProcs = Process.GetProcesses();
         
-        // Get all apps with camera access
-        var camApps = _monitor.GetAllAppsWithPermission(DeviceType.Camera);
-        var micApps = _monitor.GetAllAppsWithPermission(DeviceType.Microphone);
+        // Get all apps with camera access (filter out denied)
+        var camApps = _monitor.GetAllAppsWithPermission(DeviceType.Camera)
+            .Where(a => !a.PermissionStatus.Equals("Deny", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        var micApps = _monitor.GetAllAppsWithPermission(DeviceType.Microphone)
+            .Where(a => !a.PermissionStatus.Equals("Deny", StringComparison.OrdinalIgnoreCase))
+            .ToList();
 
         // Merge into unified list by AppId
         var appDict = new Dictionary<string, UnifiedAppViewModel>(StringComparer.OrdinalIgnoreCase);
