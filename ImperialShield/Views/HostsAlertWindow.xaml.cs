@@ -212,6 +212,10 @@ public partial class HostsAlertWindow : Window
 
     private void Close_Click(object sender, RoutedEventArgs e)
     {
+        // User chose to IGNORE the change - accept it as the new baseline
+        var app = Application.Current as App;
+        app?.HostsMonitor?.AcceptChange();
+        
         this.Close();
     }
 

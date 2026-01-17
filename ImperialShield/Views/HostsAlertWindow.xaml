@@ -153,12 +153,17 @@
                     </Button.Style>
                 </Button>
                 
-                <Button Content="IGNORAR" 
-                        Click="Close_Click" 
+                <Button Click="Close_Click" 
                         Width="420" Height="40"
                         FontSize="13" FontWeight="Bold"
                         Background="Transparent" Foreground="#708090" 
                         BorderThickness="0" Cursor="Hand">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="✓" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="IGNORAR Y ACEPTAR CAMBIO" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button.Content>
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Template">

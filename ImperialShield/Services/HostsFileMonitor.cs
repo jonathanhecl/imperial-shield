@@ -115,6 +115,9 @@ public class HostsFileMonitor : IDisposable
 
     private void OnHostsFileChanged(object sender, FileSystemEventArgs e)
     {
+        // If monitoring is paused, ignore changes (waiting for user decision)
+        if (_isMonitoringPaused) return;
+        
         // Pequeño delay para asegurar que el archivo no está bloqueado
         Thread.Sleep(100);
 
@@ -129,6 +132,10 @@ public class HostsFileMonitor : IDisposable
             {
                 var changes = DetectChanges(_backupContent ?? "", content);
                 _lastKnownHash = newHash;
+                
+                // PAUSE monitoring until user takes action
+                _isMonitoringPaused = true;
+                Logger.Log("HostsFileMonitor: Change detected, monitoring paused until user action");
 
                 HostsFileChanged?.Invoke(this, new HostsFileChangedEventArgs
                 {
@@ -216,13 +223,46 @@ public class HostsFileMonitor : IDisposable
             if (!string.IsNullOrEmpty(_backupContent))
             {
                 File.WriteAllText(_hostsPath, _backupContent);
+                _lastKnownHash = ComputeHash(_backupContent);
+                EntryCount = CountEntries(_backupContent);
+                
+                // Resume monitoring - backup stays the same (it was the "good" version)
+                _isMonitoringPaused = false;
+                Logger.Log("HostsFileMonitor: Backup restored, monitoring resumed");
                 return true;
             }
             return false;
         }
-        catch
+        catch (Exception ex)
         {
+            Logger.LogException(ex, "RestoreBackup");
             return false;
+        }
+    }
+
+    /// <summary>
+    /// User chose to IGNORE the change - accept it as the new baseline
+    /// Updates backup with current content and resumes monitoring
+    /// </summary>
+    public void AcceptChange()
+    {
+        try
+        {
+            if (File.Exists(_hostsPath))
+            {
+                _backupContent = File.ReadAllText(_hostsPath);
+                File.WriteAllText(_backupPath, _backupContent);
+                _lastKnownHash = ComputeHash(_backupContent);
+                EntryCount = CountEntries(_backupContent);
+                
+                // Resume monitoring with new baseline
+                _isMonitoringPaused = false;
+                Logger.Log("HostsFileMonitor: Change accepted as new baseline, monitoring resumed");
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "AcceptChange");
         }
     }
 
