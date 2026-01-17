@@ -298,13 +298,9 @@ public partial class PrivacyManagerWindow : Window
         {
             filtered = filtered.Where(x => x.IsRunning);
         }
-        else if (FilterCamera.IsChecked == true)
+        else if (FilterSuspicious.IsChecked == true)
         {
-            filtered = filtered.Where(x => x.HasCameraAccess);
-        }
-        else if (FilterMic.IsChecked == true)
-        {
-            filtered = filtered.Where(x => x.HasMicAccess);
+            filtered = filtered.Where(x => x.Security == SecurityLevel.Suspicious || x.Security == SecurityLevel.Unverified);
         }
         // FilterAll shows everything
 
@@ -320,7 +316,7 @@ public partial class PrivacyManagerWindow : Window
         if (sender is ToggleButton clicked)
         {
             // Make filters mutually exclusive
-            var filters = new[] { FilterAll, FilterInUse, FilterRunning, FilterCamera, FilterMic };
+            var filters = new[] { FilterAll, FilterInUse, FilterRunning, FilterSuspicious };
             foreach (var f in filters)
             {
                 if (f != clicked) f.IsChecked = false;
