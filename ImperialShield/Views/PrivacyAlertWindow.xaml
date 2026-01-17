@@ -82,7 +82,7 @@
                     <ScaleTransform x:Name="AlertImage" CenterX="40" CenterY="40"/>
                 </TextBlock.RenderTransform>
                 <TextBlock.Effect>
-                    <DropShadowEffect BlurRadius="25" ShadowDepth="0" Color="#F43F5E" Opacity="0.9"/>
+                    <DropShadowEffect BlurRadius="40" ShadowDepth="0" Color="#F43F5E" Opacity="1.0"/>
                 </TextBlock.Effect>
             </TextBlock>
             

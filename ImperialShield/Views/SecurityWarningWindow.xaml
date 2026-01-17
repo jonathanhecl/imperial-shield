@@ -46,7 +46,7 @@
                     <ScaleTransform CenterX="40" CenterY="40"/>
                 </TextBlock.RenderTransform>
                 <TextBlock.Effect>
-                    <DropShadowEffect BlurRadius="20" ShadowDepth="0" Color="#E74C3C" Opacity="0.8"/>
+                    <DropShadowEffect BlurRadius="40" ShadowDepth="0" Color="#E74C3C" Opacity="1.0"/>
                 </TextBlock.Effect>
             </TextBlock>
             
