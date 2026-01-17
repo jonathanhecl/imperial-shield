@@ -177,12 +177,8 @@ namespace ImperialShield.Views
             ScanFolder(Environment.GetFolderPath(Environment.SpecialFolder.Startup), "Carpeta (Usuario)");
             ScanFolder(Environment.GetFolderPath(Environment.SpecialFolder.CommonStartup), "Carpeta (Sistema)");
 
-            // Ordenar: Ejecutándose primero, luego sospechosos, luego nombre
-            StartupGrid.ItemsSource = items
-                .OrderByDescending(i => i.IsRunning)
-                .ThenByDescending(i => i.ThreatLevel)
-                .ThenBy(i => i.Name)
-                .ToList();
+            // Store all items for filtering
+            _allItems = items;
             
             var suspicious = items.Count(i => i.ThreatLevel >= StartupThreatLevel.Medium);
             AppCountText.Text = $"{items.Count} apps";
@@ -192,6 +188,8 @@ namespace ImperialShield.Views
                 : new SolidColorBrush((Color)ColorConverter.ConvertFromString("#27AE60"));
             
             LastUpdateText.Text = $"Última actualización: {DateTime.Now:HH:mm:ss}";
+            
+            ApplyFilter();
         }
 
         private void AnalyzeItem(StartupItem item)
