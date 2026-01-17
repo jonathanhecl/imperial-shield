@@ -125,7 +125,7 @@
                                   IsChecked="True" Click="Filter_Click"/>
                     <ToggleButton x:Name="FilterInUse" Style="{StaticResource FilterToggle}" Click="Filter_Click">
                         <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="8" Height="8" Fill="#EF4444" Margin="0,0,6,0"/>
+                            <Ellipse Width="8" Height="8" Fill="#F59E0B" Margin="0,0,6,0"/>
                             <TextBlock Text="En Uso"/>
                         </StackPanel>
                     </ToggleButton>
@@ -137,7 +137,7 @@
                     </ToggleButton>
                     <ToggleButton x:Name="FilterSuspicious" Style="{StaticResource FilterToggle}" Click="Filter_Click">
                         <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="8" Height="8" Fill="#F59E0B" Margin="0,0,6,0"/>
+                            <Ellipse Width="8" Height="8" Fill="#EF4444" Margin="0,0,6,0"/>
                             <TextBlock Text="Sospechosos"/>
                         </StackPanel>
                     </ToggleButton>

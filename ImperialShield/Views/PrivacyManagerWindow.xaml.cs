@@ -71,7 +71,7 @@ public partial class PrivacyManagerWindow : Window
 
         public string StatusText => IsInUse ? "En Uso" : (IsRunning ? "Ejecutando" : "Cerrado");
         public Brush StatusColor => IsInUse 
-            ? new SolidColorBrush(Color.FromRgb(239, 68, 68))   // Red
+            ? new SolidColorBrush(Color.FromRgb(245, 158, 11))  // Yellow (F59E0B)
             : IsRunning 
                 ? new SolidColorBrush(Color.FromRgb(77, 168, 218))  // Blue
                 : new SolidColorBrush(Color.FromRgb(100, 116, 139)); // Gray
