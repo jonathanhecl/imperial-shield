@@ -113,40 +113,23 @@ public partial class ScheduledTasksWindow : Window
     }
 
     private List<TaskItem> _allTasks = new();
-    private bool _showOnlySuspicious = false;
 
-    private void FilterToggle_Click(object sender, RoutedEventArgs e)
+    private void Filter_Click(object sender, RoutedEventArgs e)
     {
-        _showOnlySuspicious = !_showOnlySuspicious;
-        UpdateFilterButtonText();
-        ApplyFilter();
-    }
-
-    private void UpdateFilterButtonText()
-    {
-        // Update button content dynamically
-        if (FilterToggleBtn.Template.FindName("border", FilterToggleBtn) is System.Windows.Controls.Border border)
+        if (sender is System.Windows.Controls.Primitives.ToggleButton clicked)
         {
-            if (border.Child is StackPanel sp && sp.Children.Count >= 2)
+            // Make filters mutually exclusive
+            var filters = new[] { FilterAll, FilterRunning, FilterReady, FilterDisabled, FilterSuspicious };
+            foreach (var f in filters)
             {
-                if (sp.Children[0] is TextBlock iconTb && sp.Children[1] is TextBlock textTb)
-                {
-                    if (_showOnlySuspicious)
-                    {
-                        iconTb.Text = "⚠️";
-                        textTb.Text = "Solo Sospechosas";
-                        textTb.Foreground = new SolidColorBrush(Color.FromRgb(239, 68, 68)); // Red
-                        border.BorderBrush = new SolidColorBrush(Color.FromRgb(239, 68, 68));
-                    }
-                    else
-                    {
-                        iconTb.Text = "👁️";
-                        textTb.Text = "Mostrar Todo";
-                        textTb.Foreground = new SolidColorBrush(Color.FromRgb(148, 163, 184)); // Gray
-                        border.BorderBrush = new SolidColorBrush(Color.FromRgb(51, 65, 85));
-                    }
-                }
+                if (f != clicked) f.IsChecked = false;
             }
+            
+            // Ensure at least one is checked
+            if (clicked.IsChecked != true)
+                clicked.IsChecked = true;
+
+            ApplyFilter();
         }
     }
 
@@ -154,25 +137,38 @@ public partial class ScheduledTasksWindow : Window
     {
         if (_allTasks == null || !_allTasks.Any()) return;
 
-        var filtered = _allTasks.ToList();
+        IEnumerable<TaskItem> filtered = _allTasks;
 
-        if (_showOnlySuspicious)
+        // Apply exclusive filter
+        if (FilterRunning.IsChecked == true)
         {
-            // Show only Non-Microsoft or Suspicious
-            filtered = filtered.Where(t => t.IsSuspicious || (!t.IsMicrosoft && !t.IsTrustedPublisher)).ToList();
+            filtered = filtered.Where(t => t.NormalizedState == "Running");
         }
+        else if (FilterReady.IsChecked == true)
+        {
+            filtered = filtered.Where(t => t.NormalizedState == "Ready");
+        }
+        else if (FilterDisabled.IsChecked == true)
+        {
+            filtered = filtered.Where(t => t.NormalizedState == "Disabled");
+        }
+        else if (FilterSuspicious.IsChecked == true)
+        {
+            filtered = filtered.Where(t => t.IsSuspicious || (!t.IsMicrosoft && !t.IsTrustedPublisher));
+        }
+        // FilterAll shows everything
 
-        // Sort: Suspicious (if high threat) -> Running -> Ready -> Date -> Name
+        // Sort: High threat > Running > Ready > Date > Name
         var sorted = filtered
-            .OrderByDescending(t => t.ThreatLevel == 3) // High Threat (Always top attention)
-            .ThenByDescending(t => t.ThreatLevel == 2) // Medium
-            .ThenByDescending(t => t.NormalizedState == "Running") // 1. Running
-            .ThenByDescending(t => t.NormalizedState == "Ready")   // 2. Ready
-            .ThenBy(t => t.NextRunDateTime ?? DateTime.MaxValue)   // 3. Date (Earliest first)
-            .ThenBy(t => t.TaskName)                               // 4. Name fallback
+            .OrderByDescending(t => t.ThreatLevel >= 2) // Suspicious (top attention)
+            .ThenByDescending(t => t.NormalizedState == "Running") // Running
+            .ThenByDescending(t => t.NormalizedState == "Ready")   // Ready
+            .ThenBy(t => t.NextRunDateTime ?? DateTime.MaxValue)   // Date (Earliest first)
+            .ThenBy(t => t.TaskName)                               // Name fallback
             .ToList();
 
         TasksGrid.ItemsSource = sorted;
+        StatsText.Text = $"{sorted.Count} tareas";
         TaskCountText.Text = sorted.Count.ToString();
     }
 

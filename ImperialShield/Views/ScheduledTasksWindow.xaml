@@ -9,6 +9,39 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         
+        <!-- Filter Toggle Button Style -->
+        <Style x:Key="FilterToggle" TargetType="ToggleButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#64748B"/>
+            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="20" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1E3A5F"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#4DA8DA"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1A2744"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
         <ContextMenu x:Key="RowContextMenu">
             <MenuItem Header="▶ Ejecutar tarea" Click="Run_Click"/>
             <MenuItem Header="⏹ Detener tarea" Click="Stop_Click"/>
@@ -92,7 +125,7 @@
         </Border>
 
         <!-- Main Content -->
-        <Border Grid.Row="1" Style="{StaticResource CardBorder}" Background="#0A0F1E" Padding="0">
+        <Border Grid.Row="2" Style="{StaticResource CardBorder}" Background="#0A0F1E" Padding="0">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -319,7 +352,7 @@
         </Border>
 
         <!-- Footer -->
-        <Border Grid.Row="2" Background="#111827" CornerRadius="0,0,8,8" Padding="20,15" Margin="0,15,0,0" BorderBrush="#1E293B" BorderThickness="1">
+        <Border Grid.Row="3" Background="#111827" CornerRadius="0,0,8,8" Padding="20,15" Margin="0,15,0,0" BorderBrush="#1E293B" BorderThickness="1">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
