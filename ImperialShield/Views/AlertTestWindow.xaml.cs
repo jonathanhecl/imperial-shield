@@ -77,6 +77,16 @@ namespace ImperialShield.Views
             alert.ShowDialog();
         }
 
+        private void TestBrowserChange_Click(object sender, RoutedEventArgs e)
+        {
+            var alert = new BrowserAlertWindow(
+                "Mozilla Firefox",
+                "Google Chrome",
+                "ChromeHTML"
+            );
+            alert.ShowDialog();
+        }
+
         private void Close_Click(object sender, RoutedEventArgs e)
         {
             this.Close();

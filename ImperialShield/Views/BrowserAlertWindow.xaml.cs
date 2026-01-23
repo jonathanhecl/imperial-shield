@@ -20,7 +20,21 @@ public partial class BrowserAlertWindow : Window
         catch { }
     }
 
-    private void Ok_Click(object sender, RoutedEventArgs e)
+    private void Restore_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            // Open Windows Default Apps settings
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("ms-settings:defaultapps") { UseShellExecute = true });
+        }
+        catch (System.Exception ex)
+        {
+            MessageBox.Show("No se pudo abrir la configuración: " + ex.Message);
+        }
+        Close();
+    }
+
+    private void Ignore_Click(object sender, RoutedEventArgs e)
     {
         Close();
     }

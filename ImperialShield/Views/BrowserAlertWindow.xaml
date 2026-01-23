@@ -93,11 +93,37 @@
             </Border>
 
             <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Center">
-                <Button Content="ENTENDIDO" Width="420" Height="45" 
+                <Button x:Name="RestoreBtn" Content="RESTAURAR ANTERIOR" Width="420" Height="45" 
+                        Background="#059669" Foreground="White"
+                        BorderThickness="1" BorderBrush="#10B981" 
+                        FontSize="14" FontWeight="Bold" Cursor="Hand"
+                        Margin="0,0,0,10" Click="Restore_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#047857"/>
+                                    <Setter Property="BorderBrush" Value="#34D399"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <Button x:Name="IgnoreBtn" Content="IGNORAR CAMBIO" Width="420" Height="45" 
                         Background="#1E3A5F" Foreground="#E8F4FC"
                         BorderThickness="1" BorderBrush="#4DA8DA" 
                         FontSize="14" FontWeight="Bold" Cursor="Hand"
-                        Click="Ok_Click">
+                        Click="Ignore_Click">
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Template">
