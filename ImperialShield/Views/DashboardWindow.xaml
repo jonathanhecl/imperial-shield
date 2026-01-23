@@ -679,11 +679,7 @@
                                     Foreground="#7EB8DC" BorderThickness="0" Cursor="Hand" 
                                     Margin="0,0,20,0" Click="Settings_Click" FontWeight="SemiBold" FontSize="11"/>
                                     
-                            <Button Content="🛠️ Test Alertas" Background="Transparent" 
-                                    Foreground="#4DA8DA" BorderThickness="0" Cursor="Hand"
-                                    Click="TestAlerts_Click" FontWeight="SemiBold" FontSize="11" Margin="0,0,20,0"/>
-
-                            <Button Content="📥 Minimizar" Background="Transparent" 
+                            <Button Content=" Minimizar" Background="Transparent" 
                                     Foreground="#7EB8DC" BorderThickness="0" Cursor="Hand"
                                     Click="MinimizeToTray_Click" FontWeight="SemiBold" FontSize="11"/>
                         </StackPanel>
