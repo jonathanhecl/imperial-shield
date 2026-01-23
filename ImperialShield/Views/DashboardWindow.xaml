@@ -526,7 +526,13 @@
                                     <!-- Navegador Predeterminado -->
                                     <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
                                             Cursor="Hand" MouseLeftButtonUp="ViewDefaultApps_Click"
-                                            ToolTip="Click para abrir configuración del sistema">
+                                            ToolTip="Click para abrir configuración del sistema (Botón derecho para Demo)">
+                                        <Border.ContextMenu>
+                                            <ContextMenu Background="#0A1525" Foreground="#E8F4FC" BorderBrush="#4DA8DA">
+                                                <MenuItem Header="Simular Cambio de Navegador" Click="DemoBrowserAlert_Click"/>
+                                                <MenuItem Header="Abrir Configuración Sistema" Click="ViewDefaultApps_Click"/>
+                                            </ContextMenu>
+                                        </Border.ContextMenu>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
@@ -673,6 +679,10 @@
                                     Foreground="#7EB8DC" BorderThickness="0" Cursor="Hand" 
                                     Margin="0,0,20,0" Click="Settings_Click" FontWeight="SemiBold" FontSize="11"/>
                                     
+                            <Button Content="🛠️ Test Alertas" Background="Transparent" 
+                                    Foreground="#4DA8DA" BorderThickness="0" Cursor="Hand"
+                                    Click="TestAlerts_Click" FontWeight="SemiBold" FontSize="11" Margin="0,0,20,0"/>
+
                             <Button Content="📥 Minimizar" Background="Transparent" 
                                     Foreground="#7EB8DC" BorderThickness="0" Cursor="Hand"
                                     Click="MinimizeToTray_Click" FontWeight="SemiBold" FontSize="11"/>
