@@ -180,6 +180,18 @@ public partial class DashboardWindow : Window
 
         if (countBlock != null)
         {
+            var isPaused = App.CurrentApp.IsMonitoringPaused;
+            var grayBadge = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#374151"));
+            var grayDot = new SolidColorBrush(Colors.Gray);
+            
+            if (isPaused)
+            {
+                countBlock.Text = "Pausado";
+                if (dot != null) dot.Fill = grayDot;
+                if (badge != null) badge.Background = grayBadge;
+                return;
+            }
+
             var greenBadge = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#27AE60"));
             var greenDot = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5CFF5C"));
             var blueBadge = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1E3A5F"));
