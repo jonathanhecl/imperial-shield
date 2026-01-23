@@ -442,6 +442,22 @@ public partial class DashboardWindow : Window
         }
     }
 
+    private void ViewDefaultApps_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "ms-settings:defaultapps",
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "ViewDefaultApps_Click");
+        }
+    }
+
     private void Settings_Click(object sender, RoutedEventArgs e)
     {
         var settingsWin = new SettingsWindow();
