@@ -86,6 +86,7 @@ public partial class DashboardWindow : Window
                 app.DefenderMonitor?.ForceInitialLoad();
                 app.StartupMonitor?.ForceInitialLoad();
                 app.TasksMonitor?.ForceInitialLoad();
+                app.BrowserMonitor?.ForceInitialLoad();
                 app.PrivacyMonitor?.ForceInitialLoad();
                 
                 Logger.Log("Initial data load forced for all monitors");
@@ -116,6 +117,8 @@ public partial class DashboardWindow : Window
             var startupCount = app.StartupMonitor?.ItemCount ?? 0;
             var tasksTime = app.TasksMonitor?.LastChecked ?? DateTime.MinValue;
             var tasksCount = app.TasksMonitor?.ItemCount ?? 0;
+            var browserTime = app.BrowserMonitor?.LastChecked ?? DateTime.MinValue;
+            var browserName = app.BrowserMonitor?.CurrentBrowserName ?? "...";
             var privacyTime = app.PrivacyMonitor?.LastChecked ?? DateTime.MinValue;
             var privacyCount = app.PrivacyMonitor?.ActiveRiskCount ?? 0;
 
@@ -132,12 +135,14 @@ public partial class DashboardWindow : Window
                 UpdateCheckItem(CheckExclusionsTime, CheckExclusionsCount, exclusionsTime, exclusionsCount, "active", false, CheckExclusionsDot, CheckExclusionsBadge);
                 UpdateCheckItem(CheckConnectionsTime, CheckConnectionsCount, netTime, suspiciousConnections.Count, "ddos", false, CheckConnectionsDot, CheckConnectionsBadge);
                 UpdateCheckItem(CheckStartupTime, CheckStartupCount, startupTime, startupCount, "active", false, CheckStartupDot, CheckStartupBadge);
+                UpdateCheckItem(CheckBrowserTime, CheckBrowserStatus, browserTime, 0, "active", false, CheckBrowserDot, CheckBrowserBadge);
                 UpdateCheckItem(CheckTasksTime, CheckTasksCount, tasksTime, tasksCount, "active", false, CheckTasksDot, CheckTasksBadge);
                 UpdateCheckItem(CheckWshTime, CheckWshStatus, DateTime.Now, QuarantineService.IsVBSEnabled() ? 1 : 0, "wsh", false, CheckWshDot, CheckWshBadge);
                 UpdateCheckItem(CheckPrivacyTime, CheckPrivacyStatus, privacyTime, privacyCount, "riesgos", true, CheckPrivacyDot, CheckPrivacyBadge);
 
                 // Update dynamic titles with counts
                 StartupTitleText.Text = $"Programas al Inicio ({startupCount} elementos)";
+                BrowserNameText.Text = browserName;
                 TasksTitleText.Text = $"Tareas Programadas ({tasksCount} elementos)";
                 ExclusionsTitleText.Text = $"Exclusiones de Defender ({exclusionsCount} elementos)";
 
