@@ -47,15 +47,15 @@
         </EventTrigger>
     </Window.Triggers>
 
-    <Border x:Name="MainBorder" CornerRadius="20" Background="#0A0F1E" BorderBrush="#F59E0B" BorderThickness="3" Opacity="0" UseLayoutRounding="True">
+    <Border x:Name="MainBorder" CornerRadius="30" Background="#0A0F1E" BorderBrush="#F39C12" BorderThickness="4" Opacity="0" UseLayoutRounding="True">
         <Border.RenderTransform>
             <ScaleTransform CenterX="300" CenterY="240"/>
         </Border.RenderTransform>
         <Border.Effect>
-            <DropShadowEffect BlurRadius="40" ShadowDepth="0" Opacity="0.6" Color="#F59E0B"/>
+            <DropShadowEffect BlurRadius="60" ShadowDepth="0" Opacity="0.7" Color="#F39C12"/>
         </Border.Effect>
         
-        <Grid Margin="30">
+        <Grid Margin="35">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -76,12 +76,16 @@
                 </Image.Effect>
             </Image>
             
-            <TextBlock Grid.Row="1" Text="CAMBIO DE NAVEGADOR" FontSize="24" FontWeight="Bold" Foreground="#F59E0B" 
-                       HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,5"/>
-            <TextBlock Grid.Row="1" Text="Se ha detectado un cambio en el navegador predeterminado." FontSize="14" Foreground="#94A3B8" 
+            <TextBlock Grid.Row="1" Text="¡CAMBIO DE NAVEGADOR DETECTADO!" FontSize="24" FontWeight="ExtraBold" Foreground="#F39C12" 
+                       HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,5">
+                <TextBlock.Effect>
+                    <DropShadowEffect BlurRadius="5" ShadowDepth="2" Color="Black" Opacity="0.5"/>
+                </TextBlock.Effect>
+            </TextBlock>
+            <TextBlock Grid.Row="1" Text="Se ha detectado un cambio en el navegador predeterminado del sistema." FontSize="14" Foreground="#94A3B8" 
                        HorizontalAlignment="Center" TextAlignment="Center" Margin="0,35,0,0"/>
 
-            <Border Grid.Row="2" Background="#111827" CornerRadius="12" Margin="0,20" Padding="20">
+            <Border Grid.Row="2" Background="#111827" CornerRadius="12" Margin="0,20" Padding="20" BorderBrush="#3A5F82" BorderThickness="1">
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock Text="NAVEGADOR ANTERIOR:" FontSize="10" Foreground="#64748B" FontWeight="Bold"/>
                     <TextBlock x:Name="OldBrowserText" Text="Desconocido" FontSize="16" Foreground="#94A3B8" TextWrapping="Wrap" Margin="0,0,0,15"/>
@@ -93,17 +97,17 @@
             </Border>
 
             <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Center">
-                <Button x:Name="RestoreBtn" Content="RESTAURAR ANTERIOR" Width="420" Height="45" 
-                        Background="#059669" Foreground="White"
-                        BorderThickness="1" BorderBrush="#10B981" 
-                        FontSize="14" FontWeight="Bold" Cursor="Hand"
+                <Button x:Name="RestoreBtn" Content="RESTAURAR ANTERIOR" Width="420" Height="50" 
+                        Background="#10B981" Foreground="White"
+                        BorderThickness="0" 
+                        FontSize="16" FontWeight="Bold" Cursor="Hand"
                         Margin="0,0,0,10" Click="Restore_Click">
                     <Button.Style>
                         <Style TargetType="Button">
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="Button">
-                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="12">
                                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Border>
                                     </ControlTemplate>
@@ -111,12 +115,14 @@
                             </Setter>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Background" Value="#047857"/>
-                                    <Setter Property="BorderBrush" Value="#34D399"/>
+                                    <Setter Property="Background" Value="#34D399"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
+                    <Button.Effect>
+                        <DropShadowEffect BlurRadius="15" ShadowDepth="4" Color="Black" Opacity="0.4"/>
+                    </Button.Effect>
                 </Button>
 
                 <Button x:Name="IgnoreBtn" Content="IGNORAR CAMBIO" Width="420" Height="45" 
