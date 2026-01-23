@@ -22,6 +22,7 @@ public partial class App : Application
     private IFEOMonitor? _ifeoMonitor;
     private DDoSMonitor? _ddosMonitor;
     private TasksMonitor? _tasksMonitor;
+    private BrowserMonitor? _browserMonitor;
     private bool _isMonitoringPaused;
 
     public bool IsMonitoringPaused => _isMonitoringPaused;
@@ -39,6 +40,7 @@ public partial class App : Application
     public PrivacyMonitor? PrivacyMonitor => _privacyMonitor;
     public StartupMonitor? StartupMonitor => _startupMonitor;
     public TasksMonitor? TasksMonitor => _tasksMonitor;
+    public BrowserMonitor? BrowserMonitor => _browserMonitor;
     public IFEOMonitor? IFEOMonitor => _ifeoMonitor;
     public DDoSMonitor? DDoSMonitor => _ddosMonitor;
 
@@ -244,6 +246,20 @@ public partial class App : Application
             Logger.LogException(ex, "DDoSMonitor Setup");
         }
 
+        // Paso 8: Inicializar monitor de Navegador
+        _splashWindow?.UpdateStatus("Monitoreando navegador...");
+        try
+        {
+            _browserMonitor = new BrowserMonitor();
+            _browserMonitor.BrowserChanged += OnBrowserChanged;
+            _browserMonitor.Start();
+            Logger.Log("BrowserMonitor started");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "BrowserMonitor Setup");
+        }
+
         _splashWindow?.UpdateStatus("Listo.");
         Logger.Log("Initialization complete");
 
@@ -421,6 +437,15 @@ public partial class App : Application
         DDoSTrackerWindow.ShowAlert(e.ProcessName, e.RemoteIP, e.ConnectionCount, e.WarningMessage);
     }
 
+    private void OnBrowserChanged(object? sender, BrowserChangedEventArgs e)
+    {
+        Dispatcher.Invoke(() =>
+        {
+            var alert = new Views.BrowserAlertWindow(e.OldName ?? "Desconocido", e.NewName ?? "Desconocido", e.NewProgId ?? "");
+            alert.ShowDialog();
+        });
+    }
+
     #endregion
 
     #region Menu Click Handlers
@@ -486,6 +511,10 @@ public partial class App : Application
                 // Reiniciar StartupMonitor con el nuevo tiempo
                 _startupMonitor?.Stop();
                 _startupMonitor?.Start();
+
+                // Reiniciar BrowserMonitor con el nuevo tiempo
+                _browserMonitor?.Stop();
+                _browserMonitor?.Start();
             }
         }), System.Windows.Threading.DispatcherPriority.Background);
     }
@@ -596,6 +625,7 @@ public partial class App : Application
         _privacyMonitor?.Stop();
         _startupMonitor?.Stop();
         _tasksMonitor?.Stop();
+        _browserMonitor?.Stop();
         _ifeoMonitor?.Stop();
         _ddosMonitor?.Stop();
 
@@ -616,6 +646,7 @@ public partial class App : Application
         _privacyMonitor?.Start();
         _startupMonitor?.Start();
         _tasksMonitor?.Start();
+        _browserMonitor?.Start();
         _ifeoMonitor?.Start();
         _ddosMonitor?.Start();
 
@@ -638,6 +669,7 @@ public partial class App : Application
         _privacyMonitor?.Dispose();
         _tasksMonitor?.Stop();
         _tasksMonitor?.Dispose();
+        _browserMonitor?.Stop();
         _privacyMonitor?.Dispose();
         _startupMonitor?.Stop();
         _notifyIcon?.Dispose();
