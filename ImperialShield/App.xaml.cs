@@ -563,11 +563,12 @@ public partial class App : Application
     private void OnNewStartupAppDetected(object? sender, string app)
     {
         Logger.Log($"NEW STARTUP APP: {app}");
-        Views.AlertWindow.Show(
-            "¡ADVERTENCIA DE SEGURIDAD!\n\n" +
-            "Se ha detectado que una nueva aplicación intenta iniciarse automáticamente con Windows:\n\n" +
-            $"• {app}\n\n" +
-            "Muchos virus y troyanos usan este método para persistir en el sistema. ¿Reconoces esta aplicación?");
+        Logger.Log($"NEW STARTUP APP: {app}");
+        Dispatcher.Invoke(() =>
+        {
+            var alert = new StartupAlertWindow(app);
+            alert.ShowDialog();
+        });
     }
 
     private void OnNewTaskDetected(object? sender, NewTaskEventArgs e)
