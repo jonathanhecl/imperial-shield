@@ -497,6 +497,22 @@ public partial class DashboardWindow : Window
         }
     }
 
+    private void DemoBrowserAlert_Click(object sender, RoutedEventArgs e)
+    {
+        var alert = new BrowserAlertWindow(
+            "Mozilla Firefox (Simulado)",
+            "Google Chrome (Simulado)",
+            "ChromeHTML"
+        );
+        alert.ShowDialog();
+    }
+
+    private void TestAlerts_Click(object sender, RoutedEventArgs e)
+    {
+        var win = new AlertTestWindow();
+        win.ShowDialog();
+    }
+
     protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
     {
         // No cerrar, solo ocultar
