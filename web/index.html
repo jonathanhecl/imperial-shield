@@ -23,7 +23,7 @@
     <nav class="navbar">
         <div class="container nav-container">
             <div class="logo">
-                <span class="icon">🛡️</span> Imperial Shield
+                <img src="shield.png" alt="Logo" class="nav-logo"> Imperial Shield
             </div>
             <div class="nav-links">
                 <a href="#features">Características</a>
@@ -62,28 +62,123 @@
                 </div>
             </div>
             <div class="hero-visual">
-                <div class="window-mockup glass">
-                    <div class="window-header">
-                        <span class="dot red"></span>
-                        <span class="dot yellow"></span>
-                        <span class="dot green"></span>
-                        <span class="title">Dashboard</span>
+                <div class="window-mockup glass detailed-mockup">
+                    <div class="window-header windows-style">
+                        <div class="header-left">
+                            <img src="shield.png" alt="Icon" class="window-icon">
+                            <span class="title">Imperial Shield - Dashboard</span>
+                        </div>
+                        <div class="header-controls">
+                            <span class="control minimize">─</span>
+                            <span class="control maximize">□</span>
+                            <span class="control close">✕</span>
+                        </div>
                     </div>
-                    <div class="window-body">
-                        <!-- Placeholder for dashboard image -->
-                        <div class="mockup-content">
-                            <div class="status-ring safe">
-                                <div class="icon">🛡️</div>
-                            </div>
-                            <h3>Sistema Protegido</h3>
-                            <div class="stats-grid">
-                                <div class="stat">
-                                    <span class="label">HOSTS</span>
-                                    <span class="value ok">Monitoreando</span>
+                    <div class="window-body dashboard-body">
+                        <div class="dash-header">
+                            <div class="dash-branding">
+                                <img src="shield.png" alt="Logo" class="dash-logo-img">
+                                <div class="dash-title-text">
+                                    <h4>IMPERIAL SHIELD</h4>
+                                    <small>Centro de Comando de Seguridad</small>
                                 </div>
-                                <div class="stat">
-                                    <span class="label">Defender</span>
-                                    <span class="value ok">Activo</span>
+                            </div>
+                            <div class="dash-status-actions">
+                                <div class="dash-btn pause">⏸ PAUSAR</div>
+                                <div class="dash-btn protected">● PROTEGIDO</div>
+                            </div>
+                        </div>
+
+                        <div class="dash-content-grid">
+                            <!-- Left Panel: Arsenal -->
+                            <div class="dash-panel left-panel">
+                                <div class="panel-header">⚙️ ARSENAL DE INVESTIGACIÓN</div>
+                                <div class="arsenal-grid">
+                                    <div class="arsenal-item">
+                                        <span class="icon">⚙️</span>
+                                        <span class="label">PROCESOS</span>
+                                        <span class="sub">305 en ejecución</span>
+                                    </div>
+                                    <div class="arsenal-item">
+                                        <span class="icon">🌐</span>
+                                        <span class="label">CONEXIONES</span>
+                                        <span class="sub">188 conexiones</span>
+                                    </div>
+                                    <div class="arsenal-item">
+                                        <span class="icon">📋</span>
+                                        <span class="label">INICIO</span>
+                                        <span class="sub">17 elementos</span>
+                                    </div>
+                                    <div class="arsenal-item active">
+                                        <span class="icon">📝</span>
+                                        <span class="label">TAREAS</span>
+                                        <span class="sub">261 tareas activas</span>
+                                    </div>
+                                    <div class="arsenal-item">
+                                        <span class="icon">👁️</span>
+                                        <span class="label">PRIVACIDAD</span>
+                                        <span class="sub">1 riesgos</span>
+                                    </div>
+                                    <div class="arsenal-item">
+                                        <span class="icon">🗑️</span>
+                                        <span class="label">CUARENTENA</span>
+                                        <span class="sub">0 elementos</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Panel: Monitoring -->
+                            <div class="dash-panel right-panel">
+                                <div class="panel-header">ℹ️ MONITOREO ACTIVO</div>
+                                <div class="monitoring-list">
+                                    <div class="monitor-row">
+                                        <div class="m-icon windows">🛑</div>
+                                        <div class="m-info">
+                                            <div class="m-title">Seguridad de Windows</div>
+                                            <div class="m-desc">Microsoft Defender UI</div>
+                                        </div>
+                                        <div class="m-status ok">Activo</div>
+                                    </div>
+                                    <div class="monitor-row">
+                                        <div class="m-icon globe">🌍</div>
+                                        <div class="m-info">
+                                            <div class="m-title">Mapeo de Nombres (HOSTS)</div>
+                                            <div class="m-desc">DNS Local y Bloqueos</div>
+                                        </div>
+                                        <div class="m-status ok">Activo</div>
+                                    </div>
+                                    <div class="monitor-row">
+                                        <div class="m-icon eye">👁️</div>
+                                        <div class="m-info">
+                                            <div class="m-title">Exclusiones de Defender</div>
+                                            <div class="m-desc">Rutas Permitidas</div>
+                                        </div>
+                                        <div class="m-status ok">Activo</div>
+                                    </div>
+                                    <div class="monitor-row">
+                                        <div class="m-icon network">🕸️</div>
+                                        <div class="m-info">
+                                            <div class="m-title">Actividad de Red (DDoS)</div>
+                                            <div class="m-desc">Fugas y Ataques</div>
+                                        </div>
+                                        <div class="m-status ok">Activo</div>
+                                    </div>
+                                    <div class="monitor-row">
+                                        <div class="m-icon startup">🚀</div>
+                                        <div class="m-info">
+                                            <div class="m-title">Programas al Inicio</div>
+                                            <div class="m-desc">Auto-arranque de Apps</div>
+                                        </div>
+                                        <div class="m-status ok">Activo</div>
+                                    </div>
+                                    <div class="monitor-row">
+                                        <div class="m-icon script">📜</div>
+                                        <div class="m-info">
+                                            <div class="m-title">Windows Script Host</div>
+                                            <div class="m-desc">Bloqueo VBS/JS</div>
+                                        </div>
+                                        <div class="m-status danger">Riesgo</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
