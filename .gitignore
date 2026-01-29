@@ -67,6 +67,9 @@ ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
 
+.windsurf/
+.agent/
+
 # Rider
 .idea/
 *.sln.iml

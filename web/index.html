@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imperial Shield - Monitoreo de Seguridad Avanzado para Windows</title>
+    <meta name="description"
+        content="Protección en tiempo real contra modificaciones del archivo HOSTS, exclusiones de Defender y procesos sospechosos. Seguridad proactiva para Windows.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="../ImperialShield/Resources/shield.ico">
+</head>
+
+<body>
+    <div class="background-effects">
+        <div class="glow-orb top-left"></div>
+        <div class="glow-orb bottom-right"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <span class="icon">🛡️</span> Imperial Shield
+            </div>
+            <div class="nav-links">
+                <a href="#features">Características</a>
+                <a href="#screenshots">Galería</a>
+                <a href="#technical">Técnico</a>
+                <a href="https://github.com/jonathanhecl/imperial-shield" target="_blank" class="github-link">GitHub</a>
+                <a href="https://github.com/jonathanhecl/imperial-shield/releases/latest"
+                    class="btn btn-sm btn-primary">Descargar</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container hero-content">
+            <div class="hero-text">
+                <h1>Tu Guardián Digital <span class="gradient-text">Silencioso</span></h1>
+                <p class="lead">Detección en tiempo real de amenazas, control de archivo HOSTS y monitoreo de
+                    exclusiones de Windows Defender. Seguridad proactiva, ligera y potente.</p>
+                <div class="hero-actions">
+                    <a href="https://github.com/jonathanhecl/imperial-shield/releases/latest"
+                        class="btn btn-lg btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        Descargar Gratis
+                    </a>
+                    <a href="#features" class="btn btn-lg btn-secondary">Ver Cómo Funciona</a>
+                </div>
+                <div class="hero-badges">
+                    <span class="badge">.NET 8.0</span>
+                    <span class="badge">Windows 10/11</span>
+                    <span class="badge">Open Source</span>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="window-mockup glass">
+                    <div class="window-header">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                        <span class="title">Dashboard</span>
+                    </div>
+                    <div class="window-body">
+                        <!-- Placeholder for dashboard image -->
+                        <div class="mockup-content">
+                            <div class="status-ring safe">
+                                <div class="icon">🛡️</div>
+                            </div>
+                            <h3>Sistema Protegido</h3>
+                            <div class="stats-grid">
+                                <div class="stat">
+                                    <span class="label">HOSTS</span>
+                                    <span class="value ok">Monitoreando</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="label">Defender</span>
+                                    <span class="value ok">Activo</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="features" class="features section">
+        <div class="container">
+            <h2 class="section-title">Protección <span class="gradient-text">Integral</span></h2>
+            <div class="features-grid">
+                <div class="feature-card glass">
+                    <div class="icon">🔍</div>
+                    <h3>Monitor de HOSTS</h3>
+                    <p>Vigilancia continua del archivo HOSTS del sistema. Detecta y bloquea modificaciones no
+                        autorizadas al instante, previniendo redirecciones maliciosas.</p>
+                </div>
+                <div class="feature-card glass">
+                    <div class="icon">🛡️</div>
+                    <h3>Guardián de Defender</h3>
+                    <p>Verifica que Windows Defender esté activo y monitorea nuevas exclusiones. Te avisa si algún
+                        malware intenta ocultarse añadiéndose a la lista blanca.</p>
+                </div>
+                <div class="feature-card glass">
+                    <div class="icon">🕸️</div>
+                    <h3>Inspector de Red</h3>
+                    <p>Visualiza todas las conexiones TCP activas. Identifica procesos sospechosos y potenciales Reverse
+                        Shells conectadas a puertos peligrosos.</p>
+                </div>
+                <div class="feature-card glass">
+                    <div class="icon">⚡</div>
+                    <h3>Visor de Procesos</h3>
+                    <p>Analiza procesos en ejecución verificando sus firmas digitales. Clasifica amenazas por colores
+                        según su nivel de riesgo y procedencia.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="screenshots" class="screenshots section alt-bg">
+        <div class="container">
+            <h2 class="section-title">Interfaz <span class="gradient-text">Moderna</span></h2>
+            <div class="gallery-grid">
+                <!-- Screenshots will ideally be replaced with real images -->
+                <div class="gallery-item glass">
+                    <div class="gallery-content placeholder">
+                        <span>Dashboard Principal</span>
+                    </div>
+                    <p class="caption">Estado general del sistema</p>
+                </div>
+                <div class="gallery-item glass">
+                    <div class="gallery-content placeholder">
+                        <span>Alerta de Seguridad</span>
+                    </div>
+                    <p class="caption">Notificaciones Toast nativas</p>
+                </div>
+                <div class="gallery-item glass">
+                    <div class="gallery-content placeholder">
+                        <span>Monitor de Procesos</span>
+                    </div>
+                    <p class="caption">Análisis detallado de firmas</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="technical" class="technical section">
+        <div class="container">
+            <div class="tech-content glass">
+                <div class="tech-text">
+                    <h2>Especificaciones Técnicas</h2>
+                    <ul class="tech-list">
+                        <li><strong>Core:</strong> Construido sobre .NET 8.0 para máximo rendimiento.</li>
+                        <li><strong>Huella:</strong> Menos de 20MB de RAM en reposo. 0% CPU.</li>
+                        <li><strong>Privacidad:</strong> 100% local. Sin telemetría. Sin conexiones externas.</li>
+                        <li><strong>Licencia:</strong> AGPL-3.0 - Código abierto y transparente.</li>
+                    </ul>
+                </div>
+                <div class="tech-badges">
+                    <div class="tech-badge">
+                        <span class="count">0%</span>
+                        <span class="label">Spyware</span>
+                    </div>
+                    <div class="tech-badge">
+                        <span class="count">100%</span>
+                        <span class="label">Open Source</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="changelog" class="changelog section">
+        <div class="container">
+            <h2 class="section-title">Novedades</h2>
+            <div class="changelog-card glass">
+                <div class="changelog-header">
+                    <h3>Última Versión <span class="version-tag">v1.2.0</span></h3>
+                    <span class="date">Octubre 2025</span>
+                </div>
+                <ul class="changelog-list">
+                    <li>✨ Nuevo monitor de conexiones TCP en tiempo real.</li>
+                    <li>🛡️ Protección mejorada contra inyección de DLLs.</li>
+                    <li>🔧 Optimización del consumo de memoria (ahora < 20MB).</li>
+                    <li>🐛 Corrección de falsos positivos en procesos firmados por Microsoft.</li>
+                </ul>
+                <div class="changelog-footer text-center">
+                    <a href="https://github.com/jonathanhecl/imperial-shield/releases"
+                        class="btn btn-secondary btn-sm">Ver Historial Completo</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="download-cta section">
+        <div class="container text-center">
+            <h2>Toma el control de tu seguridad</h2>
+            <p>Únete a los usuarios que ya protegen sus sistemas con Imperial Shield.</p>
+            <div class="cta-buttons">
+                <a href="https://github.com/jonathanhecl/imperial-shield/releases/latest"
+                    class="btn btn-lg btn-primary glow">Descargar Última Versión</a>
+                <div class="requirements-box">
+                    <p><strong>Requisitos:</strong> Windows 10/11 • Administrador</p>
+                    <a href="https://dotnet.microsoft.com/download/dotnet/8.0" target="_blank"
+                        class="dotnet-link">Descargar .NET 8 Runtime</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-col">
+                <h4>Imperial Shield</h4>
+                <p>Desarrollado por Jonathan Hecl</p>
+            </div>
+            <div class="footer-col">
+                <h4>Enlaces</h4>
+                <a href="https://github.com/jonathanhecl/imperial-shield">Repositorio</a>
+                <a href="https://github.com/jonathanhecl/imperial-shield/issues">Reportar Issue</a>
+                <a href="https://github.com/jonathanhecl/imperial-shield/blob/main/LICENSE">Licencia</a>
+            </div>
+        </div>
+        <div class="footer-bottom text-center">
+            <p>&copy; 2025 Imperial Shield. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple sparkle effect for mouse movement if desired, or just smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
