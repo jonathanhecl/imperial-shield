@@ -1,0 +1,22 @@
+IMPERIAL SHIELD - CONTRATO DE LICENCIA Y DESCARGO DE RESPONSABILIDAD
+
+VERSIÓN: 1.0.5 (BETA EXPERIMENTAL)
+
+1. LICENCIA
+Este software se distribuye bajo la licencia GNU Affero General Public License v3.0 (AGPL-3.0). El código fuente está disponible públicamente para su auditoría y mejora.
+
+2. AVISO DE VERSIÓN BETA
+Imperial Shield es un proyecto experimental en fase de desarrollo (BETA). Puede contener errores o comportamientos inesperados en ciertas configuraciones de Windows.
+
+3. DESCARGO DE RESPONSABILIDAD (SIN GARANTÍA)
+ESTE SOFTWARE SE PROPORCIONA "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO, EXPRESA O IMPLÍCITA, INCLUYENDO PERO NO LIMITADO A LAS GARANTÍAS DE COMERCIABILIDAD, IDONEIDAD PARA UN PROPÓSITO PARTICULAR Y NO INFRACCIÓN. 
+
+EN NINGÚN CASO EL AUTOR (JONATHAN HECL) O LOS COLABORADORES SERÁN RESPONSABLES DE CUALQUIER RECLAMACIÓN, DAÑOS U OTRA RESPONSABILIDAD, YA SEA EN UNA ACCIÓN DE CONTRATO, AGRAVIO O DE OTRO MODO, QUE SURJA DE, FUERA DE O EN CONEXIÓN CON EL SOFTWARE O EL USO O OTROS TRATOS EN EL SOFTWARE.
+
+4. RESPONSABILIDAD DEL USUARIO
+El usuario es el único responsable de cualquier cambio realizado en su sistema mediante el uso de esta herramienta (como la restauración del archivo HOSTS o el bloqueo de procesos). Se recomienda realizar copias de seguridad antes de su uso intensivo.
+
+5. INICIO CON WINDOWS (IMPORTANTE)
+Imperial Shield NO se instala como un servicio permanente de inicio automático por defecto. Si desea que la aplicación se inicie automáticamente con su equipo, debe ir a la sección de "Configuración" dentro de la aplicación y activar la casilla "Iniciar con Windows".
+
+Al continuar con la instalación, usted acepta estos términos.

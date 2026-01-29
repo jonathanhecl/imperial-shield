@@ -835,6 +835,20 @@ body {
     font-size: 0.9rem;
 }
 
+.legal-disclaimer {
+    margin-top: 15px;
+    font-size: 0.8rem;
+    color: #64748b;
+    line-height: 1.5;
+    padding: 10px;
+    border-left: 2px solid #334155;
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.legal-disclaimer strong {
+    color: #94a3b8;
+}
+
 /* Changelog */
 .changelog-card {
     max-width: 800px;
