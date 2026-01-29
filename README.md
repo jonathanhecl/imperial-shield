@@ -23,6 +23,9 @@
 |---------|-------------|
 | **Monitor de HOSTS** | Detecta cambios en `C:\Windows\System32\drivers\etc\hosts` en tiempo real usando FileSystemWatcher |
 | **Monitor de Defender** | Verifica estado del antivirus y detecta nuevas exclusiones cada 60 segundos |
+| **Monitor de Navegador** | Detecta cambios no autorizados en el navegador predeterminado (Anti-Hijack) |
+| **Monitor de Privacidad** | Alerta inmediatamanete cuando una app accede a tu **Cámara** o **Micrófono** |
+| **Monitor DDoS** | Detecta si un proceso local está inundando la red o participando en una botnet |
 | **Backup Automático** | Guarda copia de seguridad del archivo HOSTS limpio para restauración |
 | **Notificaciones Toast** | Alertas nativas de Windows con acciones rápidas |
 
@@ -108,6 +111,9 @@ ImperialShield/
 │   ├── DefenderMonitor.cs      # WMI + PowerShell para Defender
 │   ├── ProcessAnalyzer.cs      # Análisis de procesos y firmas
 │   ├── NetworkMonitor.cs       # P/Invoke a GetExtendedTcpTable
+│   ├── BrowserMonitor.cs       # Monitor de registro para default browser
+│   ├── DDoSMonitor.cs          # Análisis de inundación de paquetes
+│   ├── PrivacyMonitor.cs       # Monitor de uso de Webcam/Mic
 │   ├── SingleInstanceManager.cs # Mutex para instancia única
 │   └── StartupManager.cs       # Gestión del registro Run
 │

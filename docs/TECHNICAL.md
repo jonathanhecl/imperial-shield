@@ -266,3 +266,116 @@ ENTONCES
 ---
 
 *Documentación generada para Imperial Shield v1.0*
+
+## Módulo 5: Monitor de Navegador (BrowserMonitor)
+
+### Propósito
+Detectar cambios no autorizados en el navegador por defecto del sistema (Browser Hijacking).
+
+### Mecanismo de Detección
+Monitorea claves de registro específicas donde Windows almacena la asociación de protocolo `http` y `https`.
+
+```csharp
+// Clave principal
+Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice")
+// Valor leído
+"ProgId"
+```
+
+### Flujo de Trabajo
+1. Al inicio, lee y almacena el `ProgId` actual (ej. `ChromeHTML`, `MSEdgeHTM`).
+2. Cada 15 segundos (configurable), verifica si el `ProgId` ha cambiado.
+3. Si cambia:
+   - Registra el evento.
+   - Lanza `BrowserChangedEventArgs`.
+   - Muestra `BrowserAlertWindow` al usuario.
+
+## Módulo 6: Monitor DDoS / Flood (DDoSMonitor)
+
+### Propósito
+Detectar si un proceso local está siendo utilizado para lanzar ataques de denegación de servicio o está saturando la red (Botnet behavior).
+
+### Lógica de Análisis
+Analiza la tabla TCP extendida (`GetExtendedTcpTable`) filtrando conexiones `ESTABLISHED`.
+
+#### Umbrales
+- **Conexiones Totales**: > 150 por proceso.
+- **Conexiones por IP Destino**: > 40 por IP única.
+
+#### Whitlisting Inteligente
+- Navegadores (Chrome, Edge, Firefox) tienen umbrales más altos permitidos (hasta 300 conexiones) debido a su naturaleza de múltiples conexiones legítimas.
+- Se ignoran conexiones locales (127.0.0.1).
+
+## Módulo 7: Monitor de Privacidad (PrivacyMonitor)
+
+### Propósito
+Detectar qué aplicaciones acceden a la **Cámara** y al **Micrófono** en tiempo real, incluyendo aplicaciones "NonPackaged" (Win32 tradicionales) y Store Apps.
+
+### Acceso al Registro de Consentimiento
+Windows 10/11 almacena el estado de acceso y timestamps en:
+`SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\{webcam|microphone}`
+
+### Algoritmo de Detección Activa
+1. Escanea claves `LastUsedTimeStart` y `LastUsedTimeStop`.
+2. Una aplicación está **ACTIVA** si:
+   - `LastUsedTimeStop` es 0 (todavía en uso).
+   - O `LastUsedTimeStart` > `LastUsedTimeStop`.
+
+### Alertas
+- **Nueva App Detectada**: Si una app que nunca antes accedió al hardware lo hace por primera vez.
+- **Riesgo Activo**: Si una app no confiable activa la cámara/micrófono, se muestra `PrivacyAlertWindow`.
+
+---
+
+## Módulo 8: Cuarentena y Bloqueo
+
+### QuarantineService
+- Mueve archivos maliciosos detectados a una bóveda encriptada local.
+- Extensión `.quarantine`.
+- Encriptación XOR simple o AES para evitar ejecución accidental.
+
+### StartUp Manager (Guardian de Inicio)
+- Monitorea `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`.
+- Detecta nuevos ítems de persistencia.
+- Permite al usuario "Ignorar" (Whitelist) o "Eliminar" la entrada.
+
+---
+
+## Diagrama de Clases Actualizado
+
+```mermaid
+classDiagram
+    class App {
+        +InitializeApplication()
+    }
+    class HostsFileMonitor {
+        +Start()
+        +Stop()
+    }
+    class DefenderMonitor {
+        +CheckStatus()
+    }
+    class ProcessAnalyzer {
+        +Scan()
+    }
+    class BrowserMonitor {
+        +CheckBrowser()
+    }
+    class DDoSMonitor {
+        +AnalyzeTraffic()
+    }
+    class PrivacyMonitor {
+        +CheckPrivacy()
+    }
+    
+    App --> HostsFileMonitor
+    App --> DefenderMonitor
+    App --> ProcessAnalyzer
+    App --> BrowserMonitor
+    App --> DDoSMonitor
+    App --> PrivacyMonitor
+```
+
+---
+
+*Documentación actualizada para Imperial Shield v1.1*
