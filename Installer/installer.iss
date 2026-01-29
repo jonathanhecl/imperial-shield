@@ -17,14 +17,19 @@ PrivilegesRequired=admin
 [Languages]
 Name: "spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 
+[Tasks]
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
+Name: "startmenuicon"; Description: "Crear acceso directo en el Menú Inicio"; GroupDescription: "{cm:AdditionalIcons}"
+
+
 [Files]
 Source: "..\ImperialShield\bin\Release\net8.0-windows\win-x64\publish\ImperialShield.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\ImperialShield\bin\Release\net8.0-windows\win-x64\publish\appsettings.json"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\ImperialShield\Resources\shield.ico"; DestDir: "{app}\Resources"; Flags: ignoreversion
 
 [Icons]
-Name: "{group}\Imperial Shield"; Filename: "{app}\ImperialShield.exe"; IconFilename: "{app}\Resources\shield.ico"
-Name: "{autodesktop}\Imperial Shield"; Filename: "{app}\ImperialShield.exe"; IconFilename: "{app}\Resources\shield.ico"
+Name: "{group}\Imperial Shield"; Filename: "{app}\ImperialShield.exe"; IconFilename: "{app}\Resources\shield.ico"; Tasks: startmenuicon
+Name: "{autodesktop}\Imperial Shield"; Filename: "{app}\ImperialShield.exe"; IconFilename: "{app}\Resources\shield.ico"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\ImperialShield.exe"; Description: "{cm:LaunchProgram,Imperial Shield}"; Flags: nowait postinstall skipifsilent
