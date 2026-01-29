@@ -630,10 +630,13 @@ body {
     margin-bottom: 20px;
 }
 
-.feature-card h3 {
+
+.feature-card .feature-title {
     margin-bottom: 12px;
     font-size: 1.25rem;
+    font-weight: 700;
 }
+
 
 .feature-card p {
     color: var(--text-muted);
