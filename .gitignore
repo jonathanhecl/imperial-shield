@@ -26,6 +26,7 @@ bld/
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
+InstallerOutput/
 
 # Visual Studio cache files
 *_i.c
