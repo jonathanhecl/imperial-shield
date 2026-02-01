@@ -383,16 +383,31 @@ public partial class DashboardWindow : Window
         {
             StatusText.Text = "FORTALEZA SEGURA";
             HealthBar.Foreground = FindResource("HealthBarHigh") as SolidColorBrush;
+            HealthBarGlow.Color = (Color)ColorConverter.ConvertFromString("#27AE60");
         }
         else if (currentHp >= 40)
         {
             StatusText.Text = "BAJO ASEDIÓ";
             HealthBar.Foreground = FindResource("HealthBarMid") as SolidColorBrush;
+            HealthBarGlow.Color = (Color)ColorConverter.ConvertFromString("#F39C12");
         }
         else
         {
             StatusText.Text = "PELIGRO CRÍTICO";
             HealthBar.Foreground = FindResource("HealthBarLow") as SolidColorBrush;
+            HealthBarGlow.Color = (Color)ColorConverter.ConvertFromString("#C0392B");
+        }
+
+        // Toggle pulse animation for low health or critical states
+        var pulseAnim = FindResource("PulseHealthAnim") as System.Windows.Media.Animation.Storyboard;
+        if (currentHp < 30)
+        {
+            pulseAnim?.Begin(HealthBar, true);
+        }
+        else
+        {
+            pulseAnim?.Stop(HealthBar);
+            HealthBarGlow.BlurRadius = 0; // Reset glow
         }
     }
 
