@@ -86,6 +86,8 @@
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -98,7 +100,8 @@
                             <Border.Effect>
                                 <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.3" Color="#4DA8DA"/>
                             </Border.Effect>
-                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -276,87 +279,87 @@
                             <!-- 3xN Grid of Buttons with Scroll - Compact Layout -->
                             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                                 <UniformGrid Columns="3" VerticalAlignment="Top">
-                                    <Button x:Name="ArsenalProcessBtn" Style="{StaticResource RPGButton}" Height="90" Margin="3"
-                                            Click="ProcessViewer_Click" ToolTip="Visor de Procesos">
+                                    <Button x:Name="ArsenalProcessBtn" Style="{StaticResource RPGButton}" Height="120" Margin="5"
+                                            Click="ProcessViewer_Click" ToolTip="Visor de Procesos" HorizontalContentAlignment="Center">
                                         <StackPanel HorizontalAlignment="Center">
-                                            <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="32" 
-                                                       HorizontalAlignment="Center" Margin="0,0,0,5" Foreground="#4DA8DA">
+                                            <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="40" 
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
                                                 <TextBlock.Effect>
                                                     <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
                                                 </TextBlock.Effect>
                                             </TextBlock>
-                                            <TextBlock Text="PROCESOS" FontSize="10" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
-                                            <TextBlock x:Name="ArsenalProcessCount" Text="..." FontSize="9" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                            <TextBlock Text="PROCESOS" FontSize="12" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
+                                            <TextBlock x:Name="ArsenalProcessCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
                                         </StackPanel>
                                     </Button>
                                     
-                                    <Button x:Name="ArsenalNetBtn" Style="{StaticResource RPGButton}" Height="90" Margin="3"
-                                            Click="NetworkViewer_Click" ToolTip="Monitor de Conexiones">
+                                    <Button x:Name="ArsenalNetBtn" Style="{StaticResource RPGButton}" Height="120" Margin="5"
+                                            Click="NetworkViewer_Click" ToolTip="Monitor de Conexiones" HorizontalContentAlignment="Center">
                                         <StackPanel HorizontalAlignment="Center">
-                                            <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="32" 
-                                                       HorizontalAlignment="Center" Margin="0,0,0,5" Foreground="#4DA8DA">
+                                            <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="40" 
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
                                                 <TextBlock.Effect>
                                                     <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
                                                 </TextBlock.Effect>
                                             </TextBlock>
-                                            <TextBlock Text="CONEXIONES" FontSize="10" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
-                                            <TextBlock x:Name="ArsenalNetCount" Text="..." FontSize="9" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                            <TextBlock Text="CONEXIONES" FontSize="12" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
+                                            <TextBlock x:Name="ArsenalNetCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
                                         </StackPanel>
                                     </Button>
 
-                                    <Button x:Name="ArsenalStartupBtn" Style="{StaticResource RPGButton}" Height="90" Margin="3"
-                                            Click="StartupManager_Click" ToolTip="Gestor de Inicio">
+                                    <Button x:Name="ArsenalStartupBtn" Style="{StaticResource RPGButton}" Height="120" Margin="5"
+                                            Click="StartupManager_Click" ToolTip="Gestor de Inicio" HorizontalContentAlignment="Center">
                                         <StackPanel HorizontalAlignment="Center">
-                                            <TextBlock Text="&#xE7B8;" FontFamily="Segoe MDL2 Assets" FontSize="32" 
-                                                       HorizontalAlignment="Center" Margin="0,0,0,5" Foreground="#4DA8DA">
+                                            <TextBlock Text="&#xE7B8;" FontFamily="Segoe MDL2 Assets" FontSize="40" 
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
                                                 <TextBlock.Effect>
                                                     <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
                                                 </TextBlock.Effect>
                                             </TextBlock>
-                                            <TextBlock Text="INICIO" FontSize="10" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
-                                            <TextBlock x:Name="ArsenalStartupCount" Text="..." FontSize="9" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                            <TextBlock Text="INICIO" FontSize="12" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
+                                            <TextBlock x:Name="ArsenalStartupCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
                                         </StackPanel>
                                     </Button>
 
-                                    <Button x:Name="ArsenalTasksBtn" Style="{StaticResource RPGButton}" Height="90" Margin="3"
-                                            Click="ScheduledTasks_Click" ToolTip="Monitor de Tareas">
+                                    <Button x:Name="ArsenalTasksBtn" Style="{StaticResource RPGButton}" Height="120" Margin="5"
+                                            Click="ScheduledTasks_Click" ToolTip="Monitor de Tareas" HorizontalContentAlignment="Center">
                                         <StackPanel HorizontalAlignment="Center">
-                                            <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="32" 
-                                                       HorizontalAlignment="Center" Margin="0,0,0,5" Foreground="#4DA8DA">
+                                            <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="40" 
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
                                                 <TextBlock.Effect>
                                                     <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
                                                 </TextBlock.Effect>
                                             </TextBlock>
-                                            <TextBlock Text="TAREAS" FontSize="10" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
-                                            <TextBlock x:Name="ArsenalTasksCount" Text="..." FontSize="9" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                            <TextBlock Text="TAREAS" FontSize="12" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
+                                            <TextBlock x:Name="ArsenalTasksCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
                                         </StackPanel>
                                     </Button>
 
-                                    <Button x:Name="ArsenalPrivacyBtn" Style="{StaticResource RPGButton}" Height="90" Margin="3"
-                                            Click="Privacy_Click" ToolTip="Centro de Privacidad">
+                                    <Button x:Name="ArsenalPrivacyBtn" Style="{StaticResource RPGButton}" Height="120" Margin="5"
+                                            Click="Privacy_Click" ToolTip="Centro de Privacidad" HorizontalContentAlignment="Center">
                                         <StackPanel HorizontalAlignment="Center">
-                                            <TextBlock Text="&#xE890;" FontFamily="Segoe MDL2 Assets" FontSize="32" 
-                                                       HorizontalAlignment="Center" Margin="0,0,0,5" Foreground="#4DA8DA">
+                                            <TextBlock Text="&#xE890;" FontFamily="Segoe MDL2 Assets" FontSize="40" 
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
                                                 <TextBlock.Effect>
                                                     <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
                                                 </TextBlock.Effect>
                                             </TextBlock>
-                                            <TextBlock Text="PRIVACIDAD" FontSize="10" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
-                                            <TextBlock x:Name="ArsenalPrivacyCount" Text="..." FontSize="9" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                            <TextBlock Text="PRIVACIDAD" FontSize="12" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
+                                            <TextBlock x:Name="ArsenalPrivacyCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
                                         </StackPanel>
                                     </Button>
 
-                                    <Button x:Name="ArsenalQuarantineBtn" Style="{StaticResource RPGButton}" Height="90" Margin="3"
-                                            Click="Quarantine_Click" ToolTip="Centro de Cuarentena">
+                                    <Button x:Name="ArsenalQuarantineBtn" Style="{StaticResource RPGButton}" Height="120" Margin="5"
+                                            Click="Quarantine_Click" ToolTip="Centro de Cuarentena" HorizontalContentAlignment="Center">
                                         <StackPanel HorizontalAlignment="Center">
-                                            <TextBlock Text="&#xE730;" FontFamily="Segoe MDL2 Assets" FontSize="32" 
-                                                       HorizontalAlignment="Center" Margin="0,0,0,5" Foreground="#4DA8DA">
+                                            <TextBlock Text="&#xE730;" FontFamily="Segoe MDL2 Assets" FontSize="40" 
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
                                                 <TextBlock.Effect>
                                                     <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
                                                 </TextBlock.Effect>
                                             </TextBlock>
-                                            <TextBlock Text="CUARENTENA" FontSize="10" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
-                                            <TextBlock x:Name="ArsenalQuarantineCount" Text="..." FontSize="9" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                            <TextBlock Text="CUARENTENA" FontSize="12" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
+                                            <TextBlock x:Name="ArsenalQuarantineCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
                                         </StackPanel>
                                     </Button>
                                 </UniformGrid>
