@@ -345,7 +345,9 @@ public partial class DashboardWindow : Window
         }
 
         bool isSecure = defenderInfo.RealTimeProtectionEnabled && suspiciousConnections == 0 && privacyRisks == 0;
-        int totalRisks = suspiciousConnections + privacyRisks;
+
+        // Ensure text is always white for contrast on colored backgrounds
+        StatusText.Foreground = Brushes.White;
 
         if (isSecure)
         {
@@ -365,7 +367,7 @@ public partial class DashboardWindow : Window
         }
         else if (privacyRisks > 0 && suspiciousConnections > 0)
         {
-            StatusText.Text = $"SISTEMA EN RIESGO ({totalRisks})";
+            StatusText.Text = "SISTEMA EN RIESGO";
             StatusBadge.Background = FindResource("DangerBrush") as SolidColorBrush;
             StatusBadge.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E74C3C"));
             StatusDot.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF4C4C"));
@@ -373,8 +375,7 @@ public partial class DashboardWindow : Window
         }
         else if (privacyRisks > 0)
         {
-            string label = privacyRisks == 1 ? "RIESGO" : "RIESGOS";
-            StatusText.Text = $"{label} DE PRIVACIDAD ({privacyRisks})";
+            StatusText.Text = "RIESGO DE PRIVACIDAD";
             StatusBadge.Background = FindResource("WarningBrush") as SolidColorBrush;
             StatusBadge.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F39C12"));
             StatusDot.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFD166"));
@@ -382,8 +383,7 @@ public partial class DashboardWindow : Window
         }
         else
         {
-            string label = suspiciousConnections == 1 ? "CONEXIÓN" : "CONEXIONES";
-            StatusText.Text = $"REVISAR {label} ({suspiciousConnections})";
+            StatusText.Text = "REVISAR CONEXIONES";
             StatusBadge.Background = FindResource("WarningBrush") as SolidColorBrush;
             StatusBadge.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F39C12"));
             StatusDot.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFD166"));
