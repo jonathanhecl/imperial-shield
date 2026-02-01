@@ -345,58 +345,54 @@ public partial class DashboardWindow : Window
 
         if (isPaused)
         {
+            StatusText.Visibility = Visibility.Visible;
             StatusText.Text = "SISTEMA PAUSADO";
-            StatusBadge.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#374151")); // Grey
-            StatusBadge.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#9CA3AF"));
-            StatusDot.Fill = new SolidColorBrush(Colors.Gray);
-            StatusGlow.Color = Colors.Transparent;
+            HealthBar.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#7F8C8D")); // Gray
+            HealthBar.Value = 100;
+            HealthText.Text = "PAUSADO";
             return;
         }
 
-        bool isSecure = defenderInfo.RealTimeProtectionEnabled && suspiciousConnections == 0 && privacyRisks == 0;
+        // Calculate HP logic
+        int maxHp = 100;
+        int currentHp = 100;
 
-        // Ensure text is always white for contrast on colored backgrounds
-        StatusText.Foreground = Brushes.White;
-
-        if (isSecure)
+        if (!defenderInfo.RealTimeProtectionEnabled)
         {
-            StatusText.Text = "PROTEGIDO";
-            StatusBadge.Background = FindResource("SuccessBrush") as SolidColorBrush;
-            StatusBadge.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#27AE60"));
-            StatusDot.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5CFF5C"));
-            StatusGlow.Color = (Color)ColorConverter.ConvertFromString("#27AE60");
-        }
-        else if (!defenderInfo.RealTimeProtectionEnabled)
-        {
-            StatusText.Text = "DEFENDER DESACTIVADO";
-            StatusBadge.Background = FindResource("DangerBrush") as SolidColorBrush;
-            StatusBadge.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E74C3C"));
-            StatusDot.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF4C4C"));
-            StatusGlow.Color = (Color)ColorConverter.ConvertFromString("#E74C3C");
-        }
-        else if (privacyRisks > 0 && suspiciousConnections > 0)
-        {
-            StatusText.Text = "SISTEMA EN RIESGO";
-            StatusBadge.Background = FindResource("DangerBrush") as SolidColorBrush;
-            StatusBadge.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E74C3C"));
-            StatusDot.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF4C4C"));
-            StatusGlow.Color = (Color)ColorConverter.ConvertFromString("#E74C3C");
-        }
-        else if (privacyRisks > 0)
-        {
-            StatusText.Text = "RIESGO DE PRIVACIDAD";
-            StatusBadge.Background = FindResource("WarningBrush") as SolidColorBrush;
-            StatusBadge.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F39C12"));
-            StatusDot.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFD166"));
-            StatusGlow.Color = (Color)ColorConverter.ConvertFromString("#F39C12");
+            currentHp = 0; // Critical: Defender Off
         }
         else
         {
-            StatusText.Text = "REVISAR CONEXIONES";
-            StatusBadge.Background = FindResource("WarningBrush") as SolidColorBrush;
-            StatusBadge.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F39C12"));
-            StatusDot.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFD166"));
-            StatusGlow.Color = (Color)ColorConverter.ConvertFromString("#F39C12");
+            currentHp -= (suspiciousConnections * 5); // -5 HP per network risk
+            currentHp -= (privacyRisks * 10); // -10 HP per privacy risk
+        }
+
+        // Clamp HP
+        if (currentHp < 0) currentHp = 0;
+        if (currentHp > 100) currentHp = 100;
+
+        // Update UI
+        HealthBar.Value = currentHp;
+        HealthText.Text = $"{currentHp}/{maxHp} HP";
+        
+        // Status Text & Colors
+        StatusText.Visibility = Visibility.Visible;
+        StatusText.Foreground = Brushes.White;
+
+        if (currentHp >= 80)
+        {
+            StatusText.Text = "FORTALEZA SEGURA";
+            HealthBar.Foreground = FindResource("HealthBarHigh") as SolidColorBrush;
+        }
+        else if (currentHp >= 40)
+        {
+            StatusText.Text = "BAJO ASEDIÓ";
+            HealthBar.Foreground = FindResource("HealthBarMid") as SolidColorBrush;
+        }
+        else
+        {
+            StatusText.Text = "PELIGRO CRÍTICO";
+            HealthBar.Foreground = FindResource("HealthBarLow") as SolidColorBrush;
         }
     }
 

@@ -123,23 +123,9 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Storyboard x:Key="StatusPulse">
-            <DoubleAnimation Storyboard.TargetName="StatusGlow" 
-                             Storyboard.TargetProperty="Opacity"
-                             From="0.4" To="1.0" Duration="0:0:1" 
-                             AutoReverse="True" RepeatBehavior="Forever"/>
-            <DoubleAnimation Storyboard.TargetName="StatusDot" 
-                             Storyboard.TargetProperty="Opacity"
-                             From="0.7" To="1.0" Duration="0:0:1" 
-                             AutoReverse="True" RepeatBehavior="Forever"/>
-        </Storyboard>
     </Window.Resources>
     
-    <Window.Triggers>
-        <EventTrigger RoutedEvent="Window.Loaded">
-            <BeginStoryboard Storyboard="{StaticResource StatusPulse}"/>
-        </EventTrigger>
-    </Window.Triggers>
+    <!-- Trigger removed as storyboard references missing elements -->
 
     <!-- Main Container with decorative border -->
     <Border Padding="0" Background="#080F1A">
@@ -223,32 +209,38 @@
                                  </Border>
                              </Button>
 
-                             <Border x:Name="StatusBadge" CornerRadius="25" Padding="20,10"
-                                     VerticalAlignment="Center"
-                                     BorderThickness="2" BorderBrush="#27AE60">
-                                 <Border.Background>
-                                     <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                         <GradientStop Color="#1A4D2E" Offset="0"/>
-                                         <GradientStop Color="#0D2818" Offset="1"/>
-                                     </LinearGradientBrush>
-                                 </Border.Background>
-                                 <StackPanel Orientation="Horizontal">
-                                     <Ellipse x:Name="StatusDot" Width="12" Height="12" Margin="0,0,10,0">
-                                         <Ellipse.Fill>
-                                             <RadialGradientBrush>
-                                                 <GradientStop Color="#5CFF5C" Offset="0"/>
-                                                 <GradientStop Color="#27AE60" Offset="1"/>
-                                             </RadialGradientBrush>
-                                         </Ellipse.Fill>
-                                         <Ellipse.Effect>
-                                             <DropShadowEffect x:Name="StatusGlow" BlurRadius="8" ShadowDepth="0" Color="#27AE60"/>
-                                         </Ellipse.Effect>
-                                     </Ellipse>
-                                     <TextBlock x:Name="StatusText" Text="PROTEGIDO" 
-                                                Foreground="#5CFF5C" FontWeight="Bold" FontSize="14"
-                                                VerticalAlignment="Center"/>
-                                 </StackPanel>
-                             </Border>
+                             <!-- Health Bar System -->
+                             <Grid VerticalAlignment="Center" Margin="20,0,0,0" Width="250">
+                                 <Grid.RowDefinitions>
+                                     <RowDefinition Height="Auto"/>
+                                     <RowDefinition Height="Auto"/>
+                                 </Grid.RowDefinitions>
+                                 
+                                 <!-- Health Title -->
+                                 <TextBlock Text="INTEGRIDAD DEL SISTEMA" Foreground="#4DA8DA" 
+                                            FontSize="10" FontWeight="Bold" Margin="2,0,0,4"
+                                            HorizontalAlignment="Left"/>
+
+                                 <Grid Grid.Row="1">
+                                     <!-- Health Bar -->
+                                     <ProgressBar x:Name="HealthBar" Height="26" Value="100" Maximum="100"
+                                                  Style="{StaticResource HealthBarStyle}"/>
+                                     
+                                     <!-- Text Overlay -->
+                                     <TextBlock x:Name="HealthText" Text="100/100 HP" 
+                                                HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                Foreground="White" FontWeight="Bold" FontSize="12"
+                                                Effect="{x:Null}"/>
+                                     
+                                     <!-- Status Text (Hidden mostly, or used below) -->
+                                 </Grid>
+                                 
+                                 <!-- Main Status Text below bar -->
+                                 <TextBlock x:Name="StatusText" Text="FORTALEZA SEGURA" Grid.Row="1"
+                                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                                            Foreground="White" FontWeight="Bold" IsHitTestVisible="False"
+                                            Margin="0,-30,0,0" Visibility="Collapsed"/>
+                             </Grid>
                         </StackPanel>
                     </Grid>
                 </Border>

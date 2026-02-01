@@ -37,6 +37,46 @@
         <GradientStop Color="#0F1C2E" Offset="1"/>
     </LinearGradientBrush>
 
+    <!-- Medieval Health Bar Colors -->
+    <SolidColorBrush x:Key="HealthBarHigh" Color="#27AE60"/>
+    <SolidColorBrush x:Key="HealthBarMid" Color="#F39C12"/>
+    <SolidColorBrush x:Key="HealthBarLow" Color="#C0392B"/>
+    <SolidColorBrush x:Key="HealthBarBackground" Color="#0D1B2A"/>
+    
+    <!-- Medieval Borders -->
+    <LinearGradientBrush x:Key="GoldenBorder" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#B8860B" Offset="0"/>
+        <GradientStop Color="#FFD700" Offset="0.5"/>
+        <GradientStop Color="#B8860B" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Health Bar Style -->
+    <Style x:Key="HealthBarStyle" TargetType="ProgressBar">
+        <Setter Property="Height" Value="24"/>
+        <Setter Property="Background" Value="{StaticResource HealthBarBackground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource GoldenBorder}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="Foreground" Value="{StaticResource HealthBarHigh}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ProgressBar">
+                    <Grid>
+                        <Border x:Name="PART_Track" 
+                                Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="4"/>
+                        <Border x:Name="PART_Indicator" 
+                                HorizontalAlignment="Left" 
+                                Background="{TemplateBinding Foreground}" 
+                                CornerRadius="2" 
+                                Margin="2"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Button Style -->
     <Style x:Key="ModernButton" TargetType="Button">
         <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
