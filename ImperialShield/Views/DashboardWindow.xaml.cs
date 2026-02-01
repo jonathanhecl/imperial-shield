@@ -127,7 +127,7 @@ public partial class DashboardWindow : Window
 
             Dispatcher.Invoke(() =>
             {
-                UpdateOverallStatus(defenderInfo, suspiciousConnections.Count);
+                UpdateOverallStatus(defenderInfo, suspiciousConnections.Count, privacyCount);
                 
                 // Update Last Checks List
                 UpdateCheckItem(CheckDefenseTime, CheckDefenseStatus, defenseTime, 0, "active", false, CheckDefenseDot, CheckDefenseBadge);
@@ -250,9 +250,15 @@ public partial class DashboardWindow : Window
             }
             else if (isRisk && count > 0)
             {
-                countBlock.Text = $"{count} {unit}";
-                if (dot != null) dot.Fill = redDot;
+                // Simple "Riesgo" text as requested
+                countBlock.Text = "Riesgo";
+                
                 if (badge != null) badge.Background = redBadge;
+                if (dot != null) 
+                {
+                    // Use White for the dot so it's visible on the red background
+                    dot.Fill = Brushes.White;
+                }
             }
             else if (unit == "riesgos" && count == 0)
             {
@@ -308,7 +314,7 @@ public partial class DashboardWindow : Window
         }
     }
 
-    private void UpdateOverallStatus(DefenderInfo defenderInfo, int suspiciousConnections)
+    private void UpdateOverallStatus(DefenderInfo defenderInfo, int suspiciousConnections, int privacyRisks)
     {
         bool isPaused = App.CurrentApp.IsMonitoringPaused;
 
@@ -338,7 +344,8 @@ public partial class DashboardWindow : Window
             return;
         }
 
-        bool isSecure = defenderInfo.RealTimeProtectionEnabled && suspiciousConnections == 0;
+        bool isSecure = defenderInfo.RealTimeProtectionEnabled && suspiciousConnections == 0 && privacyRisks == 0;
+        int totalRisks = suspiciousConnections + privacyRisks;
 
         if (isSecure)
         {
@@ -356,9 +363,27 @@ public partial class DashboardWindow : Window
             StatusDot.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF4C4C"));
             StatusGlow.Color = (Color)ColorConverter.ConvertFromString("#E74C3C");
         }
+        else if (privacyRisks > 0 && suspiciousConnections > 0)
+        {
+            StatusText.Text = $"SISTEMA EN RIESGO ({totalRisks})";
+            StatusBadge.Background = FindResource("DangerBrush") as SolidColorBrush;
+            StatusBadge.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E74C3C"));
+            StatusDot.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF4C4C"));
+            StatusGlow.Color = (Color)ColorConverter.ConvertFromString("#E74C3C");
+        }
+        else if (privacyRisks > 0)
+        {
+            string label = privacyRisks == 1 ? "RIESGO" : "RIESGOS";
+            StatusText.Text = $"{label} DE PRIVACIDAD ({privacyRisks})";
+            StatusBadge.Background = FindResource("WarningBrush") as SolidColorBrush;
+            StatusBadge.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F39C12"));
+            StatusDot.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFD166"));
+            StatusGlow.Color = (Color)ColorConverter.ConvertFromString("#F39C12");
+        }
         else
         {
-            StatusText.Text = "REVISAR CONEXIONES";
+            string label = suspiciousConnections == 1 ? "CONEXIÓN" : "CONEXIONES";
+            StatusText.Text = $"REVISAR {label} ({suspiciousConnections})";
             StatusBadge.Background = FindResource("WarningBrush") as SolidColorBrush;
             StatusBadge.BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F39C12"));
             StatusDot.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FFD166"));
