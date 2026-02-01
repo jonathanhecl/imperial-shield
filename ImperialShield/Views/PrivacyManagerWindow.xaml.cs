@@ -47,37 +47,52 @@ public partial class PrivacyManagerWindow : Window
         public string Publisher { get; set; } = string.Empty;
         // File existence
         public bool FileExists { get; set; } = true;
+
+        // Whitelist state
+        public bool IsWhitelistedCamera { get; set; }
+        public bool IsWhitelistedMic { get; set; }
         
+        public bool IsRisk => (IsCameraInUse && !IsWhitelistedCamera) || (IsMicInUse && !IsWhitelistedMic);
+        
+        public string RiskReason => IsRisk ? "⚠️ Esta aplicación está usando un dispositivo y no es de confianza." : string.Empty;
+
         // For sorting (higher = more priority)
+        // 5 = Risk (Highest)
         // 4 = In Use (Critical)
         // 3 = Running (Terminable/Active)
         // 1 = Stopped
-        public int SortPriority => IsInUse ? 4 : (IsRunning ? 3 : 1);
+        public int SortPriority => IsRisk ? 5 : (IsInUse ? 4 : (IsRunning ? 3 : 1));
         
         // UI Bindings
         public string AppType => !FileExists ? "⚠️ Archivo no encontrado" : (IsNonPackaged ? "Aplicación de Escritorio" : "Microsoft Store");
         public Brush AppTypeColor => !FileExists ? new SolidColorBrush(Color.FromRgb(239, 68, 68)) : new SolidColorBrush(Color.FromRgb(100, 116, 139));
         
+        public Brush ItemBackground => IsRisk 
+            ? new LinearGradientBrush(Color.FromRgb(69, 26, 26), Color.FromRgb(15, 23, 42), 0)
+            : new SolidColorBrush(Color.FromRgb(15, 23, 42));
+
         public Brush CameraBadgeBg => HasCameraAccess 
-            ? new SolidColorBrush(Color.FromArgb(40, 77, 168, 218)) 
+            ? (IsCameraInUse && !IsWhitelistedCamera ? new SolidColorBrush(Color.FromRgb(220, 38, 38)) : new SolidColorBrush(Color.FromArgb(40, 77, 168, 218))) 
             : new SolidColorBrush(Color.FromArgb(20, 100, 116, 139));
         public Brush CameraBadgeFg => HasCameraAccess 
             ? Brushes.White 
             : new SolidColorBrush(Color.FromRgb(71, 85, 105));
             
         public Brush MicBadgeBg => HasMicAccess 
-            ? new SolidColorBrush(Color.FromArgb(40, 239, 68, 68)) 
+            ? (IsMicInUse && !IsWhitelistedMic ? new SolidColorBrush(Color.FromRgb(220, 38, 38)) : new SolidColorBrush(Color.FromArgb(40, 239, 68, 68)))
             : new SolidColorBrush(Color.FromArgb(20, 100, 116, 139));
         public Brush MicBadgeFg => HasMicAccess 
             ? Brushes.White 
             : new SolidColorBrush(Color.FromRgb(71, 85, 105));
 
-        public string StatusText => IsInUse ? "En Uso" : (IsRunning ? "Ejecutando" : "Cerrado");
-        public Brush StatusColor => IsInUse 
-            ? new SolidColorBrush(Color.FromRgb(245, 158, 11))  // Yellow (F59E0B)
-            : IsRunning 
-                ? new SolidColorBrush(Color.FromRgb(77, 168, 218))  // Blue
-                : new SolidColorBrush(Color.FromRgb(100, 116, 139)); // Gray
+        public string StatusText => IsRisk ? "RIESGO" : (IsInUse ? "En Uso" : (IsRunning ? "Ejecutando" : "Cerrado"));
+        public Brush StatusColor => IsRisk
+            ? new SolidColorBrush(Color.FromRgb(239, 68, 68)) // Red
+            : IsInUse 
+                ? new SolidColorBrush(Color.FromRgb(245, 158, 11))  // Yellow
+                : IsRunning 
+                    ? new SolidColorBrush(Color.FromRgb(77, 168, 218))  // Blue
+                    : new SolidColorBrush(Color.FromRgb(100, 116, 139)); // Gray
 
         public string SecurityText => Security switch
         {
@@ -195,6 +210,13 @@ public partial class PrivacyManagerWindow : Window
 
         // Analyze security
         AnalyzeSecurity(vm);
+
+        // Check whitelist
+        string appPathName = System.IO.Path.GetFileName(vm.AppId);
+        vm.IsWhitelistedCamera = SettingsManager.Current.WhitelistedCameraApps.Contains(vm.AppId, StringComparer.OrdinalIgnoreCase) ||
+                                 SettingsManager.Current.WhitelistedCameraApps.Contains(appPathName, StringComparer.OrdinalIgnoreCase);
+        vm.IsWhitelistedMic = SettingsManager.Current.WhitelistedMicrophoneApps.Contains(vm.AppId, StringComparer.OrdinalIgnoreCase) ||
+                               SettingsManager.Current.WhitelistedMicrophoneApps.Contains(appPathName, StringComparer.OrdinalIgnoreCase);
 
         return vm;
     }
@@ -464,6 +486,27 @@ public partial class PrivacyManagerWindow : Window
     private void OpenFolder_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
         OpenFolder_Click(sender, (RoutedEventArgs)e);
+    }
+
+    private void Trust_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.Tag is UnifiedAppViewModel app)
+        {
+            if (MessageBox.Show($"¿Deseas agregar '{app.DisplayName}' a la lista de confianza?\n\nEsto hará que Imperial Shield ya no lo marque como un riesgo cuando esté en uso.", 
+                "Confiar en Aplicación", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                string fileName = System.IO.Path.GetFileName(app.AppId);
+                
+                if (app.HasCameraAccess && !app.IsWhitelistedCamera)
+                    SettingsManager.Current.WhitelistedCameraApps.Add(fileName);
+                
+                if (app.HasMicAccess && !app.IsWhitelistedMic)
+                    SettingsManager.Current.WhitelistedMicrophoneApps.Add(fileName);
+                
+                SettingsManager.Save();
+                RefreshData();
+            }
+        }
     }
 
     private void Refresh_Click(object sender, RoutedEventArgs e) => RefreshData();

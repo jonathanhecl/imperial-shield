@@ -90,6 +90,18 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
+        <!-- Trust Button Style -->
+        <Style x:Key="TrustBtn" TargetType="Button" BasedOn="{StaticResource ActionButton}">
+            <Setter Property="Background" Value="#1A3A3A"/>
+            <Setter Property="BorderBrush" Value="#059669"/>
+            <Setter Property="Foreground" Value="#6EE7B7"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#065F46"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
 
     <Grid Margin="25">
@@ -181,7 +193,7 @@
                     <ItemsControl x:Name="AppList">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Background="#0F172A" BorderBrush="#1E293B" BorderThickness="0,0,0,1" Padding="20,14">
+                                <Border Background="{Binding ItemBackground}" BorderBrush="#1E293B" BorderThickness="0,0,0,1" Padding="20,14">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
@@ -204,6 +216,8 @@
                                                        MouseLeftButtonDown="OpenFolder_Click"
                                                        ToolTip="Click derecho para opciones"/>
                                             <TextBlock Text="{Binding AppType}" FontSize="10" Foreground="{Binding AppTypeColor}" Margin="0,2,0,0" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Text="{Binding RiskReason}" FontSize="10" Foreground="#FCA5A5" Margin="0,4,0,0" FontWeight="SemiBold"
+                                                       Visibility="{Binding IsRisk, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                         </StackPanel>
 
                                         <!-- Permission Badges -->
@@ -221,7 +235,7 @@
                                         <!-- Status -->
                                         <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
                                             <Ellipse Width="8" Height="8" Fill="{Binding StatusColor}" Margin="0,0,6,0"/>
-                                            <TextBlock Text="{Binding StatusText}" FontSize="11" Foreground="{Binding StatusColor}"/>
+                                            <TextBlock Text="{Binding StatusText}" FontSize="11" Foreground="{Binding StatusColor}" FontWeight="SemiBold"/>
                                         </StackPanel>
 
                                         <!-- Security -->
@@ -231,6 +245,9 @@
 
                                         <!-- Actions -->
                                         <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Button Content="✅ Confiar" Style="{StaticResource TrustBtn}" 
+                                                    Click="Trust_Click" Tag="{Binding}"
+                                                    Visibility="{Binding IsRisk, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                             <Button Content="🚫 Revocar" Style="{StaticResource ActionButton}" 
                                                     Click="RevokeAll_Click" Tag="{Binding}"
                                                     ToolTip="{Binding RevokeTooltip}"/>
