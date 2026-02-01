@@ -454,7 +454,7 @@ public partial class DashboardWindow : Window
         }
     }
 
-    private void ViewDefaultApps_Click(object sender, EventArgs e)
+    private void ViewDefaultApps_Click(object sender, MouseButtonEventArgs e)
     {
         try
         {
