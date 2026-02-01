@@ -666,12 +666,10 @@
                                 </Button.Content>
                             </Button>
                             
-                            <Button Content="⚙️ Configuración" Background="Transparent" 
-                                    Foreground="#7EB8DC" BorderThickness="0" Cursor="Hand" 
+                            <Button Content="⚙️ Configuración" Style="{StaticResource GhostButtonStyle}"
                                     Margin="0,0,20,0" Click="Settings_Click" FontWeight="SemiBold" FontSize="11"/>
                                     
-                            <Button Content=" Minimizar" Background="Transparent" 
-                                    Foreground="#7EB8DC" BorderThickness="0" Cursor="Hand"
+                            <Button Content=" Minimizar" Style="{StaticResource GhostButtonStyle}"
                                     Click="MinimizeToTray_Click" FontWeight="SemiBold" FontSize="11"/>
                         </StackPanel>
                     </Grid>
