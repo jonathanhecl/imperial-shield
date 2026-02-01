@@ -648,7 +648,9 @@
                     <Grid>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock x:Name="VersionText" Text="Imperial Shield" 
-                                       Foreground="#5A7A9A" FontWeight="SemiBold"/>
+                                       Foreground="#5A7A9A" FontWeight="SemiBold"
+                                       Cursor="Hand" MouseLeftButtonUp="VersionText_Click"
+                                       ToolTip="Click para abrir Panel de Pruebas (Debug)"/>
                             <TextBlock Text=" • " Foreground="#3A5A7A"/>
                             <Ellipse x:Name="FooterStatusDot" Width="8" Height="8" Fill="#27AE60" Margin="0,0,6,0" VerticalAlignment="Center">
                                 <Ellipse.Effect>

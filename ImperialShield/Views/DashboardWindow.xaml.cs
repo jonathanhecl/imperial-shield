@@ -490,6 +490,12 @@ public partial class DashboardWindow : Window
     private void Quarantine_Click(object sender, EventArgs e) => new QuarantineWindow().Show();
     private void ScheduledTasks_Click(object sender, EventArgs e) => new ScheduledTasksWindow().Show();
 
+    private void VersionText_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        var debugWin = new AlertTestWindow();
+        debugWin.Show();
+    }
+
     private void MinimizeToTray_Click(object sender, RoutedEventArgs e)
     {
         Hide();
