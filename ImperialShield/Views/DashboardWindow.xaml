@@ -383,6 +383,91 @@
                             <!-- Monitoring List with Scroll -->
                             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                                 <StackPanel>
+                                    <!-- Ataques DDoS -->
+                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
+                                            Cursor="Hand" MouseLeftButtonUp="NetworkViewer_Click" ToolTip="Click para ver conexiones sospechosas">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
+                                                <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="Actividad de Red (DDoS)" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                                <TextBlock Text="Fugas y Ataques" Foreground="#7EB8DC" FontSize="11"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                <TextBlock x:Name="CheckConnectionsTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                                <Border x:Name="CheckConnectionsBadge" CornerRadius="10" Background="#1E3A5F" Padding="10,3">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Ellipse x:Name="CheckConnectionsDot" Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
+                                                        <TextBlock x:Name="CheckConnectionsCount" Text="..." Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Navegador Predeterminado -->
+                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
+                                            Cursor="Hand" MouseLeftButtonUp="ViewDefaultApps_Click"
+                                            ToolTip="Click para abrir configuración del sistema">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
+                                                <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock x:Name="BrowserTitleText" Text="Navegador Predeterminado" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                                <TextBlock x:Name="BrowserNameText" Text="..." Foreground="#7EB8DC" FontSize="11"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                <TextBlock x:Name="CheckBrowserTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                                <Border x:Name="CheckBrowserBadge" CornerRadius="10" Background="#27AE60" Padding="10,3">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Ellipse x:Name="CheckBrowserDot" Width="6" Height="6" Fill="#5CFF5C" Margin="0,0,5,0"/>
+                                                        <TextBlock x:Name="CheckBrowserStatus" Text="Activo" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Acceso a Cámara y Micrófono -->
+                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
+                                            Cursor="Hand" MouseLeftButtonUp="Privacy_Click" ToolTip="Click para el Centro de Privacidad">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
+                                                <TextBlock Text="&#xE890;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                <TextBlock Text="Privacidad (Cámara/Mic)" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                                <TextBlock Text="Uso de Dispositivos" Foreground="#7EB8DC" FontSize="11"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                <TextBlock x:Name="CheckPrivacyTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                                <Border x:Name="CheckPrivacyBadge" CornerRadius="10" Background="#27AE60" Padding="10,3">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Ellipse x:Name="CheckPrivacyDot" Width="6" Height="6" Fill="#5CFF5C" Margin="0,0,5,0"/>
+                                                        <TextBlock x:Name="CheckPrivacyStatus" Text="Activo" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+
                                     <!-- Windows Defender -->
                                     <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
                                             Cursor="Hand" MouseLeftButtonUp="ViewDefenderHome_Click" ToolTip="Click para abrir Seguridad de Windows">
@@ -405,34 +490,6 @@
                                                     <StackPanel Orientation="Horizontal">
                                                         <Ellipse x:Name="CheckDefenseDot" Width="6" Height="6" Fill="#5CFF5C" Margin="0,0,5,0"/>
                                                         <TextBlock x:Name="CheckDefenseStatus" Text="Activo" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
-                                                    </StackPanel>
-                                                </Border>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-
-                                    <!-- HOSTS Mapping -->
-                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
-                                            Cursor="Hand" MouseLeftButtonUp="ViewHosts_Click" ToolTip="Click para editar archivo HOSTS">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                                <TextBlock Text="&#xE909;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="Mapeo de Nombres (HOSTS)" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
-                                                <TextBlock Text="DNS Local y Bloqueos" Foreground="#7EB8DC" FontSize="11"/>
-                                            </StackPanel>
-                                            <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                                <TextBlock x:Name="CheckHostsTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                                <Border x:Name="CheckHostsBadge" CornerRadius="10" Background="#1E3A5F" Padding="10,3">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Ellipse x:Name="CheckHostsDot" Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
-                                                        <TextBlock x:Name="CheckHostsCount" Text="..." Foreground="White" FontSize="11" FontWeight="SemiBold"/>
                                                     </StackPanel>
                                                 </Border>
                                             </StackPanel>
@@ -467,34 +524,6 @@
                                         </Grid>
                                     </Border>
 
-                                    <!-- Ataques DDoS -->
-                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
-                                            Cursor="Hand" MouseLeftButtonUp="NetworkViewer_Click" ToolTip="Click para ver conexiones sospechosas">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                                <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="Actividad de Red (DDoS)" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
-                                                <TextBlock Text="Fugas y Ataques" Foreground="#7EB8DC" FontSize="11"/>
-                                            </StackPanel>
-                                            <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                                <TextBlock x:Name="CheckConnectionsTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                                <Border x:Name="CheckConnectionsBadge" CornerRadius="10" Background="#1E3A5F" Padding="10,3">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Ellipse x:Name="CheckConnectionsDot" Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
-                                                        <TextBlock x:Name="CheckConnectionsCount" Text="..." Foreground="White" FontSize="11" FontWeight="SemiBold"/>
-                                                    </StackPanel>
-                                                </Border>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-
                                     <!-- Programas al Inicio -->
                                     <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
                                             Cursor="Hand" MouseLeftButtonUp="StartupManager_Click" ToolTip="Click para gestionar programas de inicio">
@@ -517,35 +546,6 @@
                                                     <StackPanel Orientation="Horizontal">
                                                         <Ellipse x:Name="CheckStartupDot" Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
                                                         <TextBlock x:Name="CheckStartupCount" Text="..." Foreground="White" FontSize="11" FontWeight="SemiBold"/>
-                                                    </StackPanel>
-                                                </Border>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-
-                                    <!-- Navegador Predeterminado -->
-                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
-                                            Cursor="Hand" MouseLeftButtonUp="ViewDefaultApps_Click"
-                                            ToolTip="Click para abrir configuración del sistema">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                                <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock x:Name="BrowserTitleText" Text="Navegador Predeterminado" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
-                                                <TextBlock x:Name="BrowserNameText" Text="..." Foreground="#7EB8DC" FontSize="11"/>
-                                            </StackPanel>
-                                            <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                                <TextBlock x:Name="CheckBrowserTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                                <Border x:Name="CheckBrowserBadge" CornerRadius="10" Background="#27AE60" Padding="10,3">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <Ellipse x:Name="CheckBrowserDot" Width="6" Height="6" Fill="#5CFF5C" Margin="0,0,5,0"/>
-                                                        <TextBlock x:Name="CheckBrowserStatus" Text="Activo" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
                                                     </StackPanel>
                                                 </Border>
                                             </StackPanel>
@@ -608,9 +608,9 @@
                                         </Grid>
                                     </Border>
 
-                                    <!-- Acceso a Cámara y Micrófono -->
-                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10"
-                                            Cursor="Hand" MouseLeftButtonUp="Privacy_Click" ToolTip="Click para el Centro de Privacidad">
+                                    <!-- HOSTS Mapping -->
+                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
+                                            Cursor="Hand" MouseLeftButtonUp="ViewHosts_Click" ToolTip="Click para editar archivo HOSTS">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
@@ -618,18 +618,18 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                                <TextBlock Text="&#xE890;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                <TextBlock Text="&#xE909;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                <TextBlock Text="Privacidad (Cámara/Mic)" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
-                                                <TextBlock Text="Uso de Dispositivos" Foreground="#7EB8DC" FontSize="11"/>
+                                                <TextBlock Text="Mapeo de Nombres (HOSTS)" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
+                                                <TextBlock Text="DNS Local y Bloqueos" Foreground="#7EB8DC" FontSize="11"/>
                                             </StackPanel>
                                             <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
-                                                <TextBlock x:Name="CheckPrivacyTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                                <Border x:Name="CheckPrivacyBadge" CornerRadius="10" Background="#27AE60" Padding="10,3">
+                                                <TextBlock x:Name="CheckHostsTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                                <Border x:Name="CheckHostsBadge" CornerRadius="10" Background="#1E3A5F" Padding="10,3">
                                                     <StackPanel Orientation="Horizontal">
-                                                        <Ellipse x:Name="CheckPrivacyDot" Width="6" Height="6" Fill="#5CFF5C" Margin="0,0,5,0"/>
-                                                        <TextBlock x:Name="CheckPrivacyStatus" Text="Activo" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
+                                                        <Ellipse x:Name="CheckHostsDot" Width="6" Height="6" Fill="#4DA8DA" Margin="0,0,5,0"/>
+                                                        <TextBlock x:Name="CheckHostsCount" Text="..." Foreground="White" FontSize="11" FontWeight="SemiBold"/>
                                                     </StackPanel>
                                                 </Border>
                                             </StackPanel>
