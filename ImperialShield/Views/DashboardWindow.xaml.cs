@@ -389,7 +389,7 @@ public partial class DashboardWindow : Window
         window.Show();
     }
 
-    private void ViewDefenderHome_Click(object sender, MouseButtonEventArgs e)
+    private void ViewDefenderHome_Click(object sender, RoutedEventArgs e)
     {
         try
         {
@@ -409,7 +409,7 @@ public partial class DashboardWindow : Window
         }
     }
 
-    private void ViewHosts_Click(object sender, MouseButtonEventArgs e)
+    private void ViewHosts_Click(object sender, RoutedEventArgs e)
     {
         try
         {
@@ -432,7 +432,7 @@ public partial class DashboardWindow : Window
         }
     }
 
-    private void ViewExclusions_Click(object sender, MouseButtonEventArgs e)
+    private void ViewExclusions_Click(object sender, RoutedEventArgs e)
     {
         try
         {
@@ -454,7 +454,7 @@ public partial class DashboardWindow : Window
         }
     }
 
-    private void ViewDefaultApps_Click(object sender, MouseButtonEventArgs e)
+    private void ViewDefaultApps_Click(object sender, RoutedEventArgs e)
     {
         try
         {
@@ -490,7 +490,7 @@ public partial class DashboardWindow : Window
     private void Quarantine_Click(object sender, RoutedEventArgs e) => new QuarantineWindow().Show();
     private void ScheduledTasks_Click(object sender, RoutedEventArgs e) => new ScheduledTasksWindow().Show();
 
-    private void VersionText_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    private void VersionText_Click(object sender, RoutedEventArgs e)
     {
         var debugWin = new AlertTestWindow();
         debugWin.Show();
