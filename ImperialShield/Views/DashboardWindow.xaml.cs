@@ -366,13 +366,13 @@ public partial class DashboardWindow : Window
         }
     }
 
-    private void ProcessViewer_Click(object sender, EventArgs e)
+    private void ProcessViewer_Click(object sender, RoutedEventArgs e)
     {
         var window = new ProcessViewerWindow();
         window.Show();
     }
 
-    private void NetworkViewer_Click(object sender, EventArgs e)
+    private void NetworkViewer_Click(object sender, RoutedEventArgs e)
     {
         var window = new NetworkViewerWindow();
         window.Show();
@@ -383,13 +383,13 @@ public partial class DashboardWindow : Window
         NetworkViewer_Click(sender, e);
     }
 
-    private void StartupManager_Click(object sender, EventArgs e)
+    private void StartupManager_Click(object sender, RoutedEventArgs e)
     {
         var window = new StartupManagerWindow();
         window.Show();
     }
 
-    private void ViewDefenderHome_Click(object sender, EventArgs e)
+    private void ViewDefenderHome_Click(object sender, MouseButtonEventArgs e)
     {
         try
         {
@@ -409,7 +409,7 @@ public partial class DashboardWindow : Window
         }
     }
 
-    private void ViewHosts_Click(object sender, EventArgs e)
+    private void ViewHosts_Click(object sender, MouseButtonEventArgs e)
     {
         try
         {
@@ -432,7 +432,7 @@ public partial class DashboardWindow : Window
         }
     }
 
-    private void ViewExclusions_Click(object sender, EventArgs e)
+    private void ViewExclusions_Click(object sender, MouseButtonEventArgs e)
     {
         try
         {
@@ -481,14 +481,14 @@ public partial class DashboardWindow : Window
         }
     }
 
-    private void Privacy_Click(object sender, EventArgs e)
+    private void Privacy_Click(object sender, RoutedEventArgs e)
     {
         var win = new PrivacyManagerWindow();
         win.Show();
     }
 
-    private void Quarantine_Click(object sender, EventArgs e) => new QuarantineWindow().Show();
-    private void ScheduledTasks_Click(object sender, EventArgs e) => new ScheduledTasksWindow().Show();
+    private void Quarantine_Click(object sender, RoutedEventArgs e) => new QuarantineWindow().Show();
+    private void ScheduledTasks_Click(object sender, RoutedEventArgs e) => new ScheduledTasksWindow().Show();
 
     private void VersionText_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
