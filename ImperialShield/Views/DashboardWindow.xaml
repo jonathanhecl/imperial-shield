@@ -393,7 +393,7 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                                <TextBlock Text="&#xE83F;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#27AE60" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                <TextBlock Text="&#xE83F;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                 <TextBlock Text="Seguridad de Windows" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
@@ -477,7 +477,7 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                                <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#E74C3C" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                 <TextBlock Text="Actividad de Red (DDoS)" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
