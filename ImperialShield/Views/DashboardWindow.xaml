@@ -307,6 +307,20 @@
                                         </StackPanel>
                                     </Button>
 
+                                    <Button x:Name="ArsenalPrivacyBtn" Style="{StaticResource RPGButton}" Height="120" Margin="5"
+                                            Click="Privacy_Click" ToolTip="Centro de Privacidad" HorizontalContentAlignment="Center">
+                                        <StackPanel HorizontalAlignment="Center">
+                                            <TextBlock Text="&#xE890;" FontFamily="Segoe MDL2 Assets" FontSize="40" 
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
+                                                <TextBlock.Effect>
+                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
+                                                </TextBlock.Effect>
+                                            </TextBlock>
+                                            <TextBlock Text="PRIVACIDAD" FontSize="12" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
+                                            <TextBlock x:Name="ArsenalPrivacyCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                        </StackPanel>
+                                    </Button>
+
                                     <Button x:Name="ArsenalStartupBtn" Style="{StaticResource RPGButton}" Height="120" Margin="5"
                                             Click="StartupManager_Click" ToolTip="Gestor de Inicio" HorizontalContentAlignment="Center">
                                         <StackPanel HorizontalAlignment="Center">
@@ -332,20 +346,6 @@
                                             </TextBlock>
                                             <TextBlock Text="TAREAS" FontSize="12" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
                                             <TextBlock x:Name="ArsenalTasksCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
-                                        </StackPanel>
-                                    </Button>
-
-                                    <Button x:Name="ArsenalPrivacyBtn" Style="{StaticResource RPGButton}" Height="120" Margin="5"
-                                            Click="Privacy_Click" ToolTip="Centro de Privacidad" HorizontalContentAlignment="Center">
-                                        <StackPanel HorizontalAlignment="Center">
-                                            <TextBlock Text="&#xE890;" FontFamily="Segoe MDL2 Assets" FontSize="40" 
-                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
-                                                <TextBlock.Effect>
-                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
-                                                </TextBlock.Effect>
-                                            </TextBlock>
-                                            <TextBlock Text="PRIVACIDAD" FontSize="12" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
-                                            <TextBlock x:Name="ArsenalPrivacyCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
                                         </StackPanel>
                                     </Button>
 
