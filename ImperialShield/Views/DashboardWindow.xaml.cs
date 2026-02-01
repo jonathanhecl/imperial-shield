@@ -41,6 +41,15 @@ public partial class DashboardWindow : Window
                     Logger.LogException(ex, "DashboardWindow_Loaded");
                 }
             };
+
+            // Manejar minimización al tray
+            StateChanged += (s, e) =>
+            {
+                if (WindowState == WindowState.Minimized)
+                {
+                    Hide();
+                }
+            };
             
             // Refrescar cada 30 segundos
             _refreshTimer = new Timer(async _ => 
