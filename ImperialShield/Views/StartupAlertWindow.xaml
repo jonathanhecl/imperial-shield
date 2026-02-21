@@ -76,6 +76,10 @@
                         
                         <TextBlock Text="Ubicación:" Foreground="White" FontSize="12" Opacity="0.7"/>
                         <TextBlock x:Name="LocationText" Text="Registro de Windows (Run)" 
+                                   Foreground="#CCCCCC" FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,0,0,10" />
+
+                        <TextBlock Text="Ruta del ejecutable:" Foreground="White" FontSize="12" Opacity="0.7"/>
+                        <TextBlock x:Name="PathText" Text="No disponible" 
                                    Foreground="#CCCCCC" FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap" />
                     </StackPanel>
                 </Border>

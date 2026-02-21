@@ -18,16 +18,37 @@ namespace ImperialShield.Views
             AppNameText.Text = appName;
             
             // Clean up display name if possible
+            string cleanName = appName;
+            string executablePath = "No disponible";
+
             if (appName.EndsWith(" (User)"))
             {
-                AppNameText.Text = appName.Replace(" (User)", "");
+                cleanName = appName.Replace(" (User)", "");
+                AppNameText.Text = cleanName;
                 LocationText.Text = "Registro de Usuario (HKCU)";
+                try
+                {
+                    using var key = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run");
+                    var value = key?.GetValue(cleanName);
+                    if (value != null) executablePath = value.ToString();
+                }
+                catch { }
             }
             else if (appName.EndsWith(" (System)"))
             {
-                AppNameText.Text = appName.Replace(" (System)", "");
+                cleanName = appName.Replace(" (System)", "");
+                AppNameText.Text = cleanName;
                 LocationText.Text = "Registro del Sistema (HKLM)";
+                try
+                {
+                    using var key = Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run");
+                    var value = key?.GetValue(cleanName);
+                    if (value != null) executablePath = value.ToString();
+                }
+                catch { }
             }
+
+            PathText.Text = executablePath;
             
             System.Media.SystemSounds.Hand.Play();
         }
