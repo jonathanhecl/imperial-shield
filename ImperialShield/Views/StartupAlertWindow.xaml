@@ -26,12 +26,33 @@
         </EventTrigger>
     </Window.Triggers>
 
-    <Border CornerRadius="25" Background="#0A0F1E" BorderBrush="#E74C3C" BorderThickness="4">
+    <Border CornerRadius="30" Background="#060D18" BorderBrush="#E74C3C" BorderThickness="4">
         <Border.Effect>
-            <DropShadowEffect BlurRadius="50" ShadowDepth="0" Color="#E74C3C" Opacity="0.6"/>
+            <DropShadowEffect BlurRadius="80" ShadowDepth="0" Color="#E74C3C" Opacity="0.9"/>
         </Border.Effect>
-        
-        <Grid Margin="35">
+
+        <Grid>
+            <!-- Background Grid -->
+            <Border Opacity="0.08" Margin="4">
+                <Border.Background>
+                    <VisualBrush TileMode="Tile" Viewport="0,0,60,60" ViewportUnits="Absolute">
+                        <VisualBrush.Visual>
+                            <Path Data="M0,0 L60,0 M0,0 L0,60" Stroke="#E74C3C" StrokeThickness="0.8" StrokeDashArray="4,4"/>
+                        </VisualBrush.Visual>
+                    </VisualBrush>
+                </Border.Background>
+            </Border>
+            <!-- Center Glow -->
+            <Border>
+                <Border.Background>
+                    <RadialGradientBrush Center="0.5,0.4" RadiusX="0.5" RadiusY="0.5">
+                        <GradientStop Color="#1A0508" Offset="0"/>
+                        <GradientStop Color="Transparent" Offset="1"/>
+                    </RadialGradientBrush>
+                </Border.Background>
+            </Border>
+
+            <Grid Margin="35">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -124,5 +145,6 @@
                 </Button>
             </StackPanel>
         </Grid>
-    </Border>
+    </Grid>
+</Border>
 </Window>

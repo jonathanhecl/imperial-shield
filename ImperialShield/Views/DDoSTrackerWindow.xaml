@@ -33,12 +33,33 @@
         </EventTrigger>
     </Window.Triggers>
 
-    <Border CornerRadius="30" Background="#0A0F1E" BorderBrush="#00FF9D" BorderThickness="3" UseLayoutRounding="True">
+    <Border CornerRadius="30" Background="#060D18" BorderBrush="#E11D48" BorderThickness="4" UseLayoutRounding="True">
         <Border.Effect>
-            <DropShadowEffect BlurRadius="40" Color="#00FF9D" Opacity="0.4"/>
+            <DropShadowEffect BlurRadius="80" ShadowDepth="0" Color="#F43F5E" Opacity="0.9"/>
         </Border.Effect>
 
-        <Grid Margin="30">
+        <Grid>
+            <!-- Background Grid -->
+            <Border Opacity="0.08" Margin="4">
+                <Border.Background>
+                    <VisualBrush TileMode="Tile" Viewport="0,0,60,60" ViewportUnits="Absolute">
+                        <VisualBrush.Visual>
+                            <Path Data="M0,0 L60,0 M0,0 L0,60" Stroke="#F43F5E" StrokeThickness="0.8" StrokeDashArray="4,4"/>
+                        </VisualBrush.Visual>
+                    </VisualBrush>
+                </Border.Background>
+            </Border>
+            <!-- Center Glow -->
+            <Border>
+                <Border.Background>
+                    <RadialGradientBrush Center="0.5,0.4" RadiusX="0.5" RadiusY="0.5">
+                        <GradientStop Color="#1A0508" Offset="0"/>
+                        <GradientStop Color="Transparent" Offset="1"/>
+                    </RadialGradientBrush>
+                </Border.Background>
+            </Border>
+
+            <Grid Margin="30">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -55,31 +76,31 @@
                     <ScaleTransform CenterX="50" CenterY="50"/>
                 </Image.RenderTransform>
                 <Image.Effect>
-                    <DropShadowEffect BlurRadius="30" ShadowDepth="0" Color="#00FF9D" Opacity="0.9"/>
+                    <DropShadowEffect BlurRadius="30" ShadowDepth="0" Color="#F43F5E" Opacity="0.9"/>
                 </Image.Effect>
             </Image>
 
             <!-- Title -->
             <TextBlock x:Name="AlertText" Grid.Row="1" Text="¡ACTIVIDAD DE RED ANÓMALA!" 
-                       Foreground="#00FF9D" FontSize="26" FontWeight="Black" 
+                       Foreground="#F43F5E" FontSize="26" FontWeight="Black" 
                        HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,15">
                 <TextBlock.Effect>
-                    <DropShadowEffect BlurRadius="10" Color="#00FF9D" ShadowDepth="0"/>
+                    <DropShadowEffect BlurRadius="15" Color="#F43F5E" ShadowDepth="0" Opacity="0.8"/>
                 </TextBlock.Effect>
             </TextBlock>
 
             <!-- Details Panel -->
-            <Border Grid.Row="2" Background="#11221B" CornerRadius="12" Padding="20,15" Margin="0,5">
+            <Border Grid.Row="2" Background="#15080D" CornerRadius="12" Padding="20,15" Margin="0,5" BorderBrush="#2A1015" BorderThickness="1,1,1,2">
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock Text="SE HA DETECTADO UN POSIBLE ATAQUE SALIENTE" 
-                               Foreground="#00AA66" FontSize="12" FontWeight="Bold" Margin="0,0,0,15"/>
+                               Foreground="#FF6B6B" FontSize="12" FontWeight="Bold" Margin="0,0,0,15"/>
 
                     <Grid Margin="0,0,0,8">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="140"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="PROCESO:" Foreground="#558877" FontWeight="Bold"/>
+                        <TextBlock Text="PROCESO:" Foreground="#BB6677" FontWeight="Bold"/>
                         <TextBlock x:Name="ProcessNameText" Grid.Column="1" Text="unknown.exe" 
                                    Foreground="White" FontWeight="Bold" FontSize="16"
                                    Cursor="Hand"
@@ -97,7 +118,7 @@
                             <ColumnDefinition Width="140"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="OBJETIVO (IP):" Foreground="#558877" FontWeight="Bold"/>
+                        <TextBlock Text="OBJETIVO (IP):" Foreground="#BB6677" FontWeight="Bold"/>
                         <TextBlock x:Name="TargetIpText" Grid.Column="1" Text="192.168.1.1" 
                                    Foreground="#FF5555" FontWeight="Bold" FontSize="16"/>
                     </Grid>
@@ -107,16 +128,16 @@
                             <ColumnDefinition Width="140"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="INTENSIDAD:" Foreground="#558877" FontWeight="Bold"/>
+                        <TextBlock Text="INTENSIDAD:" Foreground="#BB6677" FontWeight="Bold"/>
                         <StackPanel Grid.Column="1" Orientation="Horizontal">
                             <TextBlock x:Name="ConnectionCountText" Text="532" 
                                        Foreground="#FFCC00" FontWeight="Black" FontSize="18"/>
-                            <TextBlock Text=" conexiones simultáneas" Foreground="#99AA99" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                            <TextBlock Text=" conexiones simultáneas" Foreground="#AA9999" VerticalAlignment="Center" Margin="5,0,0,0"/>
                         </StackPanel>
                     </Grid>
                     
                     <TextBlock Text="Este comportamiento es típico de virus troyanos o botnets realizando ataques DDoS."
-                               Foreground="#889988" FontSize="12" TextWrapping="Wrap" Margin="0,10,0,0"/>
+                               Foreground="#998888" FontSize="12" TextWrapping="Wrap" Margin="0,10,0,0"/>
                 </StackPanel>
             </Border>
 
@@ -205,5 +226,6 @@
                 </Button>
             </StackPanel>
         </Grid>
-    </Border>
+    </Grid>
+</Border>
 </Window>

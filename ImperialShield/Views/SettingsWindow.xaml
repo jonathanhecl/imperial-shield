@@ -9,28 +9,64 @@
         WindowStartupLocation="CenterScreen"
         Topmost="True">
     
-    <Border CornerRadius="20" Background="#0D1B2A" BorderBrush="#1E3A5F" BorderThickness="1">
+    <Border CornerRadius="24" Background="#060D18" BorderThickness="2">
+        <Border.BorderBrush>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                <GradientStop Color="#1E3A5F" Offset="0"/>
+                <GradientStop Color="#4DA8DA" Offset="0.5"/>
+                <GradientStop Color="#1E3A5F" Offset="1"/>
+            </LinearGradientBrush>
+        </Border.BorderBrush>
         <Border.Effect>
-            <DropShadowEffect BlurRadius="25" ShadowDepth="0" Opacity="0.6" Color="Black"/>
+            <DropShadowEffect BlurRadius="40" ShadowDepth="0" Opacity="0.7" Color="#000"/>
         </Border.Effect>
-        
-        <Grid Margin="25">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            
-            <!-- Header -->
-            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
-                <Viewbox Width="35" Height="35">
-                    <Canvas Width="100" Height="100">
-                        <Path Fill="#4DA8DA" Data="M50,5 L90,20 L90,50 C90,75 70,90 50,95 C30,90 10,75 10,50 L10,20 Z"/>
-                        <Path Fill="#0D1B2A" Data="M50,12 L82,24 L82,48 C82,70 65,82 50,87 C35,82 18,70 18,48 L18,24 Z"/>
-                    </Canvas>
-                </Viewbox>
-                <TextBlock Text="Configuración" Foreground="White" FontSize="22" FontWeight="Bold" VerticalAlignment="Center" Margin="15,0,0,0"/>
-            </StackPanel>
+
+        <Grid>
+            <!-- Background Grid -->
+            <Border Opacity="0.06" Margin="2">
+                <Border.Background>
+                    <VisualBrush TileMode="Tile" Viewport="0,0,60,60" ViewportUnits="Absolute">
+                        <VisualBrush.Visual>
+                            <Path Data="M0,0 L60,0 M0,0 L0,60 M0,0 L60,60" Stroke="#4DA8DA" StrokeThickness="0.6" StrokeDashArray="3,3"/>
+                        </VisualBrush.Visual>
+                    </VisualBrush>
+                </Border.Background>
+            </Border>
+            <!-- Center Glow -->
+            <Border>
+                <Border.Background>
+                    <RadialGradientBrush Center="0.5,0.3" RadiusX="0.5" RadiusY="0.5">
+                        <GradientStop Color="#0A1525" Offset="0"/>
+                        <GradientStop Color="Transparent" Offset="1"/>
+                    </RadialGradientBrush>
+                </Border.Background>
+            </Border>
+
+            <Grid Margin="25">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header with Glow -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
+                    <Viewbox Width="40" Height="40">
+                        <Canvas Width="100" Height="100">
+                            <Path Fill="#4DA8DA" Data="M50,5 L90,20 L90,50 C90,75 70,90 50,95 C30,90 10,75 10,50 L10,20 Z">
+                                <Path.Effect>
+                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
+                                </Path.Effect>
+                            </Path>
+                            <Path Fill="#0D1B2A" Data="M50,12 L82,24 L82,48 C82,70 65,82 50,87 C35,82 18,70 18,48 L18,24 Z"/>
+                        </Canvas>
+                    </Viewbox>
+                    <TextBlock Text="Configuración" Foreground="White" FontSize="24" FontWeight="Bold" VerticalAlignment="Center" Margin="15,0,0,0">
+                        <TextBlock.Effect>
+                            <DropShadowEffect BlurRadius="15" ShadowDepth="0" Color="#4DA8DA" Opacity="0.5"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                </StackPanel>
             
             <!-- Content -->
             <StackPanel Grid.Row="1">
@@ -211,5 +247,6 @@
                 <Button Content="Guardar" Click="Save_Click" Style="{StaticResource ModernButton}" Width="100" Height="35"/>
             </StackPanel>
         </Grid>
-    </Border>
+    </Grid>
+</Border>
 </Window>
