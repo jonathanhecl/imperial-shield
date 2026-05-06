@@ -72,20 +72,24 @@
             </TextBlock>
             
             <!-- Detailed Message -->
-            <StackPanel Grid.Row="2" VerticalAlignment="Top">
-                <TextBlock x:Name="MessageText" 
-                           Foreground="White" FontSize="15" 
-                           FontWeight="SemiBold"
-                           TextWrapping="Wrap" 
-                           TextAlignment="Center"
-                           LineHeight="24"
-                           Margin="0,0,0,15"/>
-                
-                <Border Background="#1B2838" CornerRadius="10" Padding="15" Margin="0,0,0,10">
-                    <TextBlock Text="⚠️ El archivo de mapeo (HOSTS) puede redirigir sitios web legítimos a páginas falsas para robar credenciales o bloquear actualizaciones de antivirus." 
-                               Foreground="#94A3B8" FontSize="12" TextWrapping="Wrap" TextAlignment="Center"/>
-                </Border>
-            </StackPanel>
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                <StackPanel VerticalAlignment="Top">
+                    <TextBlock x:Name="MessageText" 
+                               Foreground="White" FontSize="15" 
+                               FontWeight="SemiBold"
+                               TextWrapping="Wrap" 
+                               TextTrimming="CharacterEllipsis"
+                               ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"
+                               TextAlignment="Center"
+                               LineHeight="24"
+                               Margin="0,0,0,15"/>
+                    
+                    <Border Background="#1B2838" CornerRadius="10" Padding="15" Margin="0,0,0,10">
+                        <TextBlock Text="⚠️ El archivo de mapeo (HOSTS) puede redirigir sitios web legítimos a páginas falsas para robar credenciales o bloquear actualizaciones de antivirus." 
+                                   Foreground="#94A3B8" FontSize="12" TextWrapping="Wrap" TextAlignment="Center"/>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
             
             <!-- Action Buttons -->
             <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Center">

@@ -105,14 +105,18 @@
             </TextBlock>
             
             <!-- Detailed Message -->
-            <TextBlock x:Name="MessageText" Grid.Row="2" 
-                       Foreground="White" FontSize="18" 
-                       FontWeight="SemiBold"
-                       TextWrapping="Wrap" 
-                       TextAlignment="Center"
-                       VerticalAlignment="Center" 
-                       Margin="0,5"
-                       LineHeight="26"/>
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                <TextBlock x:Name="MessageText" 
+                           Foreground="White" FontSize="18" 
+                           FontWeight="SemiBold"
+                           TextWrapping="Wrap" 
+                           TextTrimming="CharacterEllipsis"
+                           ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"
+                           TextAlignment="Center"
+                           VerticalAlignment="Center" 
+                           Margin="0,5"
+                           LineHeight="26"/>
+            </ScrollViewer>
             
             <!-- Acknowledge Button -->
             <Button Grid.Row="3" Content="ENTIENDO EL RIESGO" 

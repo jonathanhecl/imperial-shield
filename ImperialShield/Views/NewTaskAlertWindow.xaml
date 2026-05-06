@@ -81,15 +81,17 @@
             <TextBlock Grid.Row="1" Text="Se ha detectado una nueva tarea en el sistema." FontSize="14" Foreground="#94A3B8" 
                        HorizontalAlignment="Center" TextAlignment="Center" Margin="0,35,0,0"/>
 
-            <Border Grid.Row="2" Background="#111827" CornerRadius="12" Margin="0,20" Padding="20">
-                <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="NOMBRE DE TAREA:" FontSize="10" Foreground="#64748B" FontWeight="Bold"/>
-                    <TextBlock x:Name="TaskNameText" Text="Unknown Task" FontSize="18" Foreground="White" FontWeight="Bold" TextWrapping="Wrap" Margin="0,0,0,10"/>
-                    
-                    <TextBlock Text="UBICACIÓN:" FontSize="10" Foreground="#64748B" FontWeight="Bold"/>
-                    <TextBlock x:Name="TaskPathText" Text="\" FontSize="14" Foreground="#94A3B8" TextWrapping="Wrap"/>
-                </StackPanel>
-            </Border>
+            <ScrollViewer Grid.Row="2" Margin="0,20" VerticalScrollBarVisibility="Auto">
+                <Border Background="#111827" CornerRadius="12" Padding="20">
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="NOMBRE DE TAREA:" FontSize="10" Foreground="#64748B" FontWeight="Bold"/>
+                        <TextBlock x:Name="TaskNameText" Text="Unknown Task" FontSize="18" Foreground="White" FontWeight="Bold" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" Margin="0,0,0,10"/>
+                        
+                        <TextBlock Text="UBICACIÓN:" FontSize="10" Foreground="#64748B" FontWeight="Bold"/>
+                        <TextBlock x:Name="TaskPathText" Text="\" FontSize="14" Foreground="#94A3B8" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
+                    </StackPanel>
+                </Border>
+            </ScrollViewer>
 
             <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Center">
                 <Button Content="BLOQUEAR TAREA" Width="420" Height="45" Background="#7F1D1D" Foreground="#FECACA"

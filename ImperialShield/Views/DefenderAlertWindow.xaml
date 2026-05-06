@@ -102,14 +102,18 @@
             </TextBlock>
             
             <!-- Detailed Message -->
-            <StackPanel Grid.Row="2" VerticalAlignment="Center">
-                <TextBlock x:Name="MessageText" 
-                           Foreground="#94A3B8" FontSize="15" 
-                           FontWeight="SemiBold"
-                           TextWrapping="Wrap" 
-                           TextAlignment="Center"
-                           LineHeight="24"/>
-            </StackPanel>
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock x:Name="MessageText" 
+                               Foreground="#94A3B8" FontSize="15" 
+                               FontWeight="SemiBold"
+                               TextWrapping="Wrap" 
+                               TextTrimming="CharacterEllipsis"
+                               ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"
+                               TextAlignment="Center"
+                               LineHeight="24"/>
+                </StackPanel>
+            </ScrollViewer>
             
             <!-- Action Buttons -->
             <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Center">

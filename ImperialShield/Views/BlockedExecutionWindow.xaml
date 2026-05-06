@@ -72,14 +72,18 @@
             </TextBlock>
             
             <!-- Message -->
-            <StackPanel Grid.Row="2" VerticalAlignment="Top">
-                <TextBlock Text="Imperial Shield ha interceptado un programa en cuarentena:" 
-                           Foreground="#94A3B8" FontSize="14" TextAlignment="Center" Margin="0,0,0,15"/>
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                <StackPanel VerticalAlignment="Top">
+                    <TextBlock Text="Imperial Shield ha interceptado un programa en cuarentena:" 
+                               Foreground="#94A3B8" FontSize="14" TextAlignment="Center" Margin="0,0,0,15"/>
                 
                 <Border Background="#1B2838" CornerRadius="10" Padding="20" Margin="0,0,0,15">
                     <TextBlock x:Name="ExeNameText" Text="malware.exe" 
                                Foreground="#E74C3C" FontSize="22" FontWeight="Bold" 
                                TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               TextTrimming="CharacterEllipsis"
+                               ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"
                                ToolTipService.InitialShowDelay="0"
                                Cursor="Hand">
                         <TextBlock.ContextMenu>
@@ -91,9 +95,10 @@
                     </TextBlock>
                 </Border>
                 
-                <TextBlock Text="Este ejecutable está bloqueado por razones de seguridad y NO puede ejecutarse." 
-                           Foreground="#708090" FontSize="12" TextAlignment="Center" TextWrapping="Wrap"/>
-            </StackPanel>
+                    <TextBlock Text="Este ejecutable está bloqueado por razones de seguridad y NO puede ejecutarse." 
+                               Foreground="#708090" FontSize="12" TextAlignment="Center" TextWrapping="Wrap"/>
+                </StackPanel>
+            </ScrollViewer>
             
             <!-- Actions -->
             <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Center">

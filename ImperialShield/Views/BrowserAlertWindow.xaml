@@ -85,16 +85,18 @@
             <TextBlock Grid.Row="1" Text="Se ha detectado un cambio en el navegador predeterminado del sistema." FontSize="14" Foreground="#94A3B8" 
                        HorizontalAlignment="Center" TextAlignment="Center" Margin="0,35,0,0"/>
 
-            <Border Grid.Row="2" Background="#111827" CornerRadius="12" Margin="0,20" Padding="20" BorderBrush="#3A5F82" BorderThickness="1">
-                <StackPanel>
-                    <TextBlock Text="NAVEGADOR ANTERIOR:" FontSize="10" Foreground="#64748B" FontWeight="Bold"/>
-                    <TextBlock x:Name="OldBrowserText" Text="Desconocido" FontSize="16" Foreground="#94A3B8" TextWrapping="Wrap" Margin="0,0,0,15"/>
-                    
-                    <TextBlock Text="NUEVO NAVEGADOR:" FontSize="10" Foreground="#F59E0B" FontWeight="Bold"/>
-                    <TextBlock x:Name="NewBrowserText" Text="Nuevo Navegador" FontSize="20" Foreground="White" FontWeight="Bold" TextWrapping="Wrap" Margin="0,0,0,5"/>
-                    <TextBlock x:Name="NewBrowserIdText" Text="ProgId" FontSize="11" Foreground="#4DA8DA" FontStyle="Italic"/>
-                </StackPanel>
-            </Border>
+            <ScrollViewer Grid.Row="2" Margin="0,20" VerticalScrollBarVisibility="Auto">
+                <Border Background="#111827" CornerRadius="12" Padding="20" BorderBrush="#3A5F82" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="NAVEGADOR ANTERIOR:" FontSize="10" Foreground="#64748B" FontWeight="Bold"/>
+                        <TextBlock x:Name="OldBrowserText" Text="Desconocido" FontSize="16" Foreground="#94A3B8" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" Margin="0,0,0,15"/>
+                        
+                        <TextBlock Text="NUEVO NAVEGADOR:" FontSize="10" Foreground="#F59E0B" FontWeight="Bold"/>
+                        <TextBlock x:Name="NewBrowserText" Text="Nuevo Navegador" FontSize="20" Foreground="White" FontWeight="Bold" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" Margin="0,0,0,5"/>
+                        <TextBlock x:Name="NewBrowserIdText" Text="ProgId" FontSize="11" Foreground="#4DA8DA" FontStyle="Italic" TextTrimming="CharacterEllipsis" ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}"/>
+                    </StackPanel>
+                </Border>
+            </ScrollViewer>
 
             <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Center">
                 <Button x:Name="RestoreBtn" Content="REVERTIR CAMBIO" Width="420" Height="50" 
