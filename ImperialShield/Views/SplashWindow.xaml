@@ -68,12 +68,13 @@
                 </Border.Background>
             </Border>
 
-            <!-- Vignette -->
+            <!-- Clean Center Glow -->
             <Border>
                 <Border.Background>
-                    <RadialGradientBrush Center="0.5,0.4" RadiusX="0.7" RadiusY="0.7">
-                        <GradientStop Color="Transparent" Offset="0.5"/>
-                        <GradientStop Color="#02050A" Offset="1"/>
+                    <RadialGradientBrush Center="0.5,0.35" RadiusX="0.6" RadiusY="0.6">
+                        <GradientStop Color="#0A1A2E" Offset="0"/>
+                        <GradientStop Color="#060D18" Offset="0.7"/>
+                        <GradientStop Color="#040A12" Offset="1"/>
                     </RadialGradientBrush>
                 </Border.Background>
             </Border>
