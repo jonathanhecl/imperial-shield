@@ -138,7 +138,7 @@
             
             <!-- Action Buttons -->
             <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Center">
-                <Button Click="EnableDefender_Click" 
+                <Button x:Name="EnableDefenderButton" Click="EnableDefender_Click" 
                         Width="400" Height="55" Margin="0,0,0,10"
                         FontSize="18" FontWeight="Bold"
                         Background="#10B981" Foreground="White" 

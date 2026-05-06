@@ -148,7 +148,7 @@
                     </Button.Effect>
                 </Button>
                 
-                <Button Click="OpenHosts_Click" 
+                <Button x:Name="OpenHostsButton" Click="OpenHosts_Click" 
                         Width="420" Height="45" Margin="0,0,0,10"
                         FontSize="14" FontWeight="SemiBold"
                         Background="#1B2838" Foreground="#4DA8DA" 

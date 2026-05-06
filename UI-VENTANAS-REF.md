@@ -24,7 +24,8 @@ Todas las ventanas XAML estan en: `ImperialShield/Views/`
 
 | Archivo | Tipo | Color tema |
 |---------|------|----------|
-| `AlertWindow.xaml` | Alerta critica (DDoS) | Rojo `#F43F5E` |
+| `AlertWindow.xaml` | Alerta critica | Rojo `#F43F5E` |
+| `DDoSTrackerWindow.xaml` | Alerta red anomala / DDoS | Rojo oscuro `#F43F5E` |
 | `DefenderAlertWindow.xaml` | Alerta Defender | Rojo `#F43F5E` |
 | `BrowserAlertWindow.xaml` | Alerta navegador | Ambar `#F39C12` |
 | `HostsAlertWindow.xaml` | Alerta HOSTS | Ambar `#F39C12` |
@@ -34,7 +35,7 @@ Todas las ventanas XAML estan en: `ImperialShield/Views/`
 | `SecurityWarningWindow.xaml` | Advertencia seguridad | Rojo `#E74C3C` |
 | `BlockedExecutionWindow.xaml` | Ejecucion bloqueada | Ambar `#F39C12` |
 | `ConfirmExitWindow.xaml` | Confirmar salida | Rojo `#E11D48` |
-| `AlertTestWindow.xaml` | Debug alertas | Dorado `#FFCC00` |
+| `AlertTestWindow.xaml` | Launcher de pruebas | Dorado `#FFCC00`; no duplica alertas, abre ventanas reales con modo demo |
 
 ---
 
@@ -43,12 +44,33 @@ Todas las ventanas XAML estan en: `ImperialShield/Views/`
 | Archivo | Tipo | Estado |
 |---------|------|--------|
 | `NetworkViewerWindow.xaml` | Visor red | Revisar |
-| `DDoSTrackerWindow.xaml` | Tracker DDoS | Revisar |
 | `ProcessViewerWindow.xaml` | Visor procesos | Revisar |
 | `PrivacyManagerWindow.xaml` | Centro privacidad | Revisar |
 | `QuarantineWindow.xaml` | Cuarentena | Revisar |
 | `ScheduledTasksWindow.xaml` | Tareas programadas | Tiene buscador, revisar estilo visual |
 | `StartupManagerWindow.xaml` | Gestor inicio | Revisar |
+
+---
+
+## Regla para pruebas desde opciones
+
+Las pruebas de alertas se abren desde `SettingsWindow.xaml` -> `AlertTestWindow.xaml`.
+
+`AlertTestWindow.xaml` **no debe tener versiones simuladas de las alertas**. Solo debe funcionar como launcher:
+- Abre la misma ventana real que usa la app en producción.
+- Pasa datos simulados.
+- Usa `demoMode: true` o `testMode: true` para deshabilitar acciones destructivas.
+- Las acciones reales deben seguir funcionando cuando la ventana se instancia desde monitores reales.
+
+Ventanas reales abiertas desde el panel de pruebas:
+- `DefenderAlertWindow.xaml`
+- `HostsAlertWindow.xaml`
+- `DDoSTrackerWindow.xaml`
+- `BlockedExecutionWindow.xaml`
+- `PrivacyAlertWindow.xaml`
+- `SecurityWarningWindow.xaml`
+- `NewTaskAlertWindow.xaml`
+- `BrowserAlertWindow.xaml`
 
 ---
 

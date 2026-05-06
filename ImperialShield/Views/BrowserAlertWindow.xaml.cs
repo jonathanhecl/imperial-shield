@@ -4,27 +4,31 @@ namespace ImperialShield.Views;
 
 public partial class BrowserAlertWindow : Window
 {
-    public BrowserAlertWindow(string oldBrowser, string newBrowser, string newBrowserId)
+    private readonly bool _isDemoMode;
+
+    public BrowserAlertWindow(string oldBrowser, string newBrowser, string newBrowserId, bool demoMode = false)
     {
         InitializeComponent();
+        _isDemoMode = demoMode;
         
         OldBrowserText.Text = oldBrowser;
         NewBrowserText.Text = newBrowser;
         NewBrowserIdText.Text = newBrowserId;
+        RestoreBtn.IsEnabled = !demoMode;
         
-        // Reproducir sonido de alerta si existe
         try
         {
-            // Podríamos añadir un sonido aquí en el futuro
         }
         catch { }
     }
 
     private void Restore_Click(object sender, RoutedEventArgs e)
     {
+        if (_isDemoMode)
+            return;
+
         try
         {
-            // Open Windows Default Apps settings
             System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("ms-settings:defaultapps") { UseShellExecute = true });
         }
         catch (System.Exception ex)

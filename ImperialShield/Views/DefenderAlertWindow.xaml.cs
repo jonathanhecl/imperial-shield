@@ -7,16 +7,23 @@ namespace ImperialShield.Views;
 
 public partial class DefenderAlertWindow : Window
 {
-    public DefenderAlertWindow(string message)
+    private readonly bool _isDemoMode;
+
+    public DefenderAlertWindow(string message, bool demoMode = false)
     {
         InitializeComponent();
+        _isDemoMode = demoMode;
         MessageText.Text = message;
+        EnableDefenderButton.IsEnabled = !demoMode;
         
         System.Media.SystemSounds.Hand.Play();
     }
 
     private void EnableDefender_Click(object sender, RoutedEventArgs e)
     {
+        if (_isDemoMode)
+            return;
+
         try
         {
             // Intenta abrir la configuración de seguridad de Windows
@@ -68,11 +75,11 @@ public partial class DefenderAlertWindow : Window
         this.Close();
     }
 
-    public static void Show(string message)
+    public static void Show(string message, bool demoMode = false)
     {
         Application.Current.Dispatcher.Invoke(() =>
         {
-            var alert = new DefenderAlertWindow(message);
+            var alert = new DefenderAlertWindow(message, demoMode);
             alert.Topmost = true;
             alert.ShowDialog();
         });

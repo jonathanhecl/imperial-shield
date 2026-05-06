@@ -18,7 +18,7 @@ namespace ImperialShield.Views
                 DeviceType.Camera, 
                 true
             );
-            var alert = new PrivacyAlertWindow(demoRisk);
+            var alert = new PrivacyAlertWindow(demoRisk, demoMode: true);
             alert.ShowDialog();
         }
 
@@ -29,24 +29,28 @@ namespace ImperialShield.Views
                 DeviceType.Microphone, 
                 true
             );
-            var alert = new PrivacyAlertWindow(demoRisk);
+            var alert = new PrivacyAlertWindow(demoRisk, demoMode: true);
             alert.ShowDialog();
         }
 
         private void TestDDoS_Click(object sender, RoutedEventArgs e)
         {
-            DDoSTrackerWindow.ShowAlert("Flooder.exe", "185.12.33.190", 1240, 
-                "DETECCIÓN CRÍTICA: Se ha detectado un ataque de denegación de servicio saliente.");
+            DDoSTrackerWindow.ShowAlert(
+                "Flooder.exe",
+                "185.12.33.190",
+                1240,
+                "DETECCIÓN CRÍTICA: Se ha detectado un ataque de denegación de servicio saliente.",
+                demoMode: true);
         }
 
         private void TestBlocked_Click(object sender, RoutedEventArgs e)
         {
-            BlockedExecutionWindow.ShowBlocked("malware_test_sample.exe");
+            BlockedExecutionWindow.ShowBlocked("malware_test_sample.exe", demoMode: true);
         }
 
         private void TestSecurityWarning_Click(object sender, RoutedEventArgs e)
         {
-            SecurityWarningWindow.ShowWarning("chrome.exe", @"C:\Users\Public\Documents\dropper.exe");
+            SecurityWarningWindow.ShowWarning("chrome.exe", @"C:\Users\Public\Documents\dropper.exe", demoMode: true);
         }
 
         private void TestDefenderOff_Click(object sender, RoutedEventArgs e)
@@ -54,7 +58,8 @@ namespace ImperialShield.Views
             DefenderAlertWindow.Show(
                 "La Protección en Tiempo Real de Windows Defender ha sido DESACTIVADA.\n\n" +
                 "Tu equipo se encuentra vulnerable a virus, malware y ransomware.\n\n" +
-                "Se recomienda encarecidamente reactivar la protección inmediatamente.");
+                "Se recomienda encarecidamente reactivar la protección inmediatamente.",
+                demoMode: true);
         }
 
         private void TestHosts_Click(object sender, RoutedEventArgs e)
@@ -72,7 +77,8 @@ namespace ImperialShield.Views
         {
             var alert = new NewTaskAlertWindow(
                 "SilentCryptoMinerUpdater", 
-                @"\Microsoft\Windows\SystemMaintenance\Updater"
+                @"\Microsoft\Windows\SystemMaintenance\Updater",
+                demoMode: true
             );
             alert.ShowDialog();
         }
@@ -82,7 +88,8 @@ namespace ImperialShield.Views
             var alert = new BrowserAlertWindow(
                 "Mozilla Firefox",
                 "Google Chrome",
-                "ChromeHTML"
+                "ChromeHTML",
+                demoMode: true
             );
             alert.ShowDialog();
         }

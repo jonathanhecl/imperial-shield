@@ -17,12 +17,14 @@ namespace ImperialShield.Views
     public partial class PrivacyAlertWindow : Window
     {
         private readonly string _appPath;
+        private readonly bool _isDemoMode;
         public PrivacyAlertResult Result { get; private set; } = PrivacyAlertResult.Ignore;
 
-        public PrivacyAlertWindow(PrivacyRisk risk)
+        public PrivacyAlertWindow(PrivacyRisk risk, bool demoMode = false)
         {
             InitializeComponent();
             _appPath = risk.ApplicationPath;
+            _isDemoMode = demoMode;
 
             AppNameText.Text = risk.ApplicationName;
             AppNameText.ToolTip = risk.ApplicationPath;
@@ -32,10 +34,15 @@ namespace ImperialShield.Views
 
             // Sonido de alerta
             System.Media.SystemSounds.Exclamation.Play();
+            RevokeButton.IsEnabled = !demoMode;
+            KillOnlyButton.IsEnabled = !demoMode;
         }
 
         private void Revoke_Click(object sender, RoutedEventArgs e)
         {
+            if (_isDemoMode)
+                return;
+
             Result = PrivacyAlertResult.RevokeAndKill;
             KillProcess();
             this.Close();
@@ -43,6 +50,9 @@ namespace ImperialShield.Views
 
         private void KillOnly_Click(object sender, RoutedEventArgs e)
         {
+            if (_isDemoMode)
+                return;
+
             Result = PrivacyAlertResult.KillOnly;
             KillProcess();
             this.Close();

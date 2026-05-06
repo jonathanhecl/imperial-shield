@@ -8,15 +8,19 @@ namespace ImperialShield.Views;
 public partial class DDoSTrackerWindow : Window
 {
     private readonly string _processName;
+    private readonly bool _isDemoMode;
 
-    public DDoSTrackerWindow(string processName, string targetIp, int count, string message)
+    public DDoSTrackerWindow(string processName, string targetIp, int count, string message, bool demoMode = false)
     {
         InitializeComponent();
         _processName = processName;
+        _isDemoMode = demoMode;
 
         ProcessNameText.Text = processName;
         TargetIpText.Text = targetIp;
         ConnectionCountText.Text = count.ToString();
+        KillAndBlockButton.IsEnabled = !demoMode;
+        KillButton.IsEnabled = !demoMode;
 
         // Sonido de alarma nuclear/cienca ficción
         System.Media.SystemSounds.Exclamation.Play(); 
@@ -24,6 +28,9 @@ public partial class DDoSTrackerWindow : Window
 
     private void Kill_Click(object sender, RoutedEventArgs e)
     {
+        if (_isDemoMode)
+            return;
+
         try
         {
             var processes = Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(_processName));
@@ -43,6 +50,9 @@ public partial class DDoSTrackerWindow : Window
 
     private void KillAndBlock_Click(object sender, RoutedEventArgs e)
     {
+        if (_isDemoMode)
+            return;
+
         try
         {
             string? exePath = null;
@@ -125,11 +135,11 @@ public partial class DDoSTrackerWindow : Window
         catch { }
     }
 
-    public static void ShowAlert(string processName, string ip, int count, string warning)
+    public static void ShowAlert(string processName, string ip, int count, string warning, bool demoMode = false)
     {
         Application.Current.Dispatcher.Invoke(() =>
         {
-            var win = new DDoSTrackerWindow(processName, ip, count, warning);
+            var win = new DDoSTrackerWindow(processName, ip, count, warning, demoMode);
             win.Show();
         });
     }

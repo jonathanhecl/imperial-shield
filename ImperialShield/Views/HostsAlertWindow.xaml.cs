@@ -55,6 +55,8 @@ public partial class HostsAlertWindow : Window
             CleanButtonText.Text = "RESTAURAR RESPALDO ANTERIOR";
             CleanButtonIcon.Text = "⏪";
             CleanButton.Tag = "RESTORE";
+            CleanButton.IsEnabled = false;
+            OpenHostsButton.IsEnabled = false;
             return;
         }
         

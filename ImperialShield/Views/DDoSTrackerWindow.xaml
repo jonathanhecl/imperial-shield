@@ -24,16 +24,45 @@
                               Storyboard.TargetProperty="Opacity"
                               From="1" To="0.3" Duration="0:0:0.5" AutoReverse="True" RepeatBehavior="Forever"/>
         </Storyboard>
+        <Storyboard x:Key="WindowEntrance">
+            <DoubleAnimation Storyboard.TargetName="MainBorder"
+                             Storyboard.TargetProperty="Opacity"
+                             From="0" To="1" Duration="0:0:0.3"/>
+            <DoubleAnimation Storyboard.TargetName="MainBorder"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                             From="0.8" To="1.0" Duration="0:0:0.4">
+                <DoubleAnimation.EasingFunction>
+                    <BackEase Amplitude="1" EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetName="MainBorder"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                             From="0.8" To="1.0" Duration="0:0:0.4">
+                <DoubleAnimation.EasingFunction>
+                    <BackEase Amplitude="1" EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
+        <Storyboard x:Key="GlowBorder">
+            <DoubleAnimation Storyboard.TargetName="MainBorder"
+                             Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.Opacity)"
+                             From="0.5" To="0.95" Duration="0:0:0.6" AutoReverse="True" RepeatBehavior="Forever"/>
+        </Storyboard>
     </Window.Resources>
 
     <Window.Triggers>
         <EventTrigger RoutedEvent="Window.Loaded">
             <BeginStoryboard Storyboard="{StaticResource BlinkAlert}"/>
             <BeginStoryboard Storyboard="{StaticResource PulseIcon}"/>
+            <BeginStoryboard Storyboard="{StaticResource WindowEntrance}"/>
+            <BeginStoryboard Storyboard="{StaticResource GlowBorder}"/>
         </EventTrigger>
     </Window.Triggers>
 
-    <Border CornerRadius="30" Background="#060D18" BorderBrush="#E11D48" BorderThickness="4" UseLayoutRounding="True">
+    <Border x:Name="MainBorder" CornerRadius="30" Background="#060D18" BorderBrush="#E11D48" BorderThickness="4" Opacity="0" UseLayoutRounding="True">
+        <Border.RenderTransform>
+            <ScaleTransform CenterX="350" CenterY="275"/>
+        </Border.RenderTransform>
         <Border.Effect>
             <DropShadowEffect BlurRadius="80" ShadowDepth="0" Color="#F43F5E" Opacity="0.9"/>
         </Border.Effect>
@@ -60,12 +89,12 @@
             </Border>
 
             <Grid Margin="30">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
             <!-- Alert Icon -->
             <Image x:Name="AlertIcon" Source="/Resources/shield_alert_icon.png" 
@@ -143,7 +172,7 @@
 
             <!-- Actions -->
             <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,10,0,0">
-                <Button Click="KillAndBlock_Click" 
+                <Button x:Name="KillAndBlockButton" Click="KillAndBlock_Click" 
                         Width="420" Height="45" Margin="0,0,0,10"
                         FontSize="14" FontWeight="Bold"
                         Background="#E11D48" Foreground="White" 
@@ -174,7 +203,7 @@
                     </Button.Style>
                 </Button>
                 
-                <Button Content="SOLO TERMINAR" Click="Kill_Click" 
+                <Button x:Name="KillButton" Content="SOLO TERMINAR" Click="Kill_Click" 
                         Width="420" Height="45" Margin="0,0,0,10"
                         FontSize="13" FontWeight="Bold"
                         Background="#F39C12" Foreground="Black" 

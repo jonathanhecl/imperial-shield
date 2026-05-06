@@ -8,15 +8,18 @@ public partial class NewTaskAlertWindow : Window
 {
     private readonly string _taskName;
     private readonly string _taskPath;
+    private readonly bool _isDemoMode;
 
-    public NewTaskAlertWindow(string taskName, string taskPath)
+    public NewTaskAlertWindow(string taskName, string taskPath, bool demoMode = false)
     {
         InitializeComponent();
         _taskName = taskName;
         _taskPath = taskPath;
+        _isDemoMode = demoMode;
 
         TaskNameText.Text = taskName;
         TaskPathText.Text = string.IsNullOrEmpty(taskPath) ? "\\" : taskPath;
+        BlockButton.IsEnabled = !demoMode;
 
         // Play alert sound
         System.Media.SystemSounds.Exclamation.Play();
@@ -29,6 +32,9 @@ public partial class NewTaskAlertWindow : Window
 
     private void Block_Click(object sender, RoutedEventArgs e)
     {
+        if (_isDemoMode)
+            return;
+
         try
         {
             // Execute Disable-ScheduledTask via PowerShell

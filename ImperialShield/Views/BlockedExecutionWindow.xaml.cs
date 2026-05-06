@@ -6,13 +6,16 @@ namespace ImperialShield.Views;
 public partial class BlockedExecutionWindow : Window
 {
     private readonly string _fullPath;
+    private readonly bool _isDemoMode;
 
-    public BlockedExecutionWindow(string fullPath)
+    public BlockedExecutionWindow(string fullPath, bool demoMode = false)
     {
         InitializeComponent();
         _fullPath = fullPath;
+        _isDemoMode = demoMode;
         ExeNameText.Text = System.IO.Path.GetFileName(fullPath);
         ExeNameText.ToolTip = fullPath;
+        OpenQuarantineButton.IsEnabled = !demoMode;
         
         // Sonido de alerta
         System.Media.SystemSounds.Hand.Play();
@@ -48,6 +51,9 @@ public partial class BlockedExecutionWindow : Window
 
     private void OpenQuarantine_Click(object sender, RoutedEventArgs e)
     {
+        if (_isDemoMode)
+            return;
+
         var win = new QuarantineWindow();
         win.Show();
         this.Close();
@@ -56,11 +62,11 @@ public partial class BlockedExecutionWindow : Window
     /// <summary>
     /// Muestra la ventana de bloqueo de forma modal.
     /// </summary>
-    public static void ShowBlocked(string fullPath)
+    public static void ShowBlocked(string fullPath, bool demoMode = false)
     {
         Application.Current.Dispatcher.Invoke(() =>
         {
-            var win = new BlockedExecutionWindow(fullPath);
+            var win = new BlockedExecutionWindow(fullPath, demoMode);
             win.Topmost = true;
             win.ShowDialog();
         });

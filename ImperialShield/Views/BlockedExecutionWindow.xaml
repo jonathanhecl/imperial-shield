@@ -123,7 +123,7 @@
             
             <!-- Actions -->
             <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Center">
-                <Button Content="ABRIR CUARENTENA" Click="OpenQuarantine_Click" 
+                <Button x:Name="OpenQuarantineButton" Content="ABRIR CUARENTENA" Click="OpenQuarantine_Click" 
                         Width="420" Height="45" Margin="0,0,0,10"
                         FontSize="14" FontWeight="SemiBold"
                         Background="#1B2838" Foreground="#94A3B8" 

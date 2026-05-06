@@ -146,7 +146,7 @@
             
             <!-- Action Buttons -->
             <StackPanel Grid.Row="3" Orientation="Vertical" HorizontalAlignment="Center">
-                <Button Click="Revoke_Click" 
+                <Button x:Name="RevokeButton" Click="Revoke_Click" 
                         Width="420" Height="55" Margin="0,0,0,10"
                         FontSize="17" FontWeight="Bold"
                         Background="#E11D48" Foreground="White" 
@@ -177,7 +177,7 @@
                     </Button.Style>
                 </Button>
 
-                <Button Content="⚡ SOLO TERMINAR APLICACIÓN" 
+                <Button x:Name="KillOnlyButton" Content="⚡ SOLO TERMINAR APLICACIÓN" 
                         Click="KillOnly_Click" 
                         Width="420" Height="45" Margin="0,0,0,10"
                         FontSize="14" FontWeight="SemiBold"
