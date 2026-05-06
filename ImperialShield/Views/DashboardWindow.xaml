@@ -11,6 +11,21 @@
         Style="{StaticResource ModernWindow}">
 
     <Window.Resources>
+        <!-- RPG Animations -->
+        <Storyboard x:Key="ShieldPulse" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="ShieldImage" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                             From="1.0" To="1.08" Duration="0:0:2" AutoReverse="True"/>
+            <DoubleAnimation Storyboard.TargetName="ShieldImage" Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                             From="1.0" To="1.08" Duration="0:0:2" AutoReverse="True"/>
+            <DoubleAnimation Storyboard.TargetName="ShieldGlow" Storyboard.TargetProperty="Opacity"
+                             From="0.5" To="1.0" Duration="0:0:2" AutoReverse="True"/>
+        </Storyboard>
+
+        <Storyboard x:Key="ActiveBadgePulse" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
+                             From="4" To="12" Duration="0:0:1.5" AutoReverse="True"/>
+        </Storyboard>
+
         <!-- RPG-Style Gradients -->
         <LinearGradientBrush x:Key="EpicHeaderGradient" StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#0a1628" Offset="0"/>
@@ -34,113 +49,51 @@
             <GradientStop Color="#0F1C2E" Offset="1"/>
         </LinearGradientBrush>
 
-        <!-- RPG Card Style -->
-        <Style x:Key="RPGCard" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource CardGradient}"/>
-            <Setter Property="BorderBrush" Value="#3A5F82"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="8"/>
-            <Setter Property="Padding" Value="20"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect BlurRadius="15" ShadowDepth="3" Opacity="0.5" Color="#000"/>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Stat Card Style -->
-        <Style x:Key="StatCard" TargetType="Border">
-            <Setter Property="Background">
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                        <GradientStop Color="#1E3A5F" Offset="0"/>
-                        <GradientStop Color="#0D1B2A" Offset="1"/>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="BorderBrush" Value="#4DA8DA"/>
-            <Setter Property="BorderThickness" Value="1,1,1,3"/>
-            <Setter Property="CornerRadius" Value="10"/>
-            <Setter Property="Padding" Value="18"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.4" Color="#4DA8DA"/>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- Action Button RPG Style -->
-        <Style x:Key="RPGButton" TargetType="Button">
-            <Setter Property="Background">
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                        <GradientStop Color="#2E5077" Offset="0"/>
-                        <GradientStop Color="#1E3A5F" Offset="1"/>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Foreground" Value="#E8F4FC"/>
-            <Setter Property="BorderBrush" Value="#4DA8DA"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Padding" Value="20,12"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="border" 
-                                Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="6"
-                                Padding="{TemplateBinding Padding}">
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.3" Color="#4DA8DA"/>
-                            </Border.Effect>
-                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
-                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="Background">
-                                    <Setter.Value>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                            <GradientStop Color="#3A6A9A" Offset="0"/>
-                                            <GradientStop Color="#2E5077" Offset="1"/>
-                                        </LinearGradientBrush>
-                                    </Setter.Value>
-                                </Setter>
-                                <Setter TargetName="border" Property="BorderBrush" Value="#7CC4F0"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="border" Property="Background" Value="#1A3A5A"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <!-- Health Bar Animation -->
         <Storyboard x:Key="PulseHealthAnim" RepeatBehavior="Forever">
             <DoubleAnimation Storyboard.TargetProperty="(UIElement.Effect).(DropShadowEffect.BlurRadius)"
                              From="0" To="15" Duration="0:1:0" AutoReverse="True"/>
         </Storyboard>
     </Window.Resources>
 
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource ShieldPulse}"/>
+        </EventTrigger>
+    </Window.Triggers>
+
     <!-- Main Container with decorative border -->
-    <Border Padding="0" Background="#080F1A">
+    <Border Padding="0" Background="#060D18">
         <Grid>
-            <!-- Background Pattern Overlay (Medieval Tiles) -->
-            <Border Opacity="0.04">
+            <!-- Background Grid Effect (HUD Style) -->
+            <Border Opacity="0.12">
                 <Border.Background>
-                    <VisualBrush TileMode="Tile" Viewport="0,0,60,60" ViewportUnits="Absolute">
+                    <VisualBrush TileMode="Tile" Viewport="0,0,80,80" ViewportUnits="Absolute">
                         <VisualBrush.Visual>
-                            <Path Data="M0,0 L30,30 L60,0 L60,60 L30,30 L0,60 Z" 
-                                  Fill="#1A3A5A" Stroke="#1A3A5A" StrokeThickness="0.5"/>
+                            <Path Data="M0,0 L80,0 M0,0 L0,80 M0,0 L80,80" Stroke="#4DA8DA" StrokeThickness="1.2" StrokeDashArray="6,4"/>
                         </VisualBrush.Visual>
                     </VisualBrush>
+                </Border.Background>
+            </Border>
+
+            <!-- Horizontal Scanline -->
+            <Border Height="1" VerticalAlignment="Top" Opacity="0.15">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="Transparent" Offset="0"/>
+                        <GradientStop Color="#4DA8DA" Offset="0.5"/>
+                        <GradientStop Color="Transparent" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+
+            <!-- Vignette Overlay -->
+            <Border>
+                <Border.Background>
+                    <RadialGradientBrush Center="0.5,0.5" RadiusX="0.8" RadiusY="0.8">
+                        <GradientStop Color="Transparent" Offset="0.6"/>
+                        <GradientStop Color="#02050A" Offset="1"/>
+                    </RadialGradientBrush>
                 </Border.Background>
             </Border>
 
@@ -153,10 +106,19 @@
 
                 <!-- ═══════════════════ EPIC HEADER ═══════════════════ -->
                 <Border Grid.Row="0" Background="{StaticResource EpicHeaderGradient}" 
-                        CornerRadius="12" Padding="25" Margin="0,0,0,20"
-                        BorderBrush="#4DA8DA" BorderThickness="1">
+                        CornerRadius="16" Padding="28" Margin="0,0,0,20">
+                    <Border.BorderBrush>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="#1A3A5A" Offset="0"/>
+                            <GradientStop Color="#4DA8DA" Offset="0.3"/>
+                            <GradientStop Color="#FFD700" Offset="0.5"/>
+                            <GradientStop Color="#4DA8DA" Offset="0.7"/>
+                            <GradientStop Color="#1A3A5A" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.BorderBrush>
+                    <Border.BorderThickness>2,2,2,4</Border.BorderThickness>
                     <Border.Effect>
-                        <DropShadowEffect BlurRadius="25" ShadowDepth="0" Opacity="0.5" Color="#4DA8DA"/>
+                        <DropShadowEffect BlurRadius="35" ShadowDepth="0" Opacity="0.7" Color="#4DA8DA"/>
                     </Border.Effect>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -166,22 +128,47 @@
                         </Grid.ColumnDefinitions>
 
                         <!-- Shield Logo with Glow -->
-                        <Border Grid.Column="0" Width="80" Height="80" Margin="0,0,25,0">
-                            <Border.Effect>
-                                <DropShadowEffect BlurRadius="20" ShadowDepth="0" Opacity="0.7" Color="#4DA8DA"/>
-                            </Border.Effect>
-                            <Image Source="/Resources/shield.png" Stretch="Uniform"/>
-                        </Border>
+                        <Grid Grid.Column="0" Width="120" Height="120" Margin="0,0,25,0">
+                            <!-- Outer Aura -->
+                            <Ellipse Width="140" Height="140" Fill="#001A33" Opacity="0.4">
+                                <Ellipse.Effect>
+                                    <BlurEffect Radius="30"/>
+                                </Ellipse.Effect>
+                            </Ellipse>
+                            <!-- Glow Ring -->
+                            <Ellipse Width="110" Height="110" Stroke="#4DA8DA" StrokeThickness="1.5" Opacity="0.25">
+                                <Ellipse.Effect>
+                                    <BlurEffect Radius="6"/>
+                                </Ellipse.Effect>
+                            </Ellipse>
+                            <Border>
+                                <Border.Effect>
+                                    <DropShadowEffect x:Name="ShieldGlow" BlurRadius="40" ShadowDepth="0" Opacity="0.9" Color="#4DA8DA"/>
+                                </Border.Effect>
+                                <Image x:Name="ShieldImage" Source="/Resources/shield.png" Stretch="Uniform" RenderTransformOrigin="0.5,0.5">
+                                    <Image.RenderTransform>
+                                        <ScaleTransform/>
+                                    </Image.RenderTransform>
+                                </Image>
+                            </Border>
+                        </Grid>
 
                         <!-- Title Section -->
                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock FontSize="36" FontWeight="Bold" Foreground="White">
+                            <TextBlock FontSize="42" FontWeight="ExtraBold" Foreground="White">
                                 <Run Text="IMPERIAL" Foreground="#4DA8DA"/>
                                 <Run Text=" SHIELD"/>
+                                <TextBlock.Effect>
+                                    <DropShadowEffect BlurRadius="25" ShadowDepth="0" Color="#4DA8DA" Opacity="0.7"/>
+                                </TextBlock.Effect>
                             </TextBlock>
                             <TextBlock Text="⚔️ Centro de Comando de Seguridad ⚔️" 
-                                       FontSize="14" Foreground="#7EB8DC" Margin="0,5,0,0"
-                                       FontStyle="Italic"/>
+                                       FontSize="15" Foreground="#7EB8DC" Margin="0,8,0,0"
+                                       FontStyle="Italic" FontWeight="SemiBold">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect BlurRadius="15" ShadowDepth="0" Color="#4DA8DA" Opacity="0.6"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
                         </StackPanel>
 
                         <!-- Status Badge and Controls -->
@@ -255,7 +242,7 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- Arsenal (Tools) Panel -->
-                    <Border Grid.Column="0" Style="{StaticResource RPGCard}" Margin="0,0,10,0">
+                    <Border Grid.Column="0" Style="{StaticResource RPGCard}" Margin="0,0,10,0" BorderBrush="#2A4A6F" BorderThickness="1,1,1,3">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -276,84 +263,84 @@
                                     <Button x:Name="ArsenalProcessBtn" Style="{StaticResource RPGButton}" Height="120" Margin="5"
                                             Click="ProcessViewer_Click" ToolTip="Visor de Procesos" HorizontalContentAlignment="Center">
                                         <StackPanel HorizontalAlignment="Center">
-                                            <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="40" 
-                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
+                                            <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="44"
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#5CC4FF">
                                                 <TextBlock.Effect>
-                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
+                                                    <DropShadowEffect BlurRadius="18" ShadowDepth="0" Color="#4DA8DA" Opacity="0.9"/>
                                                 </TextBlock.Effect>
                                             </TextBlock>
-                                            <TextBlock Text="PROCESOS" FontSize="12" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
-                                            <TextBlock x:Name="ArsenalProcessCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                            <TextBlock Text="PROCESOS" FontSize="13" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="Bold"/>
+                                            <TextBlock x:Name="ArsenalProcessCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#FFD700" FontWeight="SemiBold"/>
                                         </StackPanel>
                                     </Button>
                                     
                                     <Button x:Name="ArsenalNetBtn" Style="{StaticResource RPGButton}" Height="120" Margin="5"
                                             Click="NetworkViewer_Click" ToolTip="Monitor de Conexiones" HorizontalContentAlignment="Center">
                                         <StackPanel HorizontalAlignment="Center">
-                                            <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="40" 
-                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
+                                            <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="44"
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#5CC4FF">
                                                 <TextBlock.Effect>
-                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
+                                                    <DropShadowEffect BlurRadius="18" ShadowDepth="0" Color="#4DA8DA" Opacity="0.9"/>
                                                 </TextBlock.Effect>
                                             </TextBlock>
-                                            <TextBlock Text="CONEXIONES" FontSize="12" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
-                                            <TextBlock x:Name="ArsenalNetCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                            <TextBlock Text="CONEXIONES" FontSize="13" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="Bold"/>
+                                            <TextBlock x:Name="ArsenalNetCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#FFD700" FontWeight="SemiBold"/>
                                         </StackPanel>
                                     </Button>
 
                                     <Button x:Name="ArsenalPrivacyBtn" Style="{StaticResource RPGButton}" Height="120" Margin="5"
                                             Click="Privacy_Click" ToolTip="Centro de Privacidad" HorizontalContentAlignment="Center">
                                         <StackPanel HorizontalAlignment="Center">
-                                            <TextBlock Text="&#xE890;" FontFamily="Segoe MDL2 Assets" FontSize="40" 
-                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
+                                            <TextBlock Text="&#xE890;" FontFamily="Segoe MDL2 Assets" FontSize="44"
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#5CC4FF">
                                                 <TextBlock.Effect>
-                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
+                                                    <DropShadowEffect BlurRadius="18" ShadowDepth="0" Color="#4DA8DA" Opacity="0.9"/>
                                                 </TextBlock.Effect>
                                             </TextBlock>
-                                            <TextBlock Text="PRIVACIDAD" FontSize="12" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
-                                            <TextBlock x:Name="ArsenalPrivacyCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                            <TextBlock Text="PRIVACIDAD" FontSize="13" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="Bold"/>
+                                            <TextBlock x:Name="ArsenalPrivacyCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#FFD700" FontWeight="SemiBold"/>
                                         </StackPanel>
                                     </Button>
 
                                     <Button x:Name="ArsenalStartupBtn" Style="{StaticResource RPGButton}" Height="120" Margin="5"
                                             Click="StartupManager_Click" ToolTip="Gestor de Inicio" HorizontalContentAlignment="Center">
                                         <StackPanel HorizontalAlignment="Center">
-                                            <TextBlock Text="&#xE7B8;" FontFamily="Segoe MDL2 Assets" FontSize="40" 
-                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
+                                            <TextBlock Text="&#xE7B8;" FontFamily="Segoe MDL2 Assets" FontSize="44"
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#5CC4FF">
                                                 <TextBlock.Effect>
-                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
+                                                    <DropShadowEffect BlurRadius="18" ShadowDepth="0" Color="#4DA8DA" Opacity="0.9"/>
                                                 </TextBlock.Effect>
                                             </TextBlock>
-                                            <TextBlock Text="INICIO" FontSize="12" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
-                                            <TextBlock x:Name="ArsenalStartupCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                            <TextBlock Text="INICIO" FontSize="13" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="Bold"/>
+                                            <TextBlock x:Name="ArsenalStartupCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#FFD700" FontWeight="SemiBold"/>
                                         </StackPanel>
                                     </Button>
 
                                     <Button x:Name="ArsenalTasksBtn" Style="{StaticResource RPGButton}" Height="120" Margin="5"
                                             Click="ScheduledTasks_Click" ToolTip="Monitor de Tareas" HorizontalContentAlignment="Center">
                                         <StackPanel HorizontalAlignment="Center">
-                                            <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="40" 
-                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
+                                            <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="44"
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#5CC4FF">
                                                 <TextBlock.Effect>
-                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
+                                                    <DropShadowEffect BlurRadius="18" ShadowDepth="0" Color="#4DA8DA" Opacity="0.9"/>
                                                 </TextBlock.Effect>
                                             </TextBlock>
-                                            <TextBlock Text="TAREAS" FontSize="12" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
-                                            <TextBlock x:Name="ArsenalTasksCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                            <TextBlock Text="TAREAS" FontSize="13" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="Bold"/>
+                                            <TextBlock x:Name="ArsenalTasksCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#FFD700" FontWeight="SemiBold"/>
                                         </StackPanel>
                                     </Button>
 
                                     <Button x:Name="ArsenalQuarantineBtn" Style="{StaticResource RPGButton}" Height="120" Margin="5"
                                             Click="Quarantine_Click" ToolTip="Centro de Cuarentena" HorizontalContentAlignment="Center">
                                         <StackPanel HorizontalAlignment="Center">
-                                            <TextBlock Text="&#xE730;" FontFamily="Segoe MDL2 Assets" FontSize="40" 
-                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#4DA8DA">
+                                            <TextBlock Text="&#xE730;" FontFamily="Segoe MDL2 Assets" FontSize="44"
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#5CC4FF">
                                                 <TextBlock.Effect>
-                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.8"/>
+                                                    <DropShadowEffect BlurRadius="18" ShadowDepth="0" Color="#4DA8DA" Opacity="0.9"/>
                                                 </TextBlock.Effect>
                                             </TextBlock>
-                                            <TextBlock Text="CUARENTENA" FontSize="12" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="SemiBold"/>
-                                            <TextBlock x:Name="ArsenalQuarantineCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#7EB8DC"/>
+                                            <TextBlock Text="CUARENTENA" FontSize="13" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="Bold"/>
+                                            <TextBlock x:Name="ArsenalQuarantineCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#FFD700" FontWeight="SemiBold"/>
                                         </StackPanel>
                                     </Button>
                                 </UniformGrid>
@@ -362,7 +349,7 @@
                     </Border>
 
                     <!-- Monitoring Status Panel -->
-                    <Border Grid.Column="1" Style="{StaticResource RPGCard}" Margin="10,0,0,0">
+                    <Border Grid.Column="1" Style="{StaticResource RPGCard}" Margin="10,0,0,0" BorderBrush="#2A4A6F" BorderThickness="1,1,1,3">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -381,7 +368,7 @@
                             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                                 <StackPanel>
                                     <!-- Ataques DDoS -->
-                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
+                                    <Border Background="#0D1B2A" CornerRadius="10" Padding="12,10" Margin="0,0,0,8" BorderBrush="#1A3A5A" BorderThickness="1,1,1,2"
                                             Cursor="Hand" MouseLeftButtonUp="NetworkViewer_Click" ToolTip="Click para ver conexiones sospechosas">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -389,8 +376,11 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                                <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <Border Width="44" Height="44" CornerRadius="10" Background="#162D4A" Margin="0,0,12,0" BorderBrush="#2A5070" BorderThickness="1">
+                                                <Border.Effect>
+                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.3"/>
+                                                </Border.Effect>
+                                                <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="#5CC4FF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                 <TextBlock Text="Actividad de Red (DDoS)" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
@@ -409,7 +399,7 @@
                                     </Border>
 
                                     <!-- Navegador Predeterminado -->
-                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
+                                    <Border Background="#0D1B2A" CornerRadius="10" Padding="12,10" Margin="0,0,0,8" BorderBrush="#1A3A5A" BorderThickness="1,1,1,2"
                                             Cursor="Hand" MouseLeftButtonUp="ViewDefaultApps_Click"
                                             ToolTip="Click para abrir configuración del sistema">
                                         <Grid>
@@ -418,8 +408,11 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                                <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <Border Width="44" Height="44" CornerRadius="10" Background="#162D4A" Margin="0,0,12,0" BorderBrush="#2A5070" BorderThickness="1">
+                                                <Border.Effect>
+                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.3"/>
+                                                </Border.Effect>
+                                                <TextBlock Text="&#xE774;" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="#5CC4FF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                 <TextBlock x:Name="BrowserTitleText" Text="Navegador Predeterminado" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
@@ -428,6 +421,9 @@
                                             <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
                                                 <TextBlock x:Name="CheckBrowserTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
                                                 <Border x:Name="CheckBrowserBadge" CornerRadius="10" Background="#27AE60" Padding="10,3">
+                                                    <Border.Effect>
+                                                        <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="#27AE60" Opacity="0.6"/>
+                                                    </Border.Effect>
                                                     <StackPanel Orientation="Horizontal">
                                                         <Ellipse x:Name="CheckBrowserDot" Width="6" Height="6" Fill="#5CFF5C" Margin="0,0,5,0"/>
                                                         <TextBlock x:Name="CheckBrowserStatus" Text="Activo" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
@@ -438,7 +434,7 @@
                                     </Border>
 
                                     <!-- Acceso a Cámara y Micrófono -->
-                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
+                                    <Border Background="#0D1B2A" CornerRadius="10" Padding="12,10" Margin="0,0,0,8" BorderBrush="#1A3A5A" BorderThickness="1,1,1,2"
                                             Cursor="Hand" MouseLeftButtonUp="Privacy_Click" ToolTip="Click para el Centro de Privacidad">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -446,8 +442,11 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                                <TextBlock Text="&#xE890;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <Border Width="44" Height="44" CornerRadius="10" Background="#162D4A" Margin="0,0,12,0" BorderBrush="#2A5070" BorderThickness="1">
+                                                <Border.Effect>
+                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.3"/>
+                                                </Border.Effect>
+                                                <TextBlock Text="&#xE890;" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="#5CC4FF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                 <TextBlock Text="Privacidad (Cámara/Mic)" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
@@ -456,6 +455,9 @@
                                             <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
                                                 <TextBlock x:Name="CheckPrivacyTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
                                                 <Border x:Name="CheckPrivacyBadge" CornerRadius="10" Background="#27AE60" Padding="10,3">
+                                                    <Border.Effect>
+                                                        <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="#27AE60" Opacity="0.6"/>
+                                                    </Border.Effect>
                                                     <StackPanel Orientation="Horizontal">
                                                         <Ellipse x:Name="CheckPrivacyDot" Width="6" Height="6" Fill="#5CFF5C" Margin="0,0,5,0"/>
                                                         <TextBlock x:Name="CheckPrivacyStatus" Text="Activo" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
@@ -466,7 +468,7 @@
                                     </Border>
 
                                     <!-- Windows Defender -->
-                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
+                                    <Border Background="#0D1B2A" CornerRadius="10" Padding="12,10" Margin="0,0,0,8" BorderBrush="#1A3A5A" BorderThickness="1,1,1,2"
                                             Cursor="Hand" MouseLeftButtonUp="ViewDefenderHome_Click" ToolTip="Click para abrir Seguridad de Windows">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -474,8 +476,11 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                                <TextBlock Text="&#xE83F;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <Border Width="44" Height="44" CornerRadius="10" Background="#162D4A" Margin="0,0,12,0" BorderBrush="#2A5070" BorderThickness="1">
+                                                <Border.Effect>
+                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.3"/>
+                                                </Border.Effect>
+                                                <TextBlock Text="&#xE83F;" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="#5CC4FF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                 <TextBlock Text="Seguridad de Windows" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
@@ -484,6 +489,9 @@
                                             <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
                                                 <TextBlock x:Name="CheckDefenseTime" Text="--:--" Foreground="#7EB8DC" FontSize="11" HorizontalAlignment="Right" Margin="0,0,0,4"/>
                                                 <Border x:Name="CheckDefenseBadge" CornerRadius="10" Background="#27AE60" Padding="10,3">
+                                                    <Border.Effect>
+                                                        <DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="#27AE60" Opacity="0.6"/>
+                                                    </Border.Effect>
                                                     <StackPanel Orientation="Horizontal">
                                                         <Ellipse x:Name="CheckDefenseDot" Width="6" Height="6" Fill="#5CFF5C" Margin="0,0,5,0"/>
                                                         <TextBlock x:Name="CheckDefenseStatus" Text="Activo" Foreground="White" FontSize="11" FontWeight="SemiBold"/>
@@ -494,7 +502,7 @@
                                     </Border>
 
                                     <!-- Exclusiones de Defender -->
-                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
+                                    <Border Background="#0D1B2A" CornerRadius="10" Padding="12,10" Margin="0,0,0,8" BorderBrush="#1A3A5A" BorderThickness="1,1,1,2"
                                             Cursor="Hand" MouseLeftButtonUp="ViewExclusions_Click" ToolTip="Click para gestionar exclusiones">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -502,8 +510,11 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                                <TextBlock Text="&#xED1A;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <Border Width="44" Height="44" CornerRadius="10" Background="#162D4A" Margin="0,0,12,0" BorderBrush="#2A5070" BorderThickness="1">
+                                                <Border.Effect>
+                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.3"/>
+                                                </Border.Effect>
+                                                <TextBlock Text="&#xED1A;" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="#5CC4FF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                 <TextBlock x:Name="ExclusionsTitleText" Text="Exclusiones de Defender" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
@@ -522,7 +533,7 @@
                                     </Border>
 
                                     <!-- Programas al Inicio -->
-                                    <Border Background="#0D1B2A" CornerRadius="8" Padding="12,10" Margin="0,0,0,8"
+                                    <Border Background="#0D1B2A" CornerRadius="10" Padding="12,10" Margin="0,0,0,8" BorderBrush="#1A3A5A" BorderThickness="1,1,1,2"
                                             Cursor="Hand" MouseLeftButtonUp="StartupManager_Click" ToolTip="Click para gestionar programas de inicio">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -530,8 +541,11 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                                <TextBlock Text="&#xE7B8;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <Border Width="44" Height="44" CornerRadius="10" Background="#162D4A" Margin="0,0,12,0" BorderBrush="#2A5070" BorderThickness="1">
+                                                <Border.Effect>
+                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.3"/>
+                                                </Border.Effect>
+                                                <TextBlock Text="&#xE7B8;" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="#5CC4FF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                 <TextBlock x:Name="StartupTitleText" Text="Programas al Inicio" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
@@ -550,7 +564,7 @@
                                     </Border>
 
                                     <!-- Tareas Programadas -->
-                                    <Border Style="{StaticResource RPGCard}" Padding="12,10" Margin="0,0,0,8"
+                                    <Border Background="#0D1B2A" CornerRadius="10" Padding="12,10" Margin="0,0,0,8" BorderBrush="#1A3A5A" BorderThickness="1,1,1,2"
                                             Cursor="Hand" MouseLeftButtonUp="ScheduledTasks_Click" ToolTip="Click para gestionar tareas programadas">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -558,8 +572,11 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                                <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <Border Width="44" Height="44" CornerRadius="10" Background="#162D4A" Margin="0,0,12,0" BorderBrush="#2A5070" BorderThickness="1">
+                                                <Border.Effect>
+                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.3"/>
+                                                </Border.Effect>
+                                                <TextBlock Text="&#xE8A5;" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="#5CC4FF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                 <TextBlock x:Name="TasksTitleText" Text="Tareas Programadas" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
@@ -578,7 +595,7 @@
                                     </Border>
 
                                     <!-- Windows Script Host (WSH) Status -->
-                                    <Border Style="{StaticResource RPGCard}" Padding="12,10" Margin="0,0,0,8"
+                                    <Border Background="#0D1B2A" CornerRadius="10" Padding="12,10" Margin="0,0,0,8" BorderBrush="#1A3A5A" BorderThickness="1,1,1,2"
                                             Cursor="Hand" MouseLeftButtonUp="Quarantine_Click" ToolTip="Click para gestionar Windows Script Host">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -586,8 +603,11 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                                <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <Border Width="44" Height="44" CornerRadius="10" Background="#162D4A" Margin="0,0,12,0" BorderBrush="#2A5070" BorderThickness="1">
+                                                <Border.Effect>
+                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.3"/>
+                                                </Border.Effect>
+                                                <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="#5CC4FF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                 <TextBlock Text="Windows Script Host" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
@@ -606,7 +626,7 @@
                                     </Border>
 
                                     <!-- HOSTS Mapping -->
-                                    <Border Style="{StaticResource RPGCard}" Padding="12,10" Margin="0,0,0,8"
+                                    <Border Background="#0D1B2A" CornerRadius="10" Padding="12,10" Margin="0,0,0,8" BorderBrush="#1A3A5A" BorderThickness="1,1,1,2"
                                             Cursor="Hand" MouseLeftButtonUp="ViewHosts_Click" ToolTip="Click para editar archivo HOSTS">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -614,8 +634,11 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Border Width="40" Height="40" CornerRadius="8" Background="#1A3A5A" Margin="0,0,12,0">
-                                                <TextBlock Text="&#xE909;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="#4DA8DA" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            <Border Width="44" Height="44" CornerRadius="10" Background="#162D4A" Margin="0,0,12,0" BorderBrush="#2A5070" BorderThickness="1">
+                                                <Border.Effect>
+                                                    <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#4DA8DA" Opacity="0.3"/>
+                                                </Border.Effect>
+                                                <TextBlock Text="&#xE909;" FontFamily="Segoe MDL2 Assets" FontSize="22" Foreground="#5CC4FF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                 <TextBlock Text="Mapeo de Nombres (HOSTS)" Foreground="#E8F4FC" FontWeight="SemiBold" FontSize="13"/>
@@ -639,9 +662,12 @@
                 </Grid>
 
                 <!-- ═══════════════════ FOOTER ═══════════════════ -->
-                <Border Grid.Row="2" Margin="0,20,0,0" Padding="18,12" 
-                        Background="#0A1525" CornerRadius="8"
-                        BorderBrush="#1E3A5F" BorderThickness="1">
+                <Border Grid.Row="2" Margin="0,20,0,0" Padding="18,14" 
+                        Background="#0A1525" CornerRadius="10"
+                        BorderBrush="#1E3A5F" BorderThickness="1,1,1,2">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="12" ShadowDepth="0" Color="#1E3A5F" Opacity="0.3"/>
+                    </Border.Effect>
                     <Grid>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock x:Name="VersionText" Text="Imperial Shield" 
@@ -651,7 +677,7 @@
                             <TextBlock Text=" • " Foreground="#3A5A7A"/>
                             <Ellipse x:Name="FooterStatusDot" Width="8" Height="8" Fill="#27AE60" Margin="0,0,6,0" VerticalAlignment="Center">
                                 <Ellipse.Effect>
-                                    <DropShadowEffect x:Name="FooterStatusGlow" BlurRadius="5" ShadowDepth="0" Color="#27AE60"/>
+                                    <DropShadowEffect x:Name="FooterStatusGlow" BlurRadius="8" ShadowDepth="0" Color="#27AE60" Opacity="0.9"/>
                                 </Ellipse.Effect>
                             </Ellipse>
                             <TextBlock x:Name="FooterStatusText" Text="Monitoreo Activo" Foreground="#27AE60" FontWeight="SemiBold"/>

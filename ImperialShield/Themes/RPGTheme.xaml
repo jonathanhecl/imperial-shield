@@ -1,0 +1,501 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+    <!-- IMPERIAL SHIELD - RPG THEME SYSTEM                               -->
+    <!-- Paleta y estilos unificados para toda la aplicacion              -->
+    <!-- ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- ═══════════════════ COLOR PALETTE ═══════════════════ -->
+    <Color x:Key="RPGBackground">#060D18</Color>
+    <Color x:Key="RPGSurface">#0D1B2A</Color>
+    <Color x:Key="RPGCardBg">#111827</Color>
+    <Color x:Key="RPGPanelBg">#162232</Color>
+
+    <Color x:Key="RPGAccent">#4DA8DA</Color>
+    <Color x:Key="RPGAccentBright">#7CC4F0</Color>
+    <Color x:Key="RPGAccentDim">#2E5077</Color>
+    <Color x:Key="RPGAccentDark">#1A3A5A</Color>
+
+    <Color x:Key="RPGSuccess">#27AE60</Color>
+    <Color x:Key="RPGSuccessBright">#5CFF5C</Color>
+    <Color x:Key="RPGWarning">#F39C12</Color>
+    <Color x:Key="RPGDanger">#E74C3C</Color>
+    <Color x:Key="RPGDangerBright">#F43F5E</Color>
+
+    <Color x:Key="RPGGold">#FFD700</Color>
+    <Color x:Key="RPGGoldDim">#B8860B</Color>
+
+    <Color x:Key="RPGTextPrimary">#E8F4FC</Color>
+    <Color x:Key="RPGTextSecondary">#94A3B8</Color>
+    <Color x:Key="RPGTextMuted">#64748B</Color>
+
+    <!-- Solid Brushes -->
+    <SolidColorBrush x:Key="RPGBackgroundBrush" Color="{StaticResource RPGBackground}"/>
+    <SolidColorBrush x:Key="RPGSurfaceBrush" Color="{StaticResource RPGSurface}"/>
+    <SolidColorBrush x:Key="RPGCardBrush" Color="{StaticResource RPGCardBg}"/>
+    <SolidColorBrush x:Key="RPGPanelBrush" Color="{StaticResource RPGPanelBg}"/>
+
+    <SolidColorBrush x:Key="RPGAccentBrush" Color="{StaticResource RPGAccent}"/>
+    <SolidColorBrush x:Key="RPGAccentBrightBrush" Color="{StaticResource RPGAccentBright}"/>
+    <SolidColorBrush x:Key="RPGAccentDimBrush" Color="{StaticResource RPGAccentDim}"/>
+    <SolidColorBrush x:Key="RPGAccentDarkBrush" Color="{StaticResource RPGAccentDark}"/>
+
+    <SolidColorBrush x:Key="RPGSuccessBrush" Color="{StaticResource RPGSuccess}"/>
+    <SolidColorBrush x:Key="RPGSuccessBrightBrush" Color="{StaticResource RPGSuccessBright}"/>
+    <SolidColorBrush x:Key="RPGWarningBrush" Color="{StaticResource RPGWarning}"/>
+    <SolidColorBrush x:Key="RPGDangerBrush" Color="{StaticResource RPGDanger}"/>
+    <SolidColorBrush x:Key="RPGDangerBrightBrush" Color="{StaticResource RPGDangerBright}"/>
+
+    <SolidColorBrush x:Key="RPGGoldBrush" Color="{StaticResource RPGGold}"/>
+    <SolidColorBrush x:Key="RPGGoldDimBrush" Color="{StaticResource RPGGoldDim}"/>
+
+    <SolidColorBrush x:Key="RPGTextPrimaryBrush" Color="{StaticResource RPGTextPrimary}"/>
+    <SolidColorBrush x:Key="RPGTextSecondaryBrush" Color="{StaticResource RPGTextSecondary}"/>
+    <SolidColorBrush x:Key="RPGTextMutedBrush" Color="{StaticResource RPGTextMuted}"/>
+
+    <!-- ═══════════════════ GRADIENTS ═══════════════════ -->
+    <LinearGradientBrush x:Key="RPGHeaderGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#0a1628" Offset="0"/>
+        <GradientStop Color="#1a3a5c" Offset="0.5"/>
+        <GradientStop Color="#0d2847" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="RPGCardGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#1B3044" Offset="0"/>
+        <GradientStop Color="#0F1C2E" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="RPGButtonGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#2E5077" Offset="0"/>
+        <GradientStop Color="#1E3A5F" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="RPGButtonHoverGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#3A6A9A" Offset="0"/>
+        <GradientStop Color="#2E5077" Offset="1"/>
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="RPGGoldBorder" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#B8860B" Offset="0"/>
+        <GradientStop Color="#FFD700" Offset="0.5"/>
+        <GradientStop Color="#B8860B" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- ═══════════════════ CARD STYLES ═══════════════════ -->
+    <Style x:Key="RPGCard" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource RPGCardGradient}"/>
+        <Setter Property="BorderBrush" Value="#2A4A6F"/>
+        <Setter Property="BorderThickness" Value="1,1,1,3"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="20"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="18" ShadowDepth="4" Opacity="0.4" Color="#000"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="RPGPanel" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource RPGPanelBrush}"/>
+        <Setter Property="BorderBrush" Value="#1E3A5F"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="15"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="12" ShadowDepth="2" Opacity="0.3" Color="#000"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="RPGAlertCard" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource RPGCardGradient}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource RPGDangerBrush}"/>
+        <Setter Property="BorderThickness" Value="2,2,2,4"/>
+        <Setter Property="CornerRadius" Value="16"/>
+        <Setter Property="Padding" Value="25"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="30" ShadowDepth="0" Opacity="0.6" Color="{StaticResource RPGDanger}"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="RPGWarningCard" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource RPGCardGradient}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource RPGWarningBrush}"/>
+        <Setter Property="BorderThickness" Value="2,2,2,4"/>
+        <Setter Property="CornerRadius" Value="16"/>
+        <Setter Property="Padding" Value="25"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="30" ShadowDepth="0" Opacity="0.6" Color="{StaticResource RPGWarning}"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ═══════════════════ BUTTON STYLES ═══════════════════ -->
+    <Style x:Key="RPGButton" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource RPGButtonGradient}"/>
+        <Setter Property="Foreground" Value="{StaticResource RPGTextPrimaryBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource RPGAccentBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="20,12"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.3" Color="{StaticResource RPGAccent}"/>
+                        </Border.Effect>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource RPGButtonHoverGradient}"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource RPGAccentBrightBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource RPGAccentDarkBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="RPGDangerButton" TargetType="Button" BasedOn="{StaticResource RPGButton}">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#7F1D1D" Offset="0"/>
+                    <GradientStop Color="#5C1515" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Foreground" Value="#FECACA"/>
+        <Setter Property="BorderBrush" Value="{StaticResource RPGDangerBrightBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.3" Color="{StaticResource RPGDanger}"/>
+                        </Border.Effect>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#991B1B"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="#EF4444"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#450A0A"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="RPGSuccessButton" TargetType="Button" BasedOn="{StaticResource RPGButton}">
+        <Setter Property="Background">
+            <Setter.Value>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#15803D" Offset="0"/>
+                    <GradientStop Color="#14532D" Offset="1"/>
+                </LinearGradientBrush>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="{StaticResource RPGSuccessBrightBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="8" ShadowDepth="1" Opacity="0.3" Color="{StaticResource RPGSuccess}"/>
+                        </Border.Effect>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="#16A34A"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="#4ADE80"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="RPGGhostButton" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource RPGTextSecondaryBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="10,6"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="6"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource RPGAccentDarkBrush}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource RPGSurfaceBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ═══════════════════ BADGE STYLES ═══════════════════ -->
+    <Style x:Key="RPGBadge" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource RPGAccentDarkBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource RPGAccentBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="10,4"/>
+    </Style>
+
+    <Style x:Key="RPGSuccessBadge" TargetType="Border" BasedOn="{StaticResource RPGBadge}">
+        <Setter Property="Background" Value="{StaticResource RPGSuccessBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource RPGSuccessBrightBrush}"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.5" Color="{StaticResource RPGSuccess}"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="RPGWarningBadge" TargetType="Border" BasedOn="{StaticResource RPGBadge}">
+        <Setter Property="Background" Value="{StaticResource RPGWarningBrush}"/>
+        <Setter Property="BorderBrush" Value="#FBBF24"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.5" Color="{StaticResource RPGWarning}"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="RPGDangerBadge" TargetType="Border" BasedOn="{StaticResource RPGBadge}">
+        <Setter Property="Background" Value="{StaticResource RPGDangerBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource RPGDangerBrightBrush}"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.5" Color="{StaticResource RPGDanger}"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ═══════════════════ ICON CONTAINER ═══════════════════ -->
+    <Style x:Key="RPGIconContainer" TargetType="Border">
+        <Setter Property="Width" Value="44"/>
+        <Setter Property="Height" Value="44"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Background" Value="#162D4A"/>
+        <Setter Property="BorderBrush" Value="#2A5070"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="12" ShadowDepth="0" Opacity="0.3" Color="{StaticResource RPGAccent}"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ═══════════════════ TEXT STYLES ═══════════════════ -->
+    <Style x:Key="RPGTitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="24"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+
+    <Style x:Key="RPGSubtitle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{StaticResource RPGTextSecondaryBrush}"/>
+    </Style>
+
+    <Style x:Key="RPGLabel" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="10"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{StaticResource RPGTextMutedBrush}"/>
+    </Style>
+
+    <Style x:Key="RPGValue" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource RPGTextPrimaryBrush}"/>
+    </Style>
+
+    <!-- ═══════════════════ WINDOW STYLE ═══════════════════ -->
+    <Style x:Key="RPGWindow" TargetType="Window">
+        <Setter Property="Background" Value="{StaticResource RPGBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource RPGTextPrimaryBrush}"/>
+        <Setter Property="FontFamily" Value="Segoe UI"/>
+        <Setter Property="FontSize" Value="14"/>
+    </Style>
+
+    <!-- ═══════════════════ DATA GRID ═══════════════════ -->
+    <Style TargetType="DataGrid">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource RPGTextPrimaryBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="RowBackground" Value="{StaticResource RPGSurfaceBrush}"/>
+        <Setter Property="AlternatingRowBackground" Value="{StaticResource RPGBackgroundBrush}"/>
+        <Setter Property="GridLinesVisibility" Value="None"/>
+        <Setter Property="HeadersVisibility" Value="Column"/>
+        <Setter Property="SelectionMode" Value="Single"/>
+        <Setter Property="AutoGenerateColumns" Value="False"/>
+    </Style>
+
+    <Style TargetType="DataGridColumnHeader">
+        <Setter Property="Background" Value="{StaticResource RPGAccentDarkBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource RPGTextPrimaryBrush}"/>
+        <Setter Property="Padding" Value="12,10"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    <Style TargetType="DataGridCell">
+        <Setter Property="Padding" Value="12,8"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridCell">
+                    <Border Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}">
+                        <ContentPresenter VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{StaticResource RPGAccentDimBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- ═══════════════════ CONTEXT MENU ═══════════════════ -->
+    <Style TargetType="ContextMenu">
+        <Setter Property="Background" Value="#1E293B"/>
+        <Setter Property="BorderBrush" Value="#334155"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Foreground" Value="{StaticResource RPGTextPrimaryBrush}"/>
+        <Setter Property="Padding" Value="4"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContextMenu">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8" Padding="{TemplateBinding Padding}">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="15" ShadowDepth="3" Opacity="0.5" Color="Black"/>
+                        </Border.Effect>
+                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="MenuItem">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource RPGTextPrimaryBrush}"/>
+        <Setter Property="Padding" Value="12,8"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="MenuItem">
+                    <Border x:Name="Border" Background="{TemplateBinding Background}"
+                            CornerRadius="4" Padding="{TemplateBinding Padding}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter x:Name="Icon" ContentSource="Icon"
+                                              Margin="0,0,8,0" VerticalAlignment="Center"/>
+                            <ContentPresenter Grid.Column="1" ContentSource="Header"
+                                              VerticalAlignment="Center"/>
+                            <Path x:Name="Arrow" Grid.Column="2" Data="M0,0 L4,4 L0,8"
+                                  Fill="#64748B" Margin="8,0,0,0" VerticalAlignment="Center"
+                                  Visibility="Collapsed"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource RPGAccentDimBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{StaticResource RPGTextMutedBrush}"/>
+                        </Trigger>
+                        <Trigger Property="Role" Value="SubmenuHeader">
+                            <Setter TargetName="Arrow" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="Separator">
+        <Setter Property="Background" Value="#334155"/>
+        <Setter Property="Margin" Value="8,4"/>
+        <Setter Property="Height" Value="1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Separator">
+                    <Border Background="{TemplateBinding Background}"
+                            Height="{TemplateBinding Height}"
+                            Margin="{TemplateBinding Margin}"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- ═══════════════════ LOADING OVERLAY ═══════════════════ -->
+    <Style x:Key="RPGLoadingOverlay" TargetType="Grid">
+        <Setter Property="Background" Value="#CC060D18"/>
+        <Setter Property="Panel.ZIndex" Value="100"/>
+    </Style>
+
+    <Style x:Key="RPGLoadingSpinner" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="48"/>
+        <Setter Property="Foreground" Value="{StaticResource RPGAccentBrightBrush}"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+    </Style>
+
+</ResourceDictionary>
