@@ -119,6 +119,15 @@
 
                 <!-- Stats -->
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Background="#1B2838" CornerRadius="8" BorderBrush="#3A5F82" BorderThickness="1" Padding="8,6" Margin="0,0,10,0" Width="240">
+                        <Grid VerticalAlignment="Center">
+                            <TextBlock x:Name="SearchPlaceholder" Text="🔎 Buscar tarea..." Foreground="#64748B" FontSize="13" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                            <TextBox x:Name="SearchTextBox" Background="Transparent" Foreground="White" 
+                                     BorderThickness="0" FontSize="13" Padding="0"
+                                     TextChanged="SearchTextBox_TextChanged"
+                                     CaretBrush="White" VerticalContentAlignment="Center"/>
+                        </Grid>
+                    </Border>
                     <TextBlock x:Name="StatsText" Text="0 tareas" Foreground="#64748B" FontSize="12" VerticalAlignment="Center"/>
                 </StackPanel>
             </Grid>

@@ -139,6 +139,15 @@ public partial class ScheduledTasksWindow : Window
 
         IEnumerable<TaskItem> filtered = _allTasks;
 
+        // Apply text search
+        string search = SearchTextBox?.Text?.Trim() ?? "";
+        if (!string.IsNullOrEmpty(search))
+        {
+            filtered = filtered.Where(t =>
+                t.TaskName.Contains(search, StringComparison.OrdinalIgnoreCase) ||
+                t.TaskPath.Contains(search, StringComparison.OrdinalIgnoreCase));
+        }
+
         // Apply exclusive filter
         if (FilterRunning.IsChecked == true)
         {
@@ -479,4 +488,11 @@ public partial class ScheduledTasksWindow : Window
 
     private async void Refresh_Click(object sender, RoutedEventArgs e) => await LoadTasksAsync();
     private void Close_Click(object sender, RoutedEventArgs e) => Close();
+
+    private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (SearchPlaceholder != null)
+            SearchPlaceholder.Visibility = string.IsNullOrEmpty(SearchTextBox.Text) ? Visibility.Visible : Visibility.Collapsed;
+        ApplyFilter();
+    }
 }
