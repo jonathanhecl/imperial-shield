@@ -695,6 +695,7 @@
                                 </Ellipse.Effect>
                             </Ellipse>
                             <TextBlock x:Name="FooterStatusText" Text="Monitoreo Activo" Foreground="#27AE60" FontWeight="SemiBold"/>
+                            <TextBlock x:Name="ArgentumModeStatusText" Text=" • ⚔️ Modo Argentum Activo" Foreground="#FFD700" FontWeight="Bold" Visibility="Collapsed"/>
                         </StackPanel>
                         
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

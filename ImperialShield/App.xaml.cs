@@ -23,6 +23,7 @@ public partial class App : Application
     private DDoSMonitor? _ddosMonitor;
     private TasksMonitor? _tasksMonitor;
     private BrowserMonitor? _browserMonitor;
+    private LauncherProcessMonitor? _launcherMonitor;
     private bool _isMonitoringPaused;
 
     public bool IsMonitoringPaused => _isMonitoringPaused;
@@ -43,6 +44,7 @@ public partial class App : Application
     public BrowserMonitor? BrowserMonitor => _browserMonitor;
     public IFEOMonitor? IFEOMonitor => _ifeoMonitor;
     public DDoSMonitor? DDoSMonitor => _ddosMonitor;
+    public LauncherProcessMonitor? LauncherMonitor => _launcherMonitor;
 
     public App()
     {
@@ -258,6 +260,20 @@ public partial class App : Application
         catch (Exception ex)
         {
             Logger.LogException(ex, "BrowserMonitor Setup");
+        }
+
+        // Paso 9: Inicializar monitor de subprocesos Argentum Online (Launcher Process Monitor)
+        _splashWindow?.UpdateStatus("Iniciando monitor de Launchers...");
+        try
+        {
+            _launcherMonitor = new LauncherProcessMonitor();
+            _launcherMonitor.SuspiciousProcessSpawned += OnSuspiciousProcessSpawned;
+            _launcherMonitor.Start();
+            Logger.Log("LauncherProcessMonitor started");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogException(ex, "LauncherProcessMonitor Setup");
         }
 
         _splashWindow?.UpdateStatus("Listo.");
@@ -615,6 +631,15 @@ public partial class App : Application
         });
     }
 
+    private void OnSuspiciousProcessSpawned(object? sender, LauncherProcessEventArgs e)
+    {
+        Dispatcher.Invoke(() =>
+        {
+            var alert = new ArgentumAlertWindow(e.LauncherName, e.LauncherPath, e.SpawnedName, e.SpawnedPath, e.Details);
+            alert.ShowDialog();
+        });
+    }
+
     #endregion
 
     #region Pause/Resume Logic
@@ -634,6 +659,7 @@ public partial class App : Application
         _browserMonitor?.Stop();
         _ifeoMonitor?.Stop();
         _ddosMonitor?.Stop();
+        _launcherMonitor?.Stop();
 
         ShowToastNotification("Protección Pausada", 
             "Todos los monitores de seguridad han sido detenidos.", 
@@ -655,6 +681,7 @@ public partial class App : Application
         _browserMonitor?.Start();
         _ifeoMonitor?.Start();
         _ddosMonitor?.Start();
+        _launcherMonitor?.Start();
 
         ShowToastNotification("Protección Reactivada", 
             "Imperial Shield está protegiendo tu sistema nuevamente.", 
@@ -676,8 +703,8 @@ public partial class App : Application
         _tasksMonitor?.Stop();
         _tasksMonitor?.Dispose();
         _browserMonitor?.Stop();
-        _privacyMonitor?.Dispose();
-        _startupMonitor?.Stop();
+        _launcherMonitor?.Stop();
+        _launcherMonitor?.Dispose();
         _notifyIcon?.Dispose();
         SingleInstanceManager.ReleaseLock();
 

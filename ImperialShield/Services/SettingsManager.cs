@@ -28,6 +28,7 @@ public class AppSettings
     };
 
     public List<string> WhitelistedNetworkApps { get; set; } = new();
+    public bool ArgentumModeEnabled { get; set; } = false;
 }
 
 public static class SettingsManager

@@ -29,6 +29,7 @@ namespace ImperialShield.Views
             }
 
             StartupCheckBox.IsChecked = StartupManager.IsStartupEnabled();
+            ArgentumModeCheckBox.IsChecked = SettingsManager.Current.ArgentumModeEnabled;
         }
 
         private void OpenAlertTest_Click(object sender, RoutedEventArgs e)
@@ -43,6 +44,7 @@ namespace ImperialShield.Views
             if (IntervalComboBox.SelectedItem is ComboBoxItem selected)
             {
                 SettingsManager.Current.PollingIntervalMs = int.Parse(selected.Tag.ToString()!);
+                SettingsManager.Current.ArgentumModeEnabled = ArgentumModeCheckBox.IsChecked ?? false;
                 SettingsManager.Save();
                 
                 // Aplicar cambio de inicio

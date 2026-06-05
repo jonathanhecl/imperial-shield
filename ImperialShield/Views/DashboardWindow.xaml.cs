@@ -344,6 +344,13 @@ public partial class DashboardWindow : Window
             if (FooterStatusGlow != null) FooterStatusGlow.Color = (Color)ColorConverter.ConvertFromString("#27AE60");
         }
 
+        if (ArgentumModeStatusText != null)
+        {
+            ArgentumModeStatusText.Visibility = (!isPaused && SettingsManager.Current.ArgentumModeEnabled)
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+        }
+
         if (isPaused)
         {
             StatusText.Visibility = Visibility.Visible;

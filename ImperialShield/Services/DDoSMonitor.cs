@@ -89,6 +89,22 @@ public class DDoSMonitor : IDisposable
                     continue;
                 }
 
+                // --- CHEQUEO MODO ARGENTUM ONLINE ---
+                if (SettingsManager.Current.ArgentumModeEnabled && IsArgentumProcess(processName))
+                {
+                    var uniqueIPsCount = processGroup.Select(c => c.RemoteAddress).Distinct().Count();
+                    if (uniqueIPsCount > 3)
+                    {
+                        string incidentKey = $"{processName}:ARGENTUM_DDoS";
+                        if (!_reportedIncidents.Contains(incidentKey))
+                        {
+                            ReportDDoS(processName, processPath, "Múltiples destinos (Modo Argentum)", uniqueIPsCount,
+                                $"ANOMALÍA ARGENTUM: El proceso '{processName}' tiene conexiones simultáneas a {uniqueIPsCount} IPs distintas. Posible botnet/troyano.");
+                            _reportedIncidents.Add(incidentKey);
+                        }
+                    }
+                }
+
                 int totalCount = processGroup.Count();
 
                 // 2. Análisis Volumen Total (High Output Flood)
@@ -143,6 +159,34 @@ public class DDoSMonitor : IDisposable
     {
         Logger.Log($"[DDoS ALERT] {msg}");
         DDoSAttackDetected?.Invoke(this, new DDoSEventArgs(process, processPath, ip, count, msg));
+    }
+
+    public static bool IsArgentumProcess(string processName)
+    {
+        if (string.IsNullOrEmpty(processName)) return false;
+        string name = processName.ToLowerInvariant();
+        if (name.Contains("argentum") || name.Contains("grao"))
+            return true;
+
+        if (name.StartsWith("ao") || 
+            name.Contains("_ao") || 
+            name.Contains("ao_") || 
+            name.Contains("-ao") || 
+            name.Contains("ao-") ||
+            name.EndsWith("ao.exe") ||
+            name.EndsWith("ao"))
+        {
+            if (name.Contains("chrome") || name.Contains("firefox") || name.Contains("opera") || 
+                name.Contains("edge") || name.Contains("outlook") || name.Contains("onedrive"))
+                return false;
+            return true;
+        }
+
+        if (name.Contains("launcher") || name.Contains("updater"))
+        {
+            return true;
+        }
+        return false;
     }
 
     private bool IsNetworkAppWhitelisted(string processPath)

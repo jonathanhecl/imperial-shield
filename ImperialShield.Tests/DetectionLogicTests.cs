@@ -115,6 +115,58 @@ public class DetectionLogicTests
         }
     }
 
+    [Theory]
+    [InlineData("grao.exe", true)]
+    [InlineData("argentum.exe", true)]
+    [InlineData("ao-launcher.exe", true)]
+    [InlineData("ao_client.exe", true)]
+    [InlineData("client-ao.exe", true)]
+    [InlineData("grao", true)]
+    [InlineData("chrome.exe", false)]
+    [InlineData("outlook.exe", false)]
+    [InlineData("onedrive.exe", false)]
+    [InlineData("download.exe", false)]
+    [InlineData("layout.exe", false)]
+    [InlineData("opera.exe", false)]
+    public void DDoSMonitor_IsArgentumProcess_ShouldDetectCorrectly(string filename, bool expected)
+    {
+        // Act
+        bool result = DDoSMonitor.IsArgentumProcess(filename);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    [Theory]
+    [InlineData("cmd.exe", true)]
+    [InlineData("powershell.exe", true)]
+    [InlineData("wscript.exe", true)]
+    [InlineData("notepad.exe", false)]
+    [InlineData("explorer.exe", false)]
+    public void LauncherProcessMonitor_IsShellOrSystemUtility_ShouldDetectCorrectly(string filename, bool expected)
+    {
+        // Act
+        bool result = LauncherProcessMonitor.IsShellOrSystemUtility(filename);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
+    [Theory]
+    [InlineData(@"C:\Users\User\AppData\Local\Temp\payload.exe", true)]
+    [InlineData(@"C:\Windows\Temp\malware.exe", true)]
+    [InlineData(@"C:\Users\User\Downloads\update.exe", true)]
+    [InlineData(@"C:\Games\Argentum\grao.exe", false)]
+    [InlineData(@"C:\Program Files\AO\client.exe", false)]
+    public void LauncherProcessMonitor_IsTemporaryOrSystemPath_ShouldDetectCorrectly(string path, bool expected)
+    {
+        // Act
+        bool result = LauncherProcessMonitor.IsTemporaryOrSystemPath(path);
+
+        // Assert
+        Assert.Equal(expected, result);
+    }
+
     // Helper para testear métodos privados sin cambiar el código original
     private T InvokePrivateMethod<T>(object obj, string methodName, params object[] args)
     {
