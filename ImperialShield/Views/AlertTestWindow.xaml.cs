@@ -37,6 +37,7 @@ namespace ImperialShield.Views
         {
             DDoSTrackerWindow.ShowAlert(
                 "Flooder.exe",
+                @"C:\Program Files\Flooder\Flooder.exe",
                 "185.12.33.190",
                 1240,
                 "DETECCIÓN CRÍTICA: Se ha detectado un ataque de denegación de servicio saliente.",

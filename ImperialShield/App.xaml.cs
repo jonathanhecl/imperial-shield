@@ -434,7 +434,7 @@ public partial class App : Application
 
     private void OnDDoSDetected(object? sender, DDoSEventArgs e)
     {
-        DDoSTrackerWindow.ShowAlert(e.ProcessName, e.RemoteIP, e.ConnectionCount, e.WarningMessage);
+        DDoSTrackerWindow.ShowAlert(e.ProcessName, e.ProcessPath, e.RemoteIP, e.ConnectionCount, e.WarningMessage);
     }
 
     private void OnBrowserChanged(object? sender, BrowserChangedEventArgs e)
@@ -485,6 +485,12 @@ public partial class App : Application
     private void ShowQuarantine_Click(object sender, RoutedEventArgs e)
     {
         var window = new QuarantineWindow();
+        window.Show();
+    }
+
+    private void ShowWhitelist_Click(object sender, RoutedEventArgs e)
+    {
+        var window = new WhitelistWindow();
         window.Show();
     }
 

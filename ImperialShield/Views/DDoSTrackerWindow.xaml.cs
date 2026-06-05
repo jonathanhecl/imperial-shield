@@ -8,12 +8,14 @@ namespace ImperialShield.Views;
 public partial class DDoSTrackerWindow : Window
 {
     private readonly string _processName;
+    private readonly string _processPath;
     private readonly bool _isDemoMode;
 
-    public DDoSTrackerWindow(string processName, string targetIp, int count, string message, bool demoMode = false)
+    public DDoSTrackerWindow(string processName, string processPath, string targetIp, int count, string message, bool demoMode = false)
     {
         InitializeComponent();
         _processName = processName;
+        _processPath = processPath;
         _isDemoMode = demoMode;
 
         ProcessNameText.Text = processName;
@@ -108,6 +110,52 @@ public partial class DDoSTrackerWindow : Window
         this.Close();
     }
 
+    private void Whitelist_Click(object sender, RoutedEventArgs e)
+    {
+        if (string.IsNullOrEmpty(_processPath) || _processPath == "[Acceso Denegado]" || _processPath == "[Proceso Terminado]")
+        {
+            MessageBox.Show(
+                "No se pudo obtener la ruta completa del proceso para añadirlo a la lista blanca.",
+                "Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+            return;
+        }
+
+        var confirm = MessageBox.Show(
+            $"¿Deseas añadir '{_processPath}' a la lista blanca?\n\n" +
+            "Se omitirá el monitoreo de anomalías de red únicamente para este ejecutable en esta ruta específica.",
+            "Confirmar Añadir a Lista Blanca",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Question);
+
+        if (confirm == MessageBoxResult.Yes)
+        {
+            try
+            {
+                string pathToAdd = _processPath;
+
+                if (!SettingsManager.Current.WhitelistedNetworkApps.Contains(pathToAdd, StringComparer.OrdinalIgnoreCase))
+                {
+                    SettingsManager.Current.WhitelistedNetworkApps.Add(pathToAdd);
+                    SettingsManager.Save();
+                }
+
+                MessageBox.Show(
+                    $"✅ '{pathToAdd}' ha sido añadida a la lista blanca.",
+                    "Operación Completada",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al guardar en la lista blanca: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+    }
+
     private void OpenLocation_Click(object sender, RoutedEventArgs e)
     {
         try
@@ -135,11 +183,11 @@ public partial class DDoSTrackerWindow : Window
         catch { }
     }
 
-    public static void ShowAlert(string processName, string ip, int count, string warning, bool demoMode = false)
+    public static void ShowAlert(string processName, string processPath, string ip, int count, string warning, bool demoMode = false)
     {
         Application.Current.Dispatcher.Invoke(() =>
         {
-            var win = new DDoSTrackerWindow(processName, ip, count, warning, demoMode);
+            var win = new DDoSTrackerWindow(processName, processPath, ip, count, warning, demoMode);
             win.Show();
         });
     }

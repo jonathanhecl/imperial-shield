@@ -85,6 +85,36 @@ public class DetectionLogicTests
         System.Diagnostics.Debug.WriteLine($"VBS Enabled: {isVBSEnabled}");
     }
 
+    [Fact]
+    public void DDoSMonitor_ShouldRecognizeWhitelistedNetworkApps()
+    {
+        // Arrange
+        var ddosMonitor = new DDoSMonitor();
+        var originalWhitelist = SettingsManager.Current.WhitelistedNetworkApps;
+        SettingsManager.Current.WhitelistedNetworkApps = new List<string> 
+        { 
+            @"C:\Users\User\AppData\Local\Programs\Arc\Arc.exe", 
+            @"C:\Program Files\TestApp\testapp.exe" 
+        };
+
+        try
+        {
+            // Act
+            bool isArcWhitelisted = InvokePrivateMethod<bool>(ddosMonitor, "IsNetworkAppWhitelisted", @"C:\Users\User\AppData\Local\Programs\Arc\Arc.exe");
+            bool isChromeWhitelisted = InvokePrivateMethod<bool>(ddosMonitor, "IsNetworkAppWhitelisted", @"C:\Program Files\Google\Chrome\Application\chrome.exe");
+            bool isArcSimpleWhitelisted = InvokePrivateMethod<bool>(ddosMonitor, "IsNetworkAppWhitelisted", "arc.exe");
+
+            // Assert
+            Assert.True(isArcWhitelisted);
+            Assert.False(isChromeWhitelisted);
+            Assert.False(isArcSimpleWhitelisted); // Should be false because it is not an absolute path
+        }
+        finally
+        {
+            SettingsManager.Current.WhitelistedNetworkApps = originalWhitelist;
+        }
+    }
+
     // Helper para testear métodos privados sin cambiar el código original
     private T InvokePrivateMethod<T>(object obj, string methodName, params object[] args)
     {

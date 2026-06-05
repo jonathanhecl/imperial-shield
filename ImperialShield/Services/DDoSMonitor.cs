@@ -8,13 +8,15 @@ namespace ImperialShield.Services;
 public class DDoSEventArgs : EventArgs
 {
     public string ProcessName { get; }
+    public string ProcessPath { get; }
     public string RemoteIP { get; }
     public int ConnectionCount { get; }
     public string WarningMessage { get; }
 
-    public DDoSEventArgs(string processName, string ip, int count, string warning)
+    public DDoSEventArgs(string processName, string processPath, string ip, int count, string warning)
     {
         ProcessName = processName;
+        ProcessPath = processPath;
         RemoteIP = ip;
         ConnectionCount = count;
         WarningMessage = warning;
@@ -81,6 +83,12 @@ public class DDoSMonitor : IDisposable
             foreach (var processGroup in connectionsByProcess)
             {
                 var processName = processGroup.First().ProcessName;
+                var processPath = processGroup.First().ProcessPath;
+                if (IsNetworkAppWhitelisted(processPath))
+                {
+                    continue;
+                }
+
                 int totalCount = processGroup.Count();
 
                 // 2. Análisis Volumen Total (High Output Flood)
@@ -92,7 +100,7 @@ public class DDoSMonitor : IDisposable
                         // Excluir navegadores legítimos si se desea, pero 150 cxns sigue siendo mucho incluso para Chrome
                         if (!IsWhitelistedBrowser(processName, totalCount)) 
                         {
-                            ReportDDoS(processName, "Múltiples destinos", totalCount, 
+                            ReportDDoS(processName, processPath, "Múltiples destinos", totalCount, 
                                 $"El proceso '{processName}' tiene {totalCount} conexiones activas excesivas.");
                             _reportedIncidents.Add(incidentKey);
                         }
@@ -117,7 +125,7 @@ public class DDoSMonitor : IDisposable
                         // Pero por defecto, avisamos.
                         if (!IsWhitelistedBrowser(processName, count))
                         {
-                            ReportDDoS(processName, ip, count, 
+                            ReportDDoS(processName, processPath, ip, count, 
                                 $"ATAQUE SALIENTE: '{processName}' está atacando a {ip} con {count} conexiones simultáneas.");
                             _reportedIncidents.Add(incidentKey);
                         }
@@ -131,10 +139,21 @@ public class DDoSMonitor : IDisposable
         }
     }
 
-    private void ReportDDoS(string process, string ip, int count, string msg)
+    private void ReportDDoS(string process, string processPath, string ip, int count, string msg)
     {
         Logger.Log($"[DDoS ALERT] {msg}");
-        DDoSAttackDetected?.Invoke(this, new DDoSEventArgs(process, ip, count, msg));
+        DDoSAttackDetected?.Invoke(this, new DDoSEventArgs(process, processPath, ip, count, msg));
+    }
+
+    private bool IsNetworkAppWhitelisted(string processPath)
+    {
+        if (string.IsNullOrEmpty(processPath) || processPath == "[Acceso Denegado]" || processPath == "[Proceso Terminado]")
+            return false;
+
+        var list = SettingsManager.Current.WhitelistedNetworkApps;
+        if (list == null) return false;
+
+        return list.Contains(processPath, StringComparer.OrdinalIgnoreCase);
     }
 
     private bool IsWhitelistedBrowser(string processName, int count)

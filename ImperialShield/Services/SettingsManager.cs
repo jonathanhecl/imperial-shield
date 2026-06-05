@@ -26,6 +26,8 @@ public class AppSettings
         "obs64.exe",
         "cortana.exe"
     };
+
+    public List<string> WhitelistedNetworkApps { get; set; } = new();
 }
 
 public static class SettingsManager

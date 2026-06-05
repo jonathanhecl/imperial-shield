@@ -162,6 +162,7 @@ public partial class DashboardWindow : Window
                 ArsenalTasksCount.Text = $"{tasksCount} tareas activas";
                 ArsenalPrivacyCount.Text = privacyCount > 0 ? $"{privacyCount} riesgos" : "Protegido";
                 ArsenalQuarantineCount.Text = $"{QuarantineService.GetQuarantinedApps().Count} elementos";
+                ArsenalWhitelistCount.Text = $"{SettingsManager.Current.WhitelistedNetworkApps.Count} aplicaciones";
 
                 // Update Pause Button State
                 UpdatePauseButtonState();
@@ -534,6 +535,7 @@ public partial class DashboardWindow : Window
 
     private void Quarantine_Click(object sender, RoutedEventArgs e) => new QuarantineWindow().Show();
     private void ScheduledTasks_Click(object sender, RoutedEventArgs e) => new ScheduledTasksWindow().Show();
+    private void WhitelistManager_Click(object sender, RoutedEventArgs e) => new WhitelistWindow().Show();
 
     private void VersionText_Click(object sender, RoutedEventArgs e)
     {

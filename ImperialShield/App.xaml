@@ -28,6 +28,7 @@
                         <MenuItem Header="📅 Monitor de Tareas" Click="ShowScheduledTasks_Click"/>
                         <MenuItem Header="👁️ Centro de Privacidad" Click="ShowPrivacy_Click"/>
                         <MenuItem Header="🔒 Centro de Cuarentena" Click="ShowQuarantine_Click"/>
+                        <MenuItem Header="🛡️ Lista Blanca" Click="ShowWhitelist_Click"/>
                         <Separator/>
                         <MenuItem Header="⚙️ Configuración" Click="Settings_Click"/>
                         <MenuItem Header="❌ Salir" Click="Exit_Click"/>

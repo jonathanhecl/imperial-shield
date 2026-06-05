@@ -343,6 +343,20 @@
                                             <TextBlock x:Name="ArsenalQuarantineCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#FFD700" FontWeight="SemiBold"/>
                                         </StackPanel>
                                     </Button>
+
+                                    <Button x:Name="ArsenalWhitelistBtn" Style="{StaticResource RPGButton}" Height="120" Margin="5"
+                                            Click="WhitelistManager_Click" ToolTip="Gestionar Lista Blanca" HorizontalContentAlignment="Center">
+                                        <StackPanel HorizontalAlignment="Center">
+                                            <TextBlock Text="&#xE8FB;" FontFamily="Segoe MDL2 Assets" FontSize="44"
+                                                       HorizontalAlignment="Center" Margin="0,0,0,8" Foreground="#5CC4FF">
+                                                <TextBlock.Effect>
+                                                    <DropShadowEffect BlurRadius="18" ShadowDepth="0" Color="#4DA8DA" Opacity="0.9"/>
+                                                </TextBlock.Effect>
+                                            </TextBlock>
+                                            <TextBlock Text="LISTA BLANCA" FontSize="13" HorizontalAlignment="Center" Foreground="#E8F4FC" FontWeight="Bold"/>
+                                            <TextBlock x:Name="ArsenalWhitelistCount" Text="..." FontSize="11" HorizontalAlignment="Center" Foreground="#FFD700" FontWeight="SemiBold"/>
+                                        </StackPanel>
+                                    </Button>
                                 </UniformGrid>
                             </ScrollViewer>
                         </Grid>
