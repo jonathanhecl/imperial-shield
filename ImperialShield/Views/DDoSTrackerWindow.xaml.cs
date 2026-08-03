@@ -185,10 +185,6 @@ public partial class DDoSTrackerWindow : Window
 
     public static void ShowAlert(string processName, string processPath, string ip, int count, string warning, bool demoMode = false)
     {
-        Application.Current.Dispatcher.Invoke(() =>
-        {
-            var win = new DDoSTrackerWindow(processName, processPath, ip, count, warning, demoMode);
-            win.Show();
-        });
+        AlertManager.ShowAlert(AlertType.DDoS, () => new DDoSTrackerWindow(processName, processPath, ip, count, warning, demoMode));
     }
 }

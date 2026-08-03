@@ -1,5 +1,6 @@
 using System;
 using System.Windows;
+using ImperialShield.Services;
 
 namespace ImperialShield.Views
 {
@@ -21,13 +22,7 @@ namespace ImperialShield.Views
 
         public static void Show(string message)
         {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                var alert = new AlertWindow(message);
-                // Aseguramos que se vea por encima de todo
-                alert.Topmost = true;
-                alert.ShowDialog();
-            });
+            AlertManager.ShowAlert(AlertType.Exclusion, () => new AlertWindow(message));
         }
     }
 }

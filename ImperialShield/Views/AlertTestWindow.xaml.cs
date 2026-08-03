@@ -18,8 +18,7 @@ namespace ImperialShield.Views
                 DeviceType.Camera, 
                 true
             );
-            var alert = new PrivacyAlertWindow(demoRisk, demoMode: true);
-            alert.ShowDialog();
+            PrivacyAlertWindow.Show(demoRisk, demoMode: true);
         }
 
         private void TestPrivacyMic_Click(object sender, RoutedEventArgs e)
@@ -29,8 +28,7 @@ namespace ImperialShield.Views
                 DeviceType.Microphone, 
                 true
             );
-            var alert = new PrivacyAlertWindow(demoRisk, demoMode: true);
-            alert.ShowDialog();
+            PrivacyAlertWindow.Show(demoRisk, demoMode: true);
         }
 
         private void TestDDoS_Click(object sender, RoutedEventArgs e)
@@ -65,34 +63,30 @@ namespace ImperialShield.Views
 
         private void TestHosts_Click(object sender, RoutedEventArgs e)
         {
-            // Create the real alert window with testMode=true to see the Restore button
-            var alert = new HostsAlertWindow(
+            HostsAlertWindow.Show(
                 "Se han detectado cambios en el archivo HOSTS del sistema.\n\n" +
                 "Nuevas entradas añadidas:\n• 127.0.0.1 → windowsupdate.microsoft.com\n• 127.0.0.1 → update.microsoft.com\n\n" +
                 "El archivo HOSTS puede ser usado por malware para redirigir sitios web legítimos a páginas falsas.",
                 testMode: true);
-            alert.ShowDialog();
         }
 
         private void TestNewTask_Click(object sender, RoutedEventArgs e)
         {
-            var alert = new NewTaskAlertWindow(
+            NewTaskAlertWindow.Show(
                 "SilentCryptoMinerUpdater", 
                 @"\Microsoft\Windows\SystemMaintenance\Updater",
                 demoMode: true
             );
-            alert.ShowDialog();
         }
 
         private void TestBrowserChange_Click(object sender, RoutedEventArgs e)
         {
-            var alert = new BrowserAlertWindow(
+            BrowserAlertWindow.Show(
                 "Mozilla Firefox",
                 "Google Chrome",
                 "ChromeHTML",
                 demoMode: true
             );
-            alert.ShowDialog();
         }
 
         private void Close_Click(object sender, RoutedEventArgs e)

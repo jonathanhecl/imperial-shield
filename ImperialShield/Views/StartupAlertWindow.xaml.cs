@@ -125,5 +125,10 @@ namespace ImperialShield.Views
                 }
             }
         }
+
+        public static void Show(string appName)
+        {
+            ImperialShield.Services.AlertManager.ShowAlert(ImperialShield.Services.AlertType.Startup, () => new StartupAlertWindow(appName));
+        }
     }
 }

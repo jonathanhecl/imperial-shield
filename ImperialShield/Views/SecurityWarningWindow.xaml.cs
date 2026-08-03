@@ -2,6 +2,7 @@ using System;
 using System.Windows;
 using Microsoft.Win32;
 using System.Diagnostics;
+using ImperialShield.Services;
 
 namespace ImperialShield.Views;
 
@@ -64,15 +65,28 @@ public partial class SecurityWarningWindow : Window
         this.Close();
     }
 
-    public static SecurityAction ShowWarning(string exeName, string debuggerPath, bool demoMode = false)
+    public static void ShowWarning(string exeName, string debuggerPath, bool demoMode = false)
     {
-        SecurityAction result = SecurityAction.Ignore;
-        Application.Current.Dispatcher.Invoke(() =>
+        AlertManager.ShowAlert(AlertType.RogueIFEO, () =>
         {
             var win = new SecurityWarningWindow(exeName, debuggerPath, demoMode);
-            win.ShowDialog();
-            result = win.Result;
+            win.Closed += (s, e) =>
+            {
+                if (win.Result == SecurityAction.Delete)
+                {
+                    if (QuarantineService.UnquarantineExecutable(exeName))
+                    {
+                        (Application.Current as App)?.ShowToastNotification("Amenaza Eliminada", 
+                            $"La redirección maliciosa de '{exeName}' ha sido eliminada.",
+                            ToastNotificationType.Success);
+                    }
+                    else
+                    {
+                        MessageBox.Show("No se pudo eliminar la entrada del registro. Verifica los permisos de Administrador.", "Error");
+                    }
+                }
+            };
+            return win;
         });
-        return result;
     }
 }

@@ -77,11 +77,6 @@ public partial class DefenderAlertWindow : Window
 
     public static void Show(string message, bool demoMode = false)
     {
-        Application.Current.Dispatcher.Invoke(() =>
-        {
-            var alert = new DefenderAlertWindow(message, demoMode);
-            alert.Topmost = true;
-            alert.ShowDialog();
-        });
+        AlertManager.ShowAlert(AlertType.Defender, () => new DefenderAlertWindow(message, demoMode));
     }
 }

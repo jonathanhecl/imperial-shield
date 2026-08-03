@@ -109,5 +109,31 @@ namespace ImperialShield.Views
             Result = PrivacyAlertResult.Ignore;
             this.Close();
         }
+
+        public static void Show(PrivacyRisk risk, PrivacyMonitor? privacyMonitor = null, bool demoMode = false)
+        {
+            AlertManager.ShowAlert(AlertType.Privacy, () =>
+            {
+                var win = new PrivacyAlertWindow(risk, demoMode);
+                win.Closed += (s, e) =>
+                {
+                    if (win.Result == PrivacyAlertResult.RevokeAndKill)
+                    {
+                        privacyMonitor?.RevokePermission(risk.ApplicationPath, risk.IsNonPackaged, risk.Device);
+                        string deviceName = risk.Device == DeviceType.Camera ? "cámara" : "micrófono";
+                        (Application.Current as App)?.ShowToastNotification("Permiso Revocado y App Terminada", 
+                            $"Se bloqueó el acceso a {deviceName} para '{risk.ApplicationName}' y se terminó el proceso.",
+                            ToastNotificationType.Success);
+                    }
+                    else if (win.Result == PrivacyAlertResult.KillOnly)
+                    {
+                        (Application.Current as App)?.ShowToastNotification("Aplicación Terminada", 
+                            $"Se terminó '{risk.ApplicationName}'. El permiso de acceso no fue revocado.",
+                            ToastNotificationType.Info);
+                    }
+                };
+                return win;
+            });
+        }
     }
 }

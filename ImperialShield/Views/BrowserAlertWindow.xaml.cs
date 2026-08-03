@@ -1,4 +1,5 @@
 using System.Windows;
+using ImperialShield.Services;
 
 namespace ImperialShield.Views;
 
@@ -41,5 +42,10 @@ public partial class BrowserAlertWindow : Window
     private void Ignore_Click(object sender, RoutedEventArgs e)
     {
         Close();
+    }
+
+    public static void Show(string oldBrowser, string newBrowser, string newBrowserId, bool demoMode = false)
+    {
+        AlertManager.ShowAlert(AlertType.Browser, () => new BrowserAlertWindow(oldBrowser, newBrowser, newBrowserId, demoMode));
     }
 }

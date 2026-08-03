@@ -71,4 +71,9 @@ public partial class NewTaskAlertWindow : Window
         
         Close();
     }
+
+    public static void Show(string taskName, string taskPath, bool demoMode = false)
+    {
+        ImperialShield.Services.AlertManager.ShowAlert(ImperialShield.Services.AlertType.NewTask, () => new NewTaskAlertWindow(taskName, taskPath, demoMode));
+    }
 }

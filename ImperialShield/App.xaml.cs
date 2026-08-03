@@ -400,66 +400,23 @@ public partial class App : Application
 
     private void OnNewPrivacyAppDetected(object? sender, NewPrivacyAppEventArgs e)
     {
-        Dispatcher.BeginInvoke(() =>
-        {
-            Logger.Log($"NEW PRIVACY APP: {e.App.ApplicationName} accessed {e.App.Device}");
-            
-            var alert = new PrivacyAlertWindow(e.App);
-            alert.ShowDialog();
-
-            if (alert.Result == PrivacyAlertResult.RevokeAndKill)
-            {
-                _privacyMonitor?.RevokePermission(e.App.ApplicationPath, e.App.IsNonPackaged, e.App.Device);
-                
-                string deviceName = e.App.Device == DeviceType.Camera ? "cámara" : "micrófono";
-                ShowToastNotification("Permiso Revocado y App Terminada", 
-                    $"Se bloqueó el acceso a {deviceName} para '{e.App.ApplicationName}' y se terminó el proceso.",
-                    ToastNotificationType.Success);
-            }
-            else if (alert.Result == PrivacyAlertResult.KillOnly)
-            {
-                ShowToastNotification("Aplicación Terminada", 
-                    $"Se terminó '{e.App.ApplicationName}'. El permiso de acceso no fue revocado.",
-                    ToastNotificationType.Info);
-            }
-        });
+        Logger.Log($"NEW PRIVACY APP: {e.App.ApplicationName} accessed {e.App.Device}");
+        Views.PrivacyAlertWindow.Show(e.App, _privacyMonitor);
     }
 
     private void OnRogueIFEODetected(object? sender, IFEORiskEventArgs e)
     {
-        Dispatcher.BeginInvoke(() =>
-        {
-            var result = SecurityWarningWindow.ShowWarning(e.ExecutableName, e.DebuggerPath);
-
-            if (result == SecurityAction.Delete)
-            {
-                if (QuarantineService.UnquarantineExecutable(e.ExecutableName))
-                {
-                    ShowToastNotification("Amenaza Eliminada", 
-                        $"La redirección maliciosa de '{e.ExecutableName}' ha sido eliminada.",
-                        ToastNotificationType.Success);
-                }
-                else
-                {
-                    MessageBox.Show("No se pudo eliminar la entrada del registro. Verifica los permisos de Administrador.", "Error");
-                }
-            }
-        });
-        // Duplicate removed here
+        Views.SecurityWarningWindow.ShowWarning(e.ExecutableName, e.DebuggerPath);
     }
 
     private void OnDDoSDetected(object? sender, DDoSEventArgs e)
     {
-        DDoSTrackerWindow.ShowAlert(e.ProcessName, e.ProcessPath, e.RemoteIP, e.ConnectionCount, e.WarningMessage);
+        Views.DDoSTrackerWindow.ShowAlert(e.ProcessName, e.ProcessPath, e.RemoteIP, e.ConnectionCount, e.WarningMessage);
     }
 
     private void OnBrowserChanged(object? sender, BrowserChangedEventArgs e)
     {
-        Dispatcher.Invoke(() =>
-        {
-            var alert = new Views.BrowserAlertWindow(e.OldName ?? "Desconocido", e.NewName ?? "Desconocido", e.NewProgId ?? "");
-            alert.ShowDialog();
-        });
+        Views.BrowserAlertWindow.Show(e.OldName ?? "Desconocido", e.NewName ?? "Desconocido", e.NewProgId ?? "");
     }
 
     #endregion
@@ -588,7 +545,7 @@ public partial class App : Application
         _dashboardWindow.Activate();
     }
 
-    private void ShowToastNotification(string title, string message, ToastNotificationType type)
+    public void ShowToastNotification(string title, string message, ToastNotificationType type)
     {
         try
         {
@@ -614,30 +571,17 @@ public partial class App : Application
     private void OnNewStartupAppDetected(object? sender, string app)
     {
         Logger.Log($"NEW STARTUP APP: {app}");
-        Logger.Log($"NEW STARTUP APP: {app}");
-        Dispatcher.Invoke(() =>
-        {
-            var alert = new StartupAlertWindow(app);
-            alert.ShowDialog();
-        });
+        Views.StartupAlertWindow.Show(app);
     }
 
     private void OnNewTaskDetected(object? sender, NewTaskEventArgs e)
     {
-        Dispatcher.Invoke(() =>
-        {
-            var alert = new NewTaskAlertWindow(e.TaskName, e.TaskPath);
-            alert.Show();
-        });
+        Views.NewTaskAlertWindow.Show(e.TaskName, e.TaskPath);
     }
 
     private void OnSuspiciousProcessSpawned(object? sender, LauncherProcessEventArgs e)
     {
-        Dispatcher.Invoke(() =>
-        {
-            var alert = new ArgentumAlertWindow(e.LauncherName, e.LauncherPath, e.SpawnedName, e.SpawnedPath, e.Details);
-            alert.ShowDialog();
-        });
+        Views.ArgentumAlertWindow.Show(e.LauncherName, e.LauncherPath, e.SpawnedName, e.SpawnedPath, e.Details);
     }
 
     #endregion

@@ -214,13 +214,8 @@ public partial class HostsAlertWindow : Window
         this.Close();
     }
 
-    public static void Show(string message)
+    public static void Show(string message, bool testMode = false)
     {
-        Application.Current.Dispatcher.Invoke(() =>
-        {
-            var alert = new HostsAlertWindow(message);
-            alert.Topmost = true;
-            alert.ShowDialog();
-        });
+        AlertManager.ShowAlert(AlertType.Hosts, () => new HostsAlertWindow(message, testMode));
     }
 }

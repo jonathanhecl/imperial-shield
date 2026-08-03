@@ -104,4 +104,9 @@ public partial class ArgentumAlertWindow : Window
         }
         catch { }
     }
+
+    public static void Show(string launcherName, string launcherPath, string subprocessName, string subprocessPath, string details)
+    {
+        AlertManager.ShowAlert(AlertType.Argentum, () => new ArgentumAlertWindow(launcherName, launcherPath, subprocessName, subprocessPath, details));
+    }
 }

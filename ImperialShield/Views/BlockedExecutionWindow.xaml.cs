@@ -64,11 +64,6 @@ public partial class BlockedExecutionWindow : Window
     /// </summary>
     public static void ShowBlocked(string fullPath, bool demoMode = false)
     {
-        Application.Current.Dispatcher.Invoke(() =>
-        {
-            var win = new BlockedExecutionWindow(fullPath, demoMode);
-            win.Topmost = true;
-            win.ShowDialog();
-        });
+        AlertManager.ShowAlert(AlertType.BlockedExecution, () => new BlockedExecutionWindow(fullPath, demoMode));
     }
 }
