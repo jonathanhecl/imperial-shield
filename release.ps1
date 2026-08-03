@@ -45,11 +45,13 @@ if ($Increment) {
     Set-Content $csprojPath $csprojContent -NoNewline
 }
 
-# Preguntar Token de GitHub si no está definido
+# Preguntar Token de GitHub si no está definido (enmascarado con ***)
 if ([string]::IsNullOrWhiteSpace($Token)) {
-    $inputToken = Read-Host "Ingresa tu GitHub Token (PAT) [Presiona Enter para solo compilar localmente sin publicar]"
-    if (-not [string]::IsNullOrWhiteSpace($inputToken)) {
-        $Token = $inputToken.Trim()
+    $secureToken = Read-Host "Ingresa tu GitHub Token (PAT) [Presiona Enter para solo compilar localmente]" -AsSecureString
+    if ($secureToken.Length -gt 0) {
+        $bstr = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($secureToken)
+        $Token = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($bstr).Trim()
+        [System.Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr)
     }
 }
 

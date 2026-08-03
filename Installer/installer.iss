@@ -1,6 +1,6 @@
 [Setup]
 AppName=Imperial Shield
-AppVersion=1.0.8
+AppVersion=1.0.9
 AppPublisher=Imperial Shield Security (Jonathan Hecl)
 AppPublisherURL=https://github.com/jonathanhecl/imperial-shield
 DefaultDirName={autopf}\Imperial Shield
@@ -9,7 +9,7 @@ UninstallDisplayIcon={app}\ImperialShield.exe
 Compression=lzma2
 SolidCompression=yes
 OutputDir=InstallerOutput
-OutputBaseFilename=ImperialShield-1.0.8-Setup
+OutputBaseFilename=ImperialShield-1.0.9-Setup
 SetupIconFile=..\ImperialShield\Resources\shield.ico
 LicenseFile=LICENSE.txt
 PrivilegesRequired=admin
