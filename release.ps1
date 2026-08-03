@@ -6,7 +6,7 @@ param (
 
 $ErrorActionPreference = "Stop"
 
-# 1. Determinar versión
+# 1. Determinar y sincronizar versión
 $csprojPath = "ImperialShield\ImperialShield.csproj"
 $issPath = "Installer\installer.iss"
 
@@ -21,6 +21,14 @@ if ($csprojContent -match '<Version>(\d+\.\d+\.\d+)</Version>') {
     Write-Error "No se pudo obtener la versión de $csprojPath"
 }
 
+# Preguntar la versión si no se especificó por parámetro
+if ([string]::IsNullOrWhiteSpace($Version) -and -not $Increment) {
+    $inputVer = Read-Host "Ingresa la versión del Release (ej. 1.0.9) [Presiona Enter para usar la actual '$currentVersion']"
+    if (-not [string]::IsNullOrWhiteSpace($inputVer)) {
+        $Version = $inputVer.Trim().TrimStart('v', 'V')
+    }
+}
+
 if ($Increment) {
     powershell -ExecutionPolicy Bypass -File "increment_version.ps1"
     $csprojContent = Get-Content $csprojPath -Raw
@@ -28,7 +36,7 @@ if ($Increment) {
         $currentVersion = $Matches[1]
     }
 } elseif (-not [string]::IsNullOrWhiteSpace($Version)) {
-    $currentVersion = $Version
+    $currentVersion = $Version.TrimStart('v', 'V')
     $newAssemblyVersion = "$currentVersion.0"
     $csprojContent = $csprojContent -replace '<Version>\d+\.\d+\.\d+</Version>', "<Version>$currentVersion</Version>"
     $csprojContent = $csprojContent -replace '<AssemblyVersion>\d+\.\d+\.\d+\.\d+</AssemblyVersion>', "<AssemblyVersion>$newAssemblyVersion</AssemblyVersion>"
@@ -37,16 +45,24 @@ if ($Increment) {
     Set-Content $csprojPath $csprojContent -NoNewline
 }
 
-Write-Host "=========================================" -ForegroundColor Cyan
+# Preguntar Token de GitHub si no está definido
+if ([string]::IsNullOrWhiteSpace($Token)) {
+    $inputToken = Read-Host "Ingresa tu GitHub Token (PAT) [Presiona Enter para solo compilar localmente sin publicar]"
+    if (-not [string]::IsNullOrWhiteSpace($inputToken)) {
+        $Token = $inputToken.Trim()
+    }
+}
+
+Write-Host "`n=========================================" -ForegroundColor Cyan
 Write-Host " Publicando Imperial Shield v$currentVersion" -ForegroundColor Cyan
 Write-Host "=========================================" -ForegroundColor Cyan
 
-# 2. Sincronizar versión en installer.iss
+# 2. Sincronizar versión en installer.iss (Inno Setup)
 $issContent = Get-Content $issPath -Raw
 $issContent = $issContent -replace 'AppVersion=\d+\.\d+\.\d+', "AppVersion=$currentVersion"
 $issContent = $issContent -replace 'OutputBaseFilename=ImperialShield-\d+\.\d+\.\d+-Setup', "OutputBaseFilename=ImperialShield-$currentVersion-Setup"
 Set-Content $issPath $issContent -NoNewline
-Write-Host "[OK] installer.iss actualizado a v$currentVersion" -ForegroundColor Green
+Write-Host "[OK] installer.iss actualizado a versión v$currentVersion" -ForegroundColor Green
 
 # 3. Compilar ejecutable con dotnet publish
 Write-Host "`n[1/4] Compilando ejecutable .NET autocontenido..." -ForegroundColor Yellow
@@ -77,7 +93,7 @@ if (-not (Test-Path $exeInstallerPath)) {
 Write-Host "`n[3/4] Comprimiendo el instalador a archivo .zip..." -ForegroundColor Yellow
 if (Test-Path $zipInstallerPath) { Remove-Item $zipInstallerPath -Force }
 Compress-Archive -Path $exeInstallerPath -DestinationPath $zipInstallerPath
-Write-Host "[OK] Paquete creado: $zipInstallerPath" -ForegroundColor Green
+Write-Host "[OK] Paquete ZIP creado: $zipInstallerPath" -ForegroundColor Green
 
 # 6. Subir Release a GitHub si hay token disponible
 if ([string]::IsNullOrWhiteSpace($Token)) {
@@ -85,8 +101,7 @@ if ([string]::IsNullOrWhiteSpace($Token)) {
     Write-Host " Compilación y empaquetado completados con éxito." -ForegroundColor Green
     Write-Host " El archivo ZIP generado se encuentra en:" -ForegroundColor Cyan
     Write-Host " $zipInstallerPath" -ForegroundColor White
-    Write-Host " Para subirlo automáticamente a GitHub, ejecuta:" -ForegroundColor Yellow
-    Write-Host " .\release.ps1 -Token 'TU_GITHUB_TOKEN'" -ForegroundColor Yellow
+    Write-Host " Para subirlo automáticamente a GitHub, ejecuta de nuevo ingresando tu Token." -ForegroundColor Yellow
     Write-Host "=========================================" -ForegroundColor Yellow
     exit 0
 }
