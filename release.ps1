@@ -118,7 +118,7 @@ try {
     git push origin main
     git push origin "v$currentVersion" -f
 
-    # API de GitHub para publicar Release y asset
+    # API de GitHub para obtener o crear Release
     $repo = "jonathanhecl/imperial-shield"
     $headers = @{
         "Authorization" = "Bearer $Token"
@@ -147,26 +147,37 @@ try {
     }
 
     $uploadUrlRaw = $releaseResponse.upload_url
-    $templatePattern = '\{.+?\}'
-    $cleanUploadUrl = $uploadUrlRaw -replace $templatePattern, ''
-    $uploadUrl = "$cleanUploadUrl?name=ImperialShield-$currentVersion-Setup.zip"
+    $cleanUploadUrl = $uploadUrlRaw.Split('{')[0]
+    $assetName = "ImperialShield-$currentVersion-Setup.zip"
+    $uploadUrl = "${cleanUploadUrl}?name=$assetName"
 
-    Write-Host "Subiendo asset $zipInstallerPath..." -ForegroundColor Yellow
+    Write-Host "Subiendo asset binario $assetName a GitHub..." -ForegroundColor Yellow
 
-    $zipBytes = [System.IO.File]::ReadAllBytes((Resolve-Path $zipInstallerPath))
-    $uploadHeaders = @{
-        "Authorization" = "Bearer $Token"
-        "Accept"        = "application/vnd.github+json"
-        "User-Agent"    = "ImperialShield-DeployScript"
+    $resolvedZipPath = (Resolve-Path $zipInstallerPath).Path
+
+    $curlOutput = & curl.exe -s -S -X POST `
+        -H "Authorization: Bearer $Token" `
+        -H "Accept: application/vnd.github+json" `
+        -H "Content-Type: application/zip" `
+        --data-binary "@$resolvedZipPath" `
+        "$uploadUrl"
+
+    $assetResult = $curlOutput | ConvertFrom-Json
+
+    if ($assetResult.browser_download_url) {
+        Write-Host "`n=========================================" -ForegroundColor Green
+        Write-Host " 🎉 RELEASE PUBLICADA EXITOSAMENTE EN GITHUB!" -ForegroundColor Green
+        Write-Host " URL de la Release: $($releaseResponse.html_url)" -ForegroundColor Cyan
+        Write-Host " Asset descargable: $($assetResult.browser_download_url)" -ForegroundColor White
+        Write-Host "=========================================" -ForegroundColor Green
+    } else {
+        Write-Host "Respuesta de subida de asset: $curlOutput" -ForegroundColor Yellow
+        Write-Host "`n=========================================" -ForegroundColor Green
+        Write-Host " Release v$currentVersion creada/actualizada en GitHub." -ForegroundColor Green
+        Write-Host " URL: $($releaseResponse.html_url)" -ForegroundColor Cyan
+        Write-Host " Nota: Si el asset ya existía previamente en la release, elimínalo o vuelve a correr para resubir." -ForegroundColor Yellow
+        Write-Host "=========================================" -ForegroundColor Green
     }
-
-    $uploadResponse = Invoke-RestMethod -Uri $uploadUrl -Method Post -Headers $uploadHeaders -Body $zipBytes -ContentType "application/zip"
-
-    Write-Host "`n=========================================" -ForegroundColor Green
-    Write-Host " RELEASE PUBLICADA EXITOSAMENTE EN GITHUB!" -ForegroundColor Green
-    Write-Host " URL de la Release: $($releaseResponse.html_url)" -ForegroundColor Cyan
-    Write-Host " Asset descargable: $($uploadResponse.browser_download_url)" -ForegroundColor White
-    Write-Host "=========================================" -ForegroundColor Green
 
 } catch {
     Write-Host "`n=========================================" -ForegroundColor Red
